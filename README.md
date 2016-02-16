@@ -26,7 +26,7 @@ python setup.py build install --user
 実行例
 
 ```
-pa_plot qc "/home/omega3/omega_project/genomon/ACC/*/*.tsv" ./work ACC
+pa_plot qc "/home/genomon/ACC/summary/*/*.tsv" ./work ACC
 ```
 
 <br>
