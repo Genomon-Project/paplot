@@ -4,9 +4,20 @@ Welcome to Post Analysis PLOT (PAPLOT).
 
 Paplot creates interactive graphs from text data of genome analysis.
 
+## Documents
+
+English:
+
+http://paplot-doc.readthedocs.org/en/latest/
+
+Japanese:
+
+http://paplot-jp.readthedocs.org/ja/latest/
+
+
 -------------------------------------------------------------------------
 
-##Dependency
+## Dependency
 
  - python >= 2.7
 
@@ -19,7 +30,7 @@ Required web browser for viewing result file.
 
 -------------------------------------------------------------------------
 
-##Install
+## Install
 
 ```
 git clone https://github.com/Genomon-Project/paplot.git
@@ -30,7 +41,7 @@ python setup.py build install --user
 
 -------------------------------------------------------------------------
 
-##Run
+## Run
 
 For example, (using sample data)
 
@@ -44,8 +55,6 @@ pa_plot qc "example/qc/*.csv" ~/tmp DUMMY --config_file example/example.cfg
 pa_plot sv "example/sv/*.txt" ~/tmp DUMMY --config_file example/example.cfg
 ```
 
-<br>
-
 Description 
 
 ```
@@ -58,37 +67,27 @@ pa_plot {qc, sv} [-h] [--version] [--config_file CONFIG_FILE]
  
     Sub commands
 
-<br>
-
  - `input`
 
     Input data files,<br>
     Use wildcard('*') to specify multiple files, and take `"` last and first.
-
-<br>
 
  - `output_dir`
 
     output directory path,<br>
     see following section.
 
-<br>
-
  - `project_name`
  
    project name,<br>
    it is output html's title.
-    
-<br>
 
  - `--config_file` 
 
     configure file,<br>
     if not specified, use the default.
-    
-<br>
 
-### (2) tree of output directory
+## Tree of output directory
 
 <pre>
 {output_dir}
