@@ -16,6 +16,7 @@ Required web browser for viewing result file.
  - Firefox 48
  - Google Chrome 44
  - Internet Explorer 11
+
 -------------------------------------------------------------------------
 
 ##Install
