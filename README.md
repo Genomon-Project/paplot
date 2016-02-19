@@ -13,9 +13,9 @@ Paplot creates interactive graphs from text data of genome analysis.
 Required web browser for viewing result file.
 (Tested in the following)
 
- - Firefox 48.0
- - Google Chrome 44.0
- 
+ - Firefox 48
+ - Google Chrome 44
+ - Internet Explorer 11
 -------------------------------------------------------------------------
 
 ##Install
