@@ -4,9 +4,15 @@ Created on Wed Dec 02 17:43:52 2015
 
 @author: okada
 
-$Id: tools.py 40 2016-02-16 08:58:53Z aokada $
-$Rev: 40 $
+$Id: tools.py 46 2016-02-22 08:12:39Z aokada $
+$Rev: 46 $
 """
+
+def win_to_unix(win_path):
+    import re
+    
+    return re.escape(win_path).replace("\\\\", "/").replace("\\\t", "/t").replace("\\\n", "/n").replace("\\\r", "/r").replace("\\", "")
+
 def copy_dir_lib(dst):
     import shutil
     import os
@@ -32,7 +38,7 @@ def copy_dir_js(dst):
     for f in li_files:
         shutil.copy(f, dst)
 
-def copy_dir_style(dst):
+def copy_dir_style(dst, config):
     import shutil
     import os
     import glob
@@ -42,7 +48,12 @@ def copy_dir_style(dst):
     
     for f in li_files:
         shutil.copy(f, dst)
-        
+    
+    # for option file
+    option = config_getpath(config, "style", "path")
+    if len(option) > 0:
+        shutil.copy(option, dst)
+
 def version_text():
     f = __file__.replace("\\", "/")
     sept = f.split('/')
@@ -55,52 +66,31 @@ def config_getint(config, section, item):
         value = config.getint(section, item)
 
     return value
-        
-def load_data(data_file, ID, mode, config):
+
+def config_getstr(config, section, item):
     
-    import pandas
+    value = ""
+    if config.has_option(section, item) == True:
+        value = config.get(section, item)
+
+    return value
+    
+def config_getpath(config, section, item, default=""):
     import os
     
-    if os.path.getsize(data_file) == 0:
-        print "skip blank file %s" % data_file
-        return []
-    
-    [section_in, section_out] = get_section(mode)
-    
-    # data read
-    header = config.getboolean(section_in, "header")
-    sept = config.get(section_in, "sept")
-    titles = []
-    try:
-        if header == False:
-            data = pandas.read_csv(data_file, header = None, sep = sept, engine = "python")
-            for i in range(len(data.iloc[0])):
-                titles.append("v%02d" % i)
-            data.columns = titles
-        else:
-            data = pandas.read_csv(data_file, sep = sept, engine = "python")
-            titles = data.columns.get_values()
-
-    except StopIteration:
-        print "skip no data file %s" % data_file
-        return []
-    except Exception as e:
-        print "failure open data %s, %s" % (data_file, e.message)
-        return []
+    path = ""
+    if config.has_option(section, item) == True:
+        path = win_to_unix(config.get(section, item))
+        if len(path) > 0 and os.path.exists(path) == False:
+            print "can not find file. [%s] %s=%s, so use default." % (section, item, path)
+            path = ""
+            
+    if len(path) == 0 and len(default) > 0:
+        path = os.path.dirname(os.path.abspath(__file__)) + "/" + default
         
-    if config_getint(config, section_in, "col_pos_ID") < 0:
-        tmp = []
-        for i in range(0,len(data[titles[0]])):
-            tmp.append(ID)
-        df_addition_col = pandas.DataFrame([tmp]).T
-        df_addition_col.columns =["ID"]
-        data_cat = pandas.concat([df_addition_col, data], axis=1)
-    
-    else:
-        data_cat = data
-
-    return data_cat
-    
+    return path
+        
+        
 def getID(result_file, mode, config):
     
     import os
@@ -118,9 +108,9 @@ def get_section(mode):
         section_in = "result_format_mutation"
         section_out = "merge_format_mutation"
     
-    elif mode.lower() == "summary":
-        section_in = "result_format_summary"
-        section_out = "merge_format_summary"
+    elif mode.lower() == "qc":
+        section_in = "result_format_qc"
+        section_out = "merge_format_qc"
     
     return [section_in, section_out]    
     
@@ -146,7 +136,7 @@ def now_string():
     
     return datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     
-def create_dirs(args_output_dir, project_name):
+def create_dirs(args_output_dir, project_name, config):
     import os
     
     output_dir = os.path.abspath(args_output_dir)
@@ -171,7 +161,7 @@ def create_dirs(args_output_dir, project_name):
 
     copy_dir_lib(output_lib_dir)
     copy_dir_js(output_js_dir)
-    copy_dir_style(output_style_dir)
+    copy_dir_style(output_style_dir, config)
     
     return output_html_dir
     

@@ -4,8 +4,8 @@ Created on Wed Dec 02 17:43:52 2015
 
 @author: okada
 
-$Id: run_qc.py 40 2016-02-16 08:58:53Z aokada $
-$Rev: 40 $
+$Id: run_qc.py 46 2016-02-22 08:12:39Z aokada $
+$Rev: 46 $
 """
 prog = "pa_plot qc"
 
@@ -40,12 +40,12 @@ def main(argv):
         return
         
     # dirs
-    output_html_dir = tools.create_dirs(args.output_dir, args.project_name)
+    output_html_dir = tools.create_dirs(args.output_dir, args.project_name, config)
     
-    if prep.merge_result(input_list, output_html_dir + "/merge_qc.csv", "summary", config) == False:
+    if prep.merge_result(input_list, output_html_dir + "/merge_qc.csv", "qc", config) == False:
         print "input file is invalid."
         return
-    if prep.extract_result(output_html_dir + "/merge_qc.csv", output_html_dir + "/data_qc.csv", "summary", config) == False:
+    if prep.extract_result(output_html_dir + "/merge_qc.csv", output_html_dir + "/data_qc.csv", "qc", config) == False:
         print "input file is invalid."
         return
     if qc.convert_tojs(output_html_dir + "/data_qc.csv", output_html_dir + "/data_qc.js") == False:

@@ -4,8 +4,8 @@ Created on Wed Dec 02 17:43:52 2015
 
 @author: okada
 
-$Id: run_sv.py 40 2016-02-16 08:58:53Z aokada $
-$Rev: 40 $
+$Id: run_sv.py 46 2016-02-22 08:12:39Z aokada $
+$Rev: 46 $
 """
 prog = "pa_plot sv"
 
@@ -40,19 +40,19 @@ def main(argv):
         return
         
     # dirs
-    output_html_dir = tools.create_dirs(args.output_dir, args.project_name)
+    output_html_dir = tools.create_dirs(args.output_dir, args.project_name, config)
         
     if prep.merge_result(input_list, output_html_dir + "/merge_sv.csv", "sv", config) == False:
-        print "input file is invalid."
+        print "prep.merge_result: input file is invalid."
         return
     if prep.extract_result(output_html_dir + "/merge_sv.csv", output_html_dir + "/data_sv.csv", "sv", config) == False:
-        print "input file is invalid."
+        print "prep.extract_result: input file is invalid."
         return
     if sv.convert_tojs_thumb(output_html_dir + "/data_sv.csv", output_html_dir + "/data_sv_thumb.js", config) == False:
-        print "input file is invalid."
+        print "sv.convert_tojs_thumb: input file is invalid."
         return
 
     sv.convert_tojs(output_html_dir + "/data_sv.csv", output_html_dir + "/data_sv.js", config)
-    sv.create_html(output_html_dir + "/data_sv.csv", output_html_dir, "bundle_sv.html", args.project_name, config)
+    sv.create_html(output_html_dir + "/data_sv.csv", output_html_dir, "graph_sv.html", args.project_name, config)
     
     

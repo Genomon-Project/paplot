@@ -4,14 +4,14 @@ Created on Wed Dec 02 17:43:52 2015
 
 @author: okada
 
-$Id: prep.py 40 2016-02-16 08:58:53Z aokada $
-$Rev: 40 $
+$Id: prep.py 46 2016-02-22 08:12:39Z aokada $
+$Rev: 46 $
 """
 
 def print_conf(config, conf_file):
-    print "******************************"
-    print "hello genomon post analysis!!!"
-    print "******************************"
+    print "**********************"
+    print "   hello paplot !!!"
+    print "**********************"
     print "\nconfig file:%s" % conf_file
     
     for section in config.sections():
@@ -19,7 +19,54 @@ def print_conf(config, conf_file):
         for item in config.items(section):
             print item
 
+def load_data(data_file, ID, mode, config):
+    
+    from paplot import tools
+    import pandas
+    import os
+    
+    if os.path.getsize(data_file) == 0:
+        print "skip blank file %s" % data_file
+        return []
+    
+    [section_in, section_out] = tools.get_section(mode)
+    
+    # data read
+    header = config.getboolean(section_in, "header")
+    sept = config.get(section_in, "sept")
+    titles = []
+    try:
+        if header == False:
+            data = pandas.read_csv(data_file, header = None, sep = sept, engine = "python")
+            for i in range(len(data.iloc[0])):
+                titles.append("v%02d" % i)
+            data.columns = titles
+        else:
+            data = pandas.read_csv(data_file, sep = sept, engine = "python")
+            titles = data.columns.get_values()
+
+    except StopIteration:
+        print "skip no data file %s" % data_file
+        return []
+    except Exception as e:
+        print "failure open data %s, %s" % (data_file, e.message)
+        return []
+        
+    if tools.config_getint(config, section_in, "col_pos_ID") < 0:
+        tmp = []
+        for i in range(0,len(data[titles[0]])):
+            tmp.append(ID)
+        df_addition_col = pandas.DataFrame([tmp]).T
+        df_addition_col.columns =["ID"]
+        data_cat = pandas.concat([df_addition_col, data], axis=1)
+    
+    else:
+        data_cat = data
+
+    return data_cat
+    
 def set_header_info(mode, config):
+    
     from paplot import tools
     
     [section_in, section_out] = tools.get_section(mode)
@@ -51,7 +98,7 @@ def set_header_info(mode, config):
             "end":tools.config_getint(config, section_in, "col_pos_ID") + cor
             }
         
-    elif mode == "summary":
+    elif mode == "qc":
         info = {"ID": tools.config_getint(config, section_in, "col_pos_ID") + cor, \
             "duplicate_reads":tools.config_getint(config, section_in, "col_pos_duplicate_reads") + cor, \
             "mapped_reads":tools.config_getint(config, section_in, "col_pos_mapped_reads") + cor, \
@@ -89,7 +136,7 @@ def merge_result(files, output_file, mode, config):
             continue
 
         ID = tools.getID(result_file, mode, config) 
-        data = tools.load_data(result_file, ID, mode, config)
+        data = load_data(result_file, ID, mode, config)
         
         if len(data) == 0:
             continue

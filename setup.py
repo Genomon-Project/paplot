@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 """
-$Id: setup.py 35 2016-02-15 09:44:57Z aokada $
-$Rev: 35 $
+$Id: setup.py 46 2016-02-22 08:12:39Z aokada $
+$Rev: 46 $
 """
 
 from setuptools import setup, find_packages
 
-version = '0.2.3'
+version = '0.2.4'
 
 setup(name='paplot',
       version=version,
@@ -21,7 +21,7 @@ parser result files created by genomon (SV, mutaion-call and so on)""",
       license='GPL-3',
       packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
       scripts=['pa_plot'],
-      data_files=[('config', ['paplot.cfg'])],
+      data_files=[('config', ['paplot.cfg']), ('config', ['genome/hg19.csv'])],
       include_package_data=True,
       zip_safe=False,
       install_requires=[

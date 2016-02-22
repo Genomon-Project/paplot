@@ -4,8 +4,8 @@ Created on Wed Dec 02 17:43:52 2015
 
 @author: okada
 
-$Id: qc.py 40 2016-02-16 08:58:53Z aokada $
-$Rev: 40 $
+$Id: qc.py 41 2016-02-17 09:39:52Z aokada $
+$Rev: 41 $
 """
 
 def convert_tojs(input_file, output_file):
@@ -98,8 +98,8 @@ def create_html(output_html_dir, org_html, project_name, config):
         html_template.format(project = project_name, 
         version = tools.version_text(),
         date = tools.now_string(),
-        style = config.get("style", "name"),
-        charts = charts_text
+        charts = charts_text,
+        style = "../style/%s" % os.path.basename(tools.config_getpath(config, "style", "path", "default.js")),
         ))
     f_html.close()
 

@@ -4,8 +4,8 @@ Created on Wed Feb 03 12:31:47 2016
 
 @author: okada
 
-$Id: sv.py 39 2016-02-16 06:43:19Z aokada $
-$Rev: 39 $
+$Id: sv.py 46 2016-02-22 08:12:39Z aokada $
+$Rev: 46 $
 """
 
 ########### js template
@@ -53,14 +53,11 @@ bundle_data_sv.container = [
 {contain}
 ];
 """
-
-
 js2_dataset = """
 bundle_data_sv_thumb.items = [
 {dataset}
 ];
 """
-
 js2_top = """(function() {
 bundle_data_sv_thumb = {};
 """
@@ -104,38 +101,8 @@ bundle_data_sv_thumb.container = [
 dataset_template = '{{"ID":"{ID}", "nodes":[{nodes}]}}'
 node_template = '{{"start":"{name1}", "ends":{name2}, "value":{value}}}'
 node2_template = '{{"start":"{name1}", "ends":{name2}}}'
-name_template = 'root.{Chr}.{Chr}_{pos:0>4}'
-contain_template = '{{"index":"{key}", "num":{num}}}'
-
-genome_size = [
-    ["01", 249250621],
-    ["02", 243199373],
-    ["03", 198022430],
-    ["04", 191154276],
-    ["05", 180915260],
-    ["06", 171115067],
-    ["07", 159138663],
-    ["08", 146364022],
-    ["09", 141213431],
-    ["10", 135534747],
-    ["11", 135006516],
-    ["12", 133851895],
-    ["13", 115169878],
-    ["14", 107349540],
-    ["15", 102531392],
-    ["16",  90354753],
-    ["17",  81195210],
-    ["18",  78077248],
-    ["19",  59128983],
-    ["20",  63025520],
-    ["21",  48129895],
-    ["22",  51304566],
-    [ "X", 155270560],
-    [ "Y",  59373566],
-]
-
-round_scale_normal = 5000000
-round_scale_thumb = 40000000
+name_template = 'root.{Chr:0>2}.{Chr:0>2}_{pos:0>4}'
+contain_template = '{{"index":"{key:0>2}", "num":{num}}}'
 
 ########### html template
 
@@ -145,30 +112,78 @@ detail_template = """<div class="float_frame" id="float{id}"><table><tr><td clas
 """
 ########### functions
 
-def data_toChr(inpt):
-    txt = str(inpt)
+def load_genome_size(config):
+    from paplot import tools
+
+    path = tools.config_getpath(config, "genome", "path", "../config/hg19.csv")
+    use_chrs = tools.config_getstr(config, "sv", "use_chrs").lower().replace(" ", "").split(",")
+    for i in range(len(use_chrs)):
+        label = use_chrs[i]
+        if label[0:3] == "chr":
+            use_chrs[i] = label[3:len(label)]
+    
+    f = open(path)
+    data = f.read()
+    f.close()
+    
+    formatt = data.replace("\r", "\n").replace(" ", "")
+    
+    genome_size = []
+    _max = 0
+    for row in formatt.split("\n"):
+        items = row.split(",")
+
+        if len(items) < 2:
+            continue
+        
+        if items[1].isdigit() == False:
+            continue
+
+        label = items[0].lower()
+        if label[0:3] == "chr":
+            label = label[3:len(label)]
+            
+        if len(use_chrs) > 1 and (label in use_chrs) == False:
+            continue
+        
+        if _max < int(items[1]):
+            _max = int(items[1])
+        genome_size.append([label, int(items[1])])
+
+    for i in range(len(genome_size)):
+        if genome_size[i][1] < _max/10:
+            genome_size[i][1] = _max/10
+            
+    return genome_size
+
+def calc_node_size(genome_size, total):
+    
+    _sum = 0
+    _min = genome_size[0][1]
+    
+    for i in range(len(genome_size)):
+        _sum += genome_size[i][1]
+        if _min > genome_size[i][1]:
+            _min = genome_size[i][1]
+            
+    size = int(_sum/total)
+    if _min <= size:
+        size = _min - 1
+
+    return size
+    
+def data_toidx(inpt, genome_size):
+    txt = str(inpt).lower()
     
     if len(txt) > 3:
-        if txt[0:3].lower() == "chr":
+        if txt[0:3] == "chr":
             txt = txt[3:len(txt)]
-            
-    if txt.isdigit() == True:
-        txt = "%02d" % int(txt)
 
-    ret = ""
     for i in range(len(genome_size)):
         if txt == genome_size[i][0]:
-            ret = txt
-            break
+            return i
 
-    return ret
-    
-def getSize(chrom):
-    for i in range(len(genome_size)):
-        if chrom == genome_size[i][0]:
-            return genome_size[i][1]
-    
-    return 0
+    return -1
         
 def load_csv(input_file):
     import pandas
@@ -203,12 +218,18 @@ def load_csv(input_file):
         
     return data
     
-def convert_tojs(input_file, output_file, config, round_scale = round_scale_normal):
+def convert_tojs(input_file, output_file, config):
 
     data = load_csv(input_file)
     if len(data) == 0:
         return False
 
+    genome_size = load_genome_size(config)
+    if len(genome_size) == 0:
+        return False
+    
+    node_size = calc_node_size(genome_size, 600)
+    
     id_list = data["ID"][(data["ID"].duplicated() == False)]    
     
     dataset = ""
@@ -216,15 +237,16 @@ def convert_tojs(input_file, output_file, config, round_scale = round_scale_norm
         if len(dataset) > 0:
             dataset += ",\n"
             
-        dataset += dataset_template.format(ID = iid, nodes = set_nodes(data[(data["ID"] == iid)], round_scale, blank = False, tooltip = True))
+        dataset += dataset_template.format(ID = iid, \
+            nodes = set_nodes(data[(data["ID"] == iid)], genome_size, node_size, blank = False, tooltip = True))
 
     contain = ""
-    for i in range(0, len(genome_size)):
+    for i in range(len(genome_size)):
         if len(contain) > 0:
             contain += ",\n"
             
-        item_num = int(getSize(genome_size[i][0])/round_scale) + 1
-        contain += contain_template.format(key = genome_size[i][0], num = item_num)
+        item_num = int(genome_size[i][1]/node_size) + 1
+        contain += contain_template.format(key = i, num = item_num)
 
     f = open(output_file, "w")
     f.write(js_top \
@@ -235,11 +257,17 @@ def convert_tojs(input_file, output_file, config, round_scale = round_scale_norm
 
     return True
 
-def convert_tojs_thumb(input_file, output_file, config, round_scale = round_scale_thumb):
+def convert_tojs_thumb(input_file, output_file, config):
 
     data = load_csv(input_file)
     if len(data) == 0:
         return False
+        
+    genome_size = load_genome_size(config)
+    if len(genome_size) == 0:
+        return False
+    
+    node_size = calc_node_size(genome_size, 60)
     
     id_list = data["ID"][(data["ID"].duplicated() == False)]
 
@@ -248,15 +276,16 @@ def convert_tojs_thumb(input_file, output_file, config, round_scale = round_scal
         if len(dataset) > 0:
             dataset += ",\n"
             
-        dataset += dataset_template.format(ID = iid, nodes = set_nodes(data[(data["ID"] == iid)], round_scale, blank = False, tooltip = False))
+        dataset += dataset_template.format(ID = iid, \
+            nodes = set_nodes(data[(data["ID"] == iid)], genome_size, node_size, blank = False, tooltip = False))
 
     contain = ""
-    for i in range(0, len(genome_size)):
+    for i in range(len(genome_size)):
         if len(contain) > 0:
             contain += ",\n"
             
-        item_num = int(getSize(genome_size[i][0])/round_scale) + 1
-        contain += contain_template.format(key = genome_size[i][0], num = item_num)
+        item_num = int(genome_size[i][1]/node_size) + 1
+        contain += contain_template.format(key = i, num = item_num)
         
     f = open(output_file, "w")
     f.write(js2_top \
@@ -267,26 +296,26 @@ def convert_tojs_thumb(input_file, output_file, config, round_scale = round_scal
 
     return True
 
-def pos_name(chr1, start, chr2, end, round_scale):
+def pos_name(chr1, start, chr2, end, genome_size, node_size):
     
     start = long(start)
     end = long(end)
-    name1 = name_template.format(Chr=chr1, pos = start/round_scale)
-    name2 = name_template.format(Chr=chr2, pos = end/round_scale)
+    name1 = name_template.format(Chr=chr1, pos = start/node_size)
+    name2 = name_template.format(Chr=chr2, pos = end/node_size)
     
     if name1 != name2:
         return [name1, name2]
     
-    if int(getSize(chr2)/round_scale) == int(end/round_scale):
-        name2 = name_template.format(Chr=chr2, pos = end/round_scale - 1)
+    if int(genome_size[chr2][1]/node_size) == int(end/node_size):
+        name2 = name_template.format(Chr=chr2, pos = end/node_size - 1)
     else:
-        name2 = name_template.format(Chr=chr2, pos = end/round_scale + 1)
+        name2 = name_template.format(Chr=chr2, pos = end/node_size + 1)
         
     return [name1, name2]
 
-def set_nodes(data, round_scale, blank = True, tooltip = True):
+def set_nodes(data, genome_size, node_size, blank = True, tooltip = True):
     
-    di = blank_list(round_scale)
+    di = blank_list(genome_size, node_size)
     for i in range(len(data)):
         
         #filter
@@ -295,14 +324,21 @@ def set_nodes(data, round_scale, blank = True, tooltip = True):
                 if (data.iloc[i]["break2"] - data.iloc[i]["break1"]) <= 1000:
                     continue
         
-        chr1 = data_toChr(data.iloc[i]["chr1"])
-        chr2 = data_toChr(data.iloc[i]["chr2"])
+        chr1 = data_toidx(data.iloc[i]["chr1"], genome_size)
+        chr2 = data_toidx(data.iloc[i]["chr2"], genome_size)
 
-        if chr1 == "" or chr2 == "":
+        if chr1 == -1 or chr2 == -1:
             continue
         
-        [name1, name2] = pos_name(chr1, data.iloc[i]["break1"], chr2, data.iloc[i]["break2"], round_scale)
+        [name1, name2] = pos_name(chr1, data.iloc[i]["break1"], chr2, data.iloc[i]["break2"], genome_size, node_size)
 
+        if di.has_key(name1) == False:
+            print "this link [%s:%s] is over range(%d), skip." % (data.iloc[i]["chr1"], data.iloc[i]["break1"], genome_size[chr1][1])
+            continue
+        if di.has_key(name2) == False:
+            print "this link [%s:%s] is over range(%d), skip." % (data.iloc[i]["chr2"], data.iloc[i]["break2"], genome_size[chr2][1])
+            continue
+        
         di[name1][0].append(name2)
         
         if tooltip == True:
@@ -338,16 +374,16 @@ def set_tooltip_value(row):
     
     return value
     
-def blank_list(round_scale):
+def blank_list(genome_size, node_size):
     
     di = {}
     for i in range(len(genome_size)):
         
-        item_num = int(genome_size[i][1]/round_scale) + 1
+        item_num = int(genome_size[i][1]/node_size) + 1
         
         for j in range(item_num):
-            di.update({name_template.format(Chr = genome_size[i][0], pos = "%04d" % j):[[],[]]})
-            
+            di.update({name_template.format(Chr = i, pos = "%04d" % j):[[],[]]})
+    
     return di
 
 def create_html(input_file, output_html_dir, org_html, project_name, config):
@@ -383,17 +419,9 @@ def create_html(input_file, output_html_dir, org_html, project_name, config):
             div_list = div_txt,
             call_list = call_txt,
             details = detail_txt,
-            style = "../style/%s.js" % config.get("style", "name")
+            style = "../style/%s" % os.path.basename(tools.config_getpath(config, "style", "path", "default.js")),
         ))
     f_html.close()
     
 if __name__ == "__main__":
-    from paplot import tools
-    current = "C:\\Users\\okada\\workspace\\trunk\\paplot"
-    [config, conf_file] = tools.load_config(current + "/paplot.cfg")
-    
-    convert_tojs(current + "/paplot/data_sv.csv", current + "/paplot/ACC/ACC/data_sv.js", config)  
-#    create_html(current + "/paplot/data_sv.csv", current + "/paplot/ACC/ACC", "bundle_sv.html", "ACC", config)   
-
-
-
+    pass

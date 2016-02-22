@@ -54,7 +54,7 @@
 	};
 })();
 
-maps = [];
+var maps = [];
 
 function draw_bandle (obj, ID)
 {
@@ -341,7 +341,7 @@ function findEndAngle(children) {
 }
 
 function key_to_values(list, key) {
-	var ret;
+/*	var ret;
 	if (key == "X") {
 		ret =  list[22]; 
 	}
@@ -352,6 +352,8 @@ function key_to_values(list, key) {
 		ret = list[Number(key)-1];
 	}
 	return ret; 
+*/
+	return list[Number(key)];
 }
 
 function getLinkColor(color_inner, color_outer, source_key, target_key) {
@@ -415,6 +417,11 @@ function show_float(idx, ID) {
 function hide_float(id) {
 	d3.select(id).style("visibility", "hidden");
 }
+
+var item = ""
+var mouse_x = 0;
+var mouse_y = 0;
+
 function mouse_down(event, id) {
 	item = id;
 	mouse_x = event.screenX;
@@ -450,10 +457,6 @@ function mouse_out(id) {
 	d3.select(id).style("opacity", 1.0);
 	d3.select(id + "_h").classed("float_move", false);
 }
-
-item=""
-mouse_x=0;
-mouse_y=0;
 
 function pos_tonum(pos_txt) {
 	return Number(pos_txt.replace(/px/g , ""));
