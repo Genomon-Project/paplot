@@ -357,9 +357,9 @@ function brushed(data) {
 	}
 	
 	var hide = false;
-	if (d3.select('input[name="q2"]:checked')[0][0].value == "hide") {
-		hide = true;
-	}
+//	if (d3.select('input[name="q2"]:checked')[0][0].value == "hide") {
+//		hide = true;
+//	}
 	// data is range [0,1]
 	// to item
 	
