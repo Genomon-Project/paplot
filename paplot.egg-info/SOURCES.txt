@@ -3,6 +3,7 @@ paplot
 setup.cfg
 setup.py
 paplot/__init__.py
+paplot/data_frame.py
 paplot/prep.py
 paplot/qc.py
 paplot/run_conf.py

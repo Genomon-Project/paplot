@@ -4,8 +4,8 @@ Created on Wed Dec 02 17:43:52 2015
 
 @author: okada
 
-$Id: run_qc.py 46 2016-02-22 08:12:39Z aokada $
-$Rev: 46 $
+$Id: run_qc.py 52 2016-02-26 01:25:42Z aokada $
+$Rev: 52 $
 """
 prog = "pa_plot qc"
 
@@ -29,27 +29,27 @@ def main(argv):
     
     # config
     if len(args.config_file) > 0:
-        [config, conf_file] = tools.load_config(args.config_file)
+        [config, conf_file] = tools.load_config(tools.win_to_unix(args.config_file))
     else:
         [config, conf_file] = tools.load_config("")
 
     # call functions
-    input_list = glob.glob(args.input)
+    input_list = glob.glob(tools.win_to_unix(args.input))
     if len(input_list) == 0:
-        print "input no file."
+        print ("input no file.")
         return
         
     # dirs
-    output_html_dir = tools.create_dirs(args.output_dir, args.project_name, config)
+    output_html_dir = prep.create_dirs(tools.win_to_unix(args.output_dir), args.project_name, config)
     
     if prep.merge_result(input_list, output_html_dir + "/merge_qc.csv", "qc", config) == False:
-        print "input file is invalid."
+        print ("input file is invalid.")
         return
     if prep.extract_result(output_html_dir + "/merge_qc.csv", output_html_dir + "/data_qc.csv", "qc", config) == False:
-        print "input file is invalid."
+        print ("input file is invalid.")
         return
     if qc.convert_tojs(output_html_dir + "/data_qc.csv", output_html_dir + "/data_qc.js") == False:
-        print "input file is invalid."
+        print ("input file is invalid.")
         return
         
     qc.create_html(output_html_dir, "graph_qc.html", args.project_name, config)

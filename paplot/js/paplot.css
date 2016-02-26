@@ -13,7 +13,7 @@ padding-right: 15px;
 padding-left: 15px;
   margin-right: auto;
   margin-left: 100px;
-  width: 1200px;
+//  width: 1200px;
 }
 .link {
 //  marker-end: none;
@@ -51,9 +51,13 @@ li {
   float: left;
   list-style: none;
   width: 200;
-  height: 200;
+  height: 400;
 }
-
+li.hidden {
+  width: 0;
+  height: 0;
+  visibility: hidden;
+}
 .thumb {
   margin: 5px;
   float: left;
@@ -160,4 +164,18 @@ button, input, optgroup, select, textarea {
     margin: 0;
     font: inherit;
     color: inherit;
+}
+
+.axis{
+	fill: none;
+	stroke: #000;
+	shape-rendering: crispEdges;
+	font-family:sans-serif;
+	font-size:10px;
+}
+.brush {
+	stroke: #ff0;
+	fill: #ff0;
+	fill-opacity: .125;
+	shape-rendering: crispEdges;
 }

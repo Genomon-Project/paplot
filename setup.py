@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 """
-$Id: setup.py 46 2016-02-22 08:12:39Z aokada $
-$Rev: 46 $
+$Id: setup.py 54 2016-02-26 06:39:53Z aokada $
+$Rev: 54 $
 """
 
 from setuptools import setup, find_packages
 
-version = '0.2.4'
+version = '0.2.5'
 
 setup(name='paplot',
       version=version,

@@ -1,11 +1,10 @@
-<!DOCTYPE html PUBLIC “-//W3C//DTD XHTML 1.0 Transitional//EN” “http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd”>
 <html lang="en">
 <head>
-    <title>QC - {project}</title>
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-    
-	<link rel="stylesheet" type="text/css" href="../lib/dc.js_v2.0.0-beta.25/dc.min.css"/>
-	<link rel="stylesheet" type="text/css" href="../js/paplot.css"/>
+  <title>QC - {project}</title>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+
+  <link rel="stylesheet" type="text/css" href="../lib/dc.js_v2.0.0-beta.25/dc.min.css"/>
+  <link rel="stylesheet" type="text/css" href="../js/paplot.css"/>
 </head>
 <body>
 <div class="b_footer">
@@ -16,18 +15,16 @@ Generated on {date} for {project} by {version}.
 <h2>QC - {project}</h2>
 
 <div id="select" style="margin-top: 20px; margin-bottom: 20px;">
-	<p class="muted pull-left" style="margin-right: 15px;">select a sort type</p>
-	<input type=radio name="operation" value="name" checked="true">name of bam
-	<input type=radio name="operation" value="val">average of depth
+  <p class="muted pull-left" style="margin-right: 15px;">select a sort type</p>
+  <input type=radio name="operation" value="name" checked="true">name of bam
+  <input type=radio name="operation" value="val">average of depth
 </div>
 <div class="row">
-    <p class="muted pull-left" style="margin-right: 15px;">select a range to zoom in</p>
-    <div id="chart_brush">
-    	<a class="reset" href="javascript:reset();"
-           style="display: none;">reset</a>
-
-        <div class="clearfix"></div>
-    </div>
+  <p class="muted pull-left" style="margin-right: 15px;">select a range to zoom in</p>
+  <div id="chart_brush">
+    <a class="reset" href="javascript:reset();" style="display: none;">reset</a>
+    <div class="clearfix"></div>
+  </div>
 </div>
 {charts}
 

@@ -4,8 +4,8 @@ Created on Wed Dec 02 17:43:52 2015
 
 @author: okada
 
-$Id: qc.py 41 2016-02-17 09:39:52Z aokada $
-$Rev: 41 $
+$Id: qc.py 52 2016-02-26 01:25:42Z aokada $
+$Rev: 52 $
 """
 
 def convert_tojs(input_file, output_file):
@@ -15,38 +15,33 @@ def convert_tojs(input_file, output_file):
 ];
 function get_data_base() {{return base;}}
 """
-    import pandas
-    import os
-    
-    if os.path.getsize(input_file) == 0:
-        print "skip blank file %s" % input_file
-        return False
-        
+
+    from paplot import data_frame
+
     # data read
     try:
-        data = pandas.read_csv(input_file, sep = ",", engine = "python")
-    except StopIteration:
-        print "skip no data file %s" % input_file
-        return False
+        df = data_frame.load_file(input_file, sept = ",", header = 1)
+
     except Exception as e:
-        print "failure open data %s, %s" % (input_file, e.message)
-        return False
+        print ("failure open data %s, %s" % (input_file, e.message))
+        return None
         
-    if len(data) == 0:
+    if len(df.data) == 0:
+        print ("skip blank file %s" % input_file)
         return False
     
     data_text = ""
-    for i in range(len(data)):
+    for i in range(len(df.data)):
         item_text = "{"
-        for j in range(len(data.iloc[i])):
-            col_name = data.columns[j]
+        for j in range(len(df.data[i])):
+            col_name = df.title[j]
             ratio = col_name.split("x_ratio")
-            val = str(data.iloc[i][j]);
-            if val == "nan":
+            val = str(df.data[i][j]);
+            if val == "":
                 val = "0"
                 
             if col_name == "ID":
-                item_text += col_name + ':"' + str(data.iloc[i][j]) + '",'
+                item_text += col_name + ':"' + str(df.data[i][j]) + '",'
             elif len(ratio) == 2:
                 item_text += 'ratio_%sx:' % (ratio[0]) + val + ','
             else:

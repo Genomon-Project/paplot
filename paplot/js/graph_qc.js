@@ -224,7 +224,7 @@ function render(data) {
 			.x(100)
 			.y(10)
 			.itemHeight(13)
-			.gap(10)
+			.gap(0)
 			.horizontal(1)
 			.autoItemWidth(true)
 		)

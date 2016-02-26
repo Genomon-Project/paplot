@@ -32,6 +32,8 @@ style_qc = {
 
 // style of thumbnails
 style_sv_thumb = {
+	bar_select_color: "#1F77B4",
+	
 	// circular sector's fill color options
 	arc_fill_color: [
 		"#BBBBBB", // chr1

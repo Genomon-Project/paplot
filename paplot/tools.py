@@ -4,55 +4,14 @@ Created on Wed Dec 02 17:43:52 2015
 
 @author: okada
 
-$Id: tools.py 46 2016-02-22 08:12:39Z aokada $
-$Rev: 46 $
+$Id: tools.py 52 2016-02-26 01:25:42Z aokada $
+$Rev: 52 $
 """
 
 def win_to_unix(win_path):
     import re
     
     return re.escape(win_path).replace("\\\\", "/").replace("\\\t", "/t").replace("\\\n", "/n").replace("\\\r", "/r").replace("\\", "")
-
-def copy_dir_lib(dst):
-    import shutil
-    import os
-    import glob
-
-    pattern = os.path.dirname(os.path.abspath(__file__)) + "/lib/*/*"
-    li_files = glob.glob(pattern)
-
-    for f in li_files:
-        dst_dir = dst + "/" + os.path.basename(os.path.dirname(f))
-        if os.path.exists(dst_dir) == False:
-            os.mkdir(dst_dir)
-        shutil.copy(f, dst_dir)
-
-def copy_dir_js(dst):
-    import shutil
-    import os
-    import glob
-
-    pattern = os.path.dirname(os.path.abspath(__file__)) + "/js/*"
-    li_files = glob.glob(pattern)
-    
-    for f in li_files:
-        shutil.copy(f, dst)
-
-def copy_dir_style(dst, config):
-    import shutil
-    import os
-    import glob
-
-    pattern = os.path.dirname(os.path.abspath(__file__)) + "/style/*"
-    li_files = glob.glob(pattern)
-    
-    for f in li_files:
-        shutil.copy(f, dst)
-    
-    # for option file
-    option = config_getpath(config, "style", "path")
-    if len(option) > 0:
-        shutil.copy(option, dst)
 
 def version_text():
     f = __file__.replace("\\", "/")
@@ -82,7 +41,7 @@ def config_getpath(config, section, item, default=""):
     if config.has_option(section, item) == True:
         path = win_to_unix(config.get(section, item))
         if len(path) > 0 and os.path.exists(path) == False:
-            print "can not find file. [%s] %s=%s, so use default." % (section, item, path)
+            print ("can not find file. [%s] %s=%s, so use default." % (section, item, path))
             path = ""
             
     if len(path) == 0 and len(default) > 0:
@@ -117,7 +76,11 @@ def get_section(mode):
 def load_config(config_file):
     
     import os
-    import ConfigParser
+    import sys
+    if sys.version_info.major == 3:
+        import configparser as cp
+    else:
+        import ConfigParser as cp
 
     if len(config_file) == 0:
         config_file = os.path.dirname(os.path.abspath(__file__)) + "/../config/paplot.cfg"
@@ -126,7 +89,7 @@ def load_config(config_file):
     if os.path.exists(config_file) == False:
         return [None, config_file]
         
-    config = ConfigParser.RawConfigParser()
+    config = cp.RawConfigParser()
     config.read(config_file)
     
     return [config, config_file]
@@ -135,33 +98,4 @@ def now_string():
     import datetime
     
     return datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    
-def create_dirs(args_output_dir, project_name, config):
-    import os
-    
-    output_dir = os.path.abspath(args_output_dir)
-    if (os.path.exists(output_dir) == False):
-        os.makedirs(output_dir)
-
-    output_html_dir = output_dir + "/" + project_name
-    if (os.path.exists(output_html_dir) == False):
-        os.makedirs(output_html_dir)
-
-    output_js_dir = output_dir + "/js"
-    if (os.path.exists(output_js_dir) == False):
-        os.makedirs(output_js_dir)
-        
-    output_lib_dir = output_dir + "/lib"
-    if (os.path.exists(output_lib_dir) == False):
-        os.makedirs(output_lib_dir)
-        
-    output_style_dir = output_dir + "/style"
-    if (os.path.exists(output_style_dir) == False):
-        os.makedirs(output_style_dir)
-
-    copy_dir_lib(output_lib_dir)
-    copy_dir_js(output_js_dir)
-    copy_dir_style(output_style_dir, config)
-    
-    return output_html_dir
     
