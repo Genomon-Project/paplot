@@ -4,8 +4,8 @@ Created on Wed Dec 02 17:43:52 2015
 
 @author: okada
 
-$Id: prep.py 57 2016-02-26 08:25:17Z aokada $
-$Rev: 57 $
+$Id: prep.py 64 2016-03-04 06:52:57Z aokada $
+$Rev: 64 $
 """
 
 def copy_dir_lib(dst):
@@ -249,4 +249,35 @@ def extract_result(data_file, output_file, mode, config):
         return False
         
     return True
+
+
+def create_index(output_dir,  project_name, config):
+
+    link_qc = """<li><a href="{project}/graph_qc.html" target=_blank>QC graphs</a>......Quality check of bam.</li>
+"""
+    link_sv = """<li><a href="{project}/graph_sv.html" target=_blank>SV graphs</a>......structural variation.</li>
+"""
+
+    from paplot import tools
+    import os
     
+    f_template = open(os.path.dirname(os.path.abspath(__file__)) + "/templates/index.html")
+    html_template = f_template.read()
+    f_template.close()
+    
+    link_text = ""
+    if os.path.exists(output_dir + "/" + project_name + "/graph_qc.html") == True:
+        link_text += link_qc.format(project = project_name)
+    
+    if os.path.exists(output_dir + "/" + project_name + "/graph_sv.html") == True:
+        link_text += link_sv.format(project = project_name)
+
+    f_html = open(output_dir + "/index.html", "w")
+    f_html.write(
+        html_template.format(project = project_name, 
+        version = tools.version_text(),
+        date = tools.now_string(),
+        link = link_text
+        ))
+    f_html.close()
+

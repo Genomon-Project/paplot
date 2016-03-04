@@ -4,8 +4,8 @@ Created on Wed Dec 02 17:43:52 2015
 
 @author: okada
 
-$Id: run_qc.py 52 2016-02-26 01:25:42Z aokada $
-$Rev: 52 $
+$Id: run_qc.py 64 2016-03-04 06:52:57Z aokada $
+$Rev: 64 $
 """
 prog = "pa_plot qc"
 
@@ -54,4 +54,5 @@ def main(argv):
         
     qc.create_html(output_html_dir, "graph_qc.html", args.project_name, config)
 
-    
+    prep.create_index(args.output_dir,  args.project_name, config)
+        

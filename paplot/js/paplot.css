@@ -46,13 +46,6 @@ padding-left: 15px;
 #tooltip p {
   margin: 0;
 }
-li {
-  margin: 5px;
-  float: left;
-  list-style: none;
-  width: 200;
-  height: 400;
-}
 li.hidden {
   width: 0;
   height: 0;
@@ -167,15 +160,29 @@ button, input, optgroup, select, textarea {
 }
 
 .axis{
-	fill: none;
-	stroke: #000;
-	shape-rendering: crispEdges;
-	font-family:sans-serif;
-	font-size:10px;
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+  font-family:sans-serif;
+  font-size:10px;
 }
 .brush {
-	stroke: #ff0;
-	fill: #ff0;
-	fill-opacity: .125;
-	shape-rendering: crispEdges;
+  stroke: #ff0;
+  fill: #ff0;
+  fill-opacity: .125;
+  shape-rendering: crispEdges;
+}
+.legend_bar {
+//  display: inline-block;
+  width: 15px;
+  height: 10px;
+  margin-left: 8px;
+  margin-right: 5px;
+}
+.legend_label {
+//  display: inline-block;
+  margin-right: 10px;
+}
+.legend {
+  display: inline-block;
 }

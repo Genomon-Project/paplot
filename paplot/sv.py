@@ -4,53 +4,143 @@ Created on Wed Feb 03 12:31:47 2016
 
 @author: okada
 
-$Id: sv.py 53 2016-02-26 06:38:45Z aokada $
-$Rev: 53 $
+$Id: sv.py 63 2016-03-03 09:15:29Z aokada $
+$Rev: 63 $
 """
 
 ########### js template
 js_dataset = """
-bundle_data_sv.items = [
-{dataset}
+bundle_data_sv.node_size_detail = {node_size_detail};
+bundle_data_sv.node_size_thumb = {node_size_thumb};
+bundle_data_sv.node_size_select = {node_size_select};
+
+bundle_data_sv.item_num = {item_num};
+
+// sorted by index
+bundle_data_sv.index_ID = [
+{IDs}
+];
+
+bundle_data_sv.genome_size = [
+{genome_size}
+];
+
+// 0:ID, 1:chr1, 2:break1, 3:direction1, 4:gene_name1, 5:chr2, 6:break2, 7:direction2, 8:gene_name2, 9:type, 10:is_inter, 11:is_snippet
+bundle_data_sv.links = [
+{links}
 ];
 """
-js_top = """(function() {
+js_header = """(function() {
 bundle_data_sv = {};
 """
-js_bottom = """
-bundle_data_sv.get_data = function (ID) {
-    var dataset = [];
-    var nodes = []
-    for (var i = 0; i < bundle_data_sv.items.length; i++) {
-        if (bundle_data_sv.items[i].ID == ID) {
-            nodes = bundle_data_sv.items[i].nodes;
-            break;
+js_function = """
+var create_blank_nodes = function(node_size) {
+    var nodes = [];
+    for (var i = 0; i < bundle_data_sv.genome_size.length; i++){
+        var item_num = Math.floor(bundle_data_sv.genome_size[i].size/node_size) + 1;
+        for (var j = 0; j < item_num; j++){
+            var start = "root." + bundle_data_sv.genome_size[i].chr + "." + bundle_data_sv.genome_size[i].chr + "_" + ("000" + j).substr(-4);
+            nodes.push({"start":start, "ends":[], "tooltip":[]});
         }
     }
-    for (var i = 0; i < bundle_data_sv.container.length; i++){
-        for (var j = 0; j < bundle_data_sv.container[i].num; j++){
-            var key = "root." + bundle_data_sv.container[i].index + "." + bundle_data_sv.container[i].index + "_" + ("000" + j).substr(-4);
+    return nodes
+};
+    
+var create_bundle_dataset = function (ID, node_size, tooltip) {
+
+    var dataset_outer = create_blank_nodes(node_size);
+    var dataset_inner = create_blank_nodes(node_size);
+    var dataset_snipp = create_blank_nodes(node_size);
+    
+    for (var i = 0; i < bundle_data_sv.links.length; i++) {
+        if (bundle_data_sv.links[i][0] != ID) {
+            continue;
+        }
+        
+        var start = "root." + bundle_data_sv.links[i][1] + "." + bundle_data_sv.links[i][1] + "_" + ("000" + Math.floor(bundle_data_sv.links[i][2]/node_size)).substr(-4);
+        var index = -1;
+        for (var j = 0; j < dataset_outer.length; j++){
+            if (dataset_outer[j].start == start) {
+                index = j;
+                break;
+            }
+        }
+        if (index < 0) {
+            continue;
+        }
+        var end_pos = Math.floor(bundle_data_sv.links[i][6]/node_size);
+        var end = "root." + bundle_data_sv.links[i][5] + "." + bundle_data_sv.links[i][5] + "_" + ("000" + end_pos).substr(-4);
+        // if same position, sift end position.
+        if (start == end) {
+            if (end_pos == Math.floor(bundle_data_sv.genome_size[Number(bundle_data_sv.links[i][5])].size/node_size)) {
+                end = "root." + bundle_data_sv.links[i][5] + "." + bundle_data_sv.links[i][5] + "_" + ("000" + (end_pos - 1)).substr(-4);
+            }
+            else {
+                end = "root." + bundle_data_sv.links[i][5] + "." + bundle_data_sv.links[i][5] + "_" + ("000" + (end_pos + 1)).substr(-4);
+            }
+        }
+        
+        
+        // link type
+        if (bundle_data_sv.links[i][11] == true) {
+            // snippet
+            dataset_snipp[index].ends.push(end);
+        }
+        else if(bundle_data_sv.links[i][10] == true) {
+            // inner
+            dataset_inner[index].ends.push(end);
+        }
+        else {
+            // outer
+            dataset_outer[index].ends.push(end);
+        }
+        
+        // tooltip
+        if (tooltip == true) {
+            var tooltip_txt = style_sv_detail.arc_label_text[Number(bundle_data_sv.links[i][1])] + ": " +
+                bundle_data_sv.links[i][2].toLocaleString() + " (" +
+                bundle_data_sv.links[i][3] + ") " +
+                bundle_data_sv.links[i][4] + "; " +
+                style_sv_detail.arc_label_text[Number(bundle_data_sv.links[i][5])] + ": " +
+                bundle_data_sv.links[i][6].toLocaleString() + " (" +
+                bundle_data_sv.links[i][7] + ") " +
+                bundle_data_sv.links[i][8] + "; " +
+                bundle_data_sv.links[i][9];
             
-            var find=false;
-            for (var k = 0; k < nodes.length; k++) {
-                if (nodes[k].start == key) {
-                    dataset.push(nodes[k]);
-                    find=true;
-                    break;
-                }
+            if (bundle_data_sv.links[i][11] == true) {
+                // snippet
+                dataset_snipp[index].tooltip.push(tooltip_txt);
             }
-            if (find==false) {
-            	dataset.push({"start":key, "ends":[], "value":[]});
+            else if(bundle_data_sv.links[i][10] == true) {
+                // inner
+                dataset_inner[index].tooltip.push(tooltip_txt);
+            }
+            else {
+                // outer
+                dataset_outer[index].tooltip.push(tooltip_txt);
             }
         }
     }
-    return dataset;
+    
+    ret = [];
+    ret.push(dataset_outer);
+    ret.push(dataset_inner);
+    ret.push(dataset_snipp);
+    return ret;
 };
 
-bundle_data_sv.__key_to_index = function (list, key) {
+bundle_data_sv.get_data_thumb = function (ID) {
+    return create_bundle_dataset(ID, bundle_data_sv.node_size_thumb, false);
+};
+
+bundle_data_sv.get_data_detail = function (ID) {
+    return create_bundle_dataset(ID, bundle_data_sv.node_size_detail, true);
+};
+
+var key_to_index = function (list, key) {
     
     for (var i = 0; i < list.length; i++) {
-        if (list[i].key == key) {
+        if (list[i] == key) {
             return i
         }
     }
@@ -58,189 +148,84 @@ bundle_data_sv.__key_to_index = function (list, key) {
 };
 
 bundle_data_sv.get_select = function () {
-    var dataset = [];
+    var node_size = bundle_data_sv.node_size_select;
+    var dataset = {"key":[], "item":[[],[],[]], "value":[[],[],[]]};
     
-    // create blank list
-    for (var i = 0; i < bundle_data_sv.container.length; i++){
-        for (var j = 0; j < bundle_data_sv.container[i].num; j++){
-            var key = "root." + bundle_data_sv.container[i].index + "." + bundle_data_sv.container[i].index + "_" + ("000" + j).substr(-4);
-            
-            dataset.push({"key":key, "item":[], "value":0 });
+    var c = 0;
+    for (var i = 0; i < bundle_data_sv.genome_size.length; i++){
+        var item_num = Math.floor(bundle_data_sv.genome_size[i].size/node_size) + 1;
+        for (var j = 0; j < item_num; j++){
+            var key = "root." + bundle_data_sv.genome_size[i].chr + "." + bundle_data_sv.genome_size[i].chr + "_" + ("000" + j).substr(-4);
+            dataset.key[c] = key;
+            dataset.item[0][c] = [];  // outer
+            dataset.item[1][c] = [];  // inner
+            dataset.item[2][c] = [];  // snippet
+            dataset.value[0][c] = 0;  // outer
+            dataset.value[1][c] = 0;  // inner
+            dataset.value[2][c] = 0;  // snippet
+            c++;
         }
     }
-
-    // set value to blank list
-    for (var i = 0; i < bundle_data_sv.items.length;i++) {
+    for (var i = 0; i < bundle_data_sv.links.length; i++) {
         
-        var nodes = bundle_data_sv.items[i].nodes;
-        ID = bundle_data_sv.items[i].ID;
+        var key  = "root." + bundle_data_sv.links[i][1] + "." + bundle_data_sv.links[i][1] + "_" + ("000" + Math.floor(bundle_data_sv.links[i][2]/node_size)).substr(-4);
+        var item = "root." + bundle_data_sv.links[i][5] + "." + bundle_data_sv.links[i][5] + "_" + ("000" + Math.floor(bundle_data_sv.links[i][6]/node_size)).substr(-4);
 
-        for (var j = 0; j < nodes.length; j++) {
-            
+        var idx1 = key_to_index(dataset.key, key);
+        var idx2 = key_to_index(dataset.key, item);
+
+        if ((idx1 < 0) || (idx2 < 0)) {
+            continue;
+        }
+        // snippet
+        if (bundle_data_sv.links[i][11] == true) {
             // add bp1
-            var idx1 = bundle_data_sv.__key_to_index(dataset, nodes[j].start);
-            if (idx1 >= 0) {
-                dataset[idx1].item.push(ID);
-                dataset[idx1].value = dataset[idx1].value + 1;
-            }
+            dataset.item[2][idx1].push(bundle_data_sv.links[i][0]);
             
             // add bp2
-            for (var k = 0; k < nodes[j].ends.length; k++) {
-                if (nodes[j].start != nodes[j].ends[k]) {
-                    var idx2 = bundle_data_sv.__key_to_index(dataset, nodes[j].ends[k]);
-                    if (idx2 >= 0) {
-                        dataset[idx2].item.push(ID);
-                        dataset[idx2].value = dataset[idx2].value + 1;
-                    }
-                }
+            dataset.item[2][idx2].push(bundle_data_sv.links[i][0]);
+        }
+        // outer
+        else if (bundle_data_sv.links[i][10] == false) {
+            // add bp1
+            dataset.item[0][idx1].push(bundle_data_sv.links[i][0]);
+        
+            // add bp2
+            dataset.item[0][idx2].push(bundle_data_sv.links[i][0]);
+        }
+        // inner
+        else {
+            // add bp1
+            dataset.item[1][idx1].push(bundle_data_sv.links[i][0]);
+            // add bp2
+            if (key != item) {
+                dataset.item[1][idx2].push(bundle_data_sv.links[i][0]);
             }
         }
     }
-    
-    // delete duplication
-    for (var j = 0; j < dataset.length; j++) {
-        var sort = dataset[j].item.filter(function (x, i, self) {
-              return self.indexOf(x) === i;
-        });
-        dataset[j].item = sort;
+
+   
+     for (var i = 0; i < dataset.key.length; i++) {
+        for (var j = 0; j < 3; j++) {
+            if (dataset.item[j][i].length == 0) {
+                continue;
+            }
+            // delete duplication
+            var sort = dataset.item[j][i].filter(function (x, y, self) {
+                return self.indexOf(x) === y;
+             });
+            dataset.item[j][i] = sort;
+            dataset.value[j][i] = dataset.item[j][i].length;
+        }
     }
     
     return dataset;
 };
 })();
 """
-js_contain = """
-bundle_data_sv.node_size = {node_size};
-bundle_data_sv.item_num = {item_num};
 
-// sorted by index
-bundle_data_sv.index_ID = [
-{IDs}
-];
-bundle_data_sv.container = [
-{contain}
-];
-"""
-js2_dataset = """
-bundle_data_sv_thumb.items = [
-{dataset}
-];
-"""
-js2_top = """(function() {
-bundle_data_sv_thumb = {};
-"""
-js2_bottom = """
-bundle_data_sv_thumb.get_data = function (ID) {
-    var dataset = [];
-    var nodes = [];
-    
-    for (var i = 0; i < bundle_data_sv_thumb.items.length; i++) {
-        if (bundle_data_sv_thumb.items[i].ID == ID) {
-            nodes = bundle_data_sv_thumb.items[i].nodes;
-            break;
-        }
-    }
-    for (var i = 0; i < bundle_data_sv_thumb.container.length; i++){
-        for (var j = 0; j < bundle_data_sv_thumb.container[i].num; j++){
-            var key = "root." + bundle_data_sv_thumb.container[i].index + "." + bundle_data_sv_thumb.container[i].index + "_" + ("000" + j).substr(-4);
-            
-            var find=false;
-            for (var k = 0; k < nodes.length; k++) {
-                if (nodes[k].start == key) {
-                    dataset.push(nodes[k]);
-                    find=true;
-                    break;
-                }
-            }
-            if (find==false) {
-                dataset.push({"start":key, "ends":[], "value":[]});
-            }
-        }
-    }
-    return dataset;
-};
-
-bundle_data_sv_thumb.__key_to_index = function (list, key) {
-    
-    for (var i = 0; i < list.length; i++) {
-        if (list[i].key == key) {
-            return i
-        }
-    }
-    return -1;
-};
-
-bundle_data_sv_thumb.get_select = function () {
-    var dataset = [];
-    
-    // create blank list
-    for (var i = 0; i < bundle_data_sv_thumb.container.length; i++){
-        for (var j = 0; j < bundle_data_sv_thumb.container[i].num; j++){
-            var key = "root." + bundle_data_sv_thumb.container[i].index + "." + bundle_data_sv_thumb.container[i].index + "_" + ("000" + j).substr(-4);
-            
-            dataset.push({"key":key, "item":[], "value":0 });
-        }
-    }
-
-    // set value to blank list
-    for (var i = 0; i < bundle_data_sv_thumb.items.length;i++) {
-        
-        var nodes = bundle_data_sv_thumb.items[i].nodes;
-        ID = bundle_data_sv_thumb.items[i].ID;
-
-        for (var j = 0; j < nodes.length; j++) {
-            
-            // add bp1
-            var idx1 = bundle_data_sv_thumb.__key_to_index(dataset, nodes[j].start);
-            if (idx1 >= 0) {
-                dataset[idx1].item.push(ID);
-                dataset[idx1].value = dataset[idx1].value + 1;
-            }
-            
-            // add bp2
-            for (var k = 0; k < nodes[j].ends.length; k++) {
-                if (nodes[j].start != nodes[j].ends[k]) {
-                    var idx2 = bundle_data_sv_thumb.__key_to_index(dataset, nodes[j].ends[k]);
-                    if (idx2 >= 0) {
-                        dataset[idx2].item.push(ID);
-                        dataset[idx2].value = dataset[idx2].value + 1;
-                    }
-                }
-            }
-        }
-    }
-    
-    // delete duplication
-    for (var j = 0; j < dataset.length; j++) {
-        var sort = dataset[j].item.filter(function (x, i, self) {
-              return self.indexOf(x) === i;
-        });
-        dataset[j].item = sort;
-    }
-    
-    return dataset;
-};
-
-})();
-"""
-js2_contain = """
-bundle_data_sv_thumb.node_size = {node_size};
-bundle_data_sv_thumb.item_num = {item_num};
-
-// sorted by index
-bundle_data_sv_thumb.index_ID = [
-{IDs}
-];
-bundle_data_sv_thumb.container = [
-{contain}
-];
-"""
-
-dataset_template = '{{"ID":"{ID}", "nodes":[{nodes}]}}'
-node_template = '{{"start":"{name1}", "ends":{name2}, "value":{value}}}'
-node2_template = '{{"start":"{name1}", "ends":{name2}}}'
-name_template = 'root.{Chr:0>2}.{Chr:0>2}_{pos:0>4}'
-contain_template = '{{"index":"{key:0>2}", "num":{num}}}'
+genome_size_template = '{{"chr":"{Chr:0>2}", "size":{size}}}'
+links_template = '["{ID}","{Chr1:0>2}",{pos1},"{dir1}","{name1}","{Chr2:0>2}",{pos2},"{dir2}","{name2}","{ttype}",{inter_flg},{snippet_flg}]'
 
 ########### html template
 
@@ -291,7 +276,7 @@ def load_genome_size(config):
     for i in range(len(genome_size)):
         if genome_size[i][1] < int(_max/10):
             genome_size[i][1] = int(_max/10)
-            
+    
     return genome_size
 
 def calc_node_size(genome_size, total):
@@ -309,19 +294,6 @@ def calc_node_size(genome_size, total):
         size = _min - 1
 
     return size
-    
-def data_toidx(inpt, genome_size):
-    txt = str(inpt).lower()
-    
-    if len(txt) > 3:
-        if txt[0:3] == "chr":
-            txt = txt[3:len(txt)]
-
-    for i in range(len(genome_size)):
-        if txt == genome_size[i][0]:
-            return i
-
-    return -1
         
 def load_csv(input_file):
     from paplot import data_frame
@@ -336,210 +308,130 @@ def load_csv(input_file):
     
     return df
 
-def create_id_list(df):
-    li = list(set(df.column_t("ID")))
-    li.sort()
-    return li
+def insite_genome(genome_size, Chr, pos):
+    # return [i,   0] : insite
+    # return [i,  >0] : range
+    # return [-1, -1] : Chr is none
+
+    for i in range(len(genome_size)):
+        label = Chr.lower()
+        if label[0:3] == "chr":
+            label = label[3:len(label)]
+        if genome_size[i][0] == label:
+            if genome_size[i][1] >= pos:
+                return [i, 0]
+            else:
+                return [i, genome_size[i][1]]
     
+    return [-1, -1]
+
+def output_html(input_file, output_js_file, output_html_dir, org_html, project_name, config):
+    id_list = convert_tojs(input_file, output_js_file, config)
+    if len(id_list) > 0:
+        create_html(id_list, output_html_dir, org_html, project_name, config)
+        
 def convert_tojs(input_file, output_file, config):
-
-    df = load_csv(input_file)
-    if df == None:
-        return False
-        
-    if len(df.data) == 0:
-        print ("skip blank file %s" % input_file)
-        return False
-        
-    genome_size = load_genome_size(config)
-    if len(genome_size) == 0:
-        return False
-    
-    node_size = calc_node_size(genome_size, 500)
-    
-    id_list = create_id_list(df)
-    
-    dataset = ""
-    Ids = ""
-    for iid in id_list:
-        if len(dataset) > 0:
-            dataset += ",\n"
-            Ids += ",\n"
-            
-        dataset += dataset_template.format(ID = iid, \
-            nodes = set_nodes(df, iid, genome_size, node_size, blank = False, tooltip = True))
-        Ids += "'" + iid + "'"
-
-    contain = ""
-    for i in range(len(genome_size)):
-        if len(contain) > 0:
-            contain += ",\n"
-            
-        item_num = int(genome_size[i][1]/node_size) + 1
-        contain += contain_template.format(key = i, num = item_num)
-
-    f = open(output_file, "w")
-    f.write(js_top \
-        + js_contain.format(node_size = node_size, contain = contain, item_num = len(id_list), IDs = Ids) \
-        + js_dataset.format(dataset = dataset) \
-        + js_bottom)
-    f.close()
-
-    return True
-
-def convert_tojs_thumb(input_file, output_file, config):
-
-    df = load_csv(input_file)
-    if df == None:
-        return False
-    
-    if len(df.data) == 0:
-        print ("skip blank file %s" % input_file)
-        return False
-        
-    genome_size = load_genome_size(config)
-    if len(genome_size) == 0:
-        return False
-    
-    node_size = calc_node_size(genome_size, 60)
-    
-    id_list = create_id_list(df)
-    
-    dataset = ""
-    Ids = ""
-    for iid in id_list:
-        if len(dataset) > 0:
-            dataset += ",\n"
-            Ids += ",\n"
-        
-        dataset += dataset_template.format(ID = iid, \
-            nodes = set_nodes(df, iid, genome_size, node_size, blank = False, tooltip = False))
-        Ids += "'" + iid + "'"
-
-    contain = ""
-    for i in range(len(genome_size)):
-        if len(contain) > 0:
-            contain += ",\n"
-            
-        item_num = int(genome_size[i][1]/node_size) + 1
-        contain += contain_template.format(key = i, num = item_num)
-        
-    f = open(output_file, "w")
-    f.write(js2_top \
-        + js2_contain.format(node_size = node_size, contain = contain, item_num = len(id_list), IDs = Ids) \
-        + js2_dataset.format(dataset = dataset) \
-        + js2_bottom)
-    f.close()
-
-    return True
-
-def pos_name(chr1, start, chr2, end, genome_size, node_size):
-
-    start = int(start)
-    end = int(end)
-    name1 = name_template.format(Chr=chr1, pos = int(start/node_size))
-    name2 = name_template.format(Chr=chr2, pos = int(end/node_size))
-    
-    if name1 != name2:
-        return [name1, name2]
-    
-    if int(genome_size[chr2][1]/node_size) == int(end/node_size):
-        name2 = name_template.format(Chr=chr2, pos = int(end/node_size) - 1)
-    else:
-        name2 = name_template.format(Chr=chr2, pos = int(end/node_size) + 1)
-        
-    return [name1, name2]
-
-def set_nodes(df, iid, genome_size, node_size, blank = True, tooltip = True):
-    
-    di = blank_list(genome_size, node_size)
-    
-    ID = df.name_to_index("ID")
-    TYPE = df.name_to_index("type")
-    CHR1 = df.name_to_index("chr1")
-    CHR2 = df.name_to_index("chr2")
-    BREAK1 = df.name_to_index("break1")
-    BREAK2 = df.name_to_index("break2")
-    DIR1 = df.name_to_index("direction1")
-    DIR2 = df.name_to_index("direction2")
-    NAME1 = df.name_to_index("gene_name1")
-    NAME2 = df.name_to_index("gene_name2")
-    
-    for row in df.data:
-        if row[ID] != iid:
-            continue
-        #filter
-        if (row[TYPE].lower() == "inversion"):
-            if (row[CHR1] == row[CHR2]):
-                if (row[BREAK2] - row[BREAK1]) <= 1000:
-                    continue
-        
-        chr1 = data_toidx(row[CHR1], genome_size)
-        chr2 = data_toidx(row[CHR2], genome_size)
-
-        if chr1 == -1 or chr2 == -1:
-            continue
-        
-        [name1, name2] = pos_name(chr1, row[BREAK1], chr2, row[BREAK2], genome_size, node_size)
-
-        if (name1 in di) == False:
-            print ("this link [%s:%s] is over range(%d), skip." % (row[CHR1], row[BREAK1], genome_size[chr1][1]))
-            continue
-        if (name2 in di) == False:
-            print ("this link [%s:%s] is over range(%d), skip." % (row[CHR2], row[BREAK2], genome_size[chr2][1]))
-            continue
-        
-        di[name1][0].append(name2)
-        
-        if tooltip == True:
-            import locale        
-            
-            locale.setlocale(locale.LC_ALL, "")
-            s = locale.format("%d", row[BREAK1], grouping=True)
-            e = locale.format("%d", row[BREAK2], grouping=True)
-        
-            value = "chr%s. %s, %s, %s; chr%s. %s, %s, %s" % (
-                row[CHR1], s, row[DIR1], str(row[NAME1]).replace("\[", "").replace("\]", ""),
-                row[CHR2], e, row[DIR2], str(row[NAME2]).replace("\[", "").replace("\]", ""))
-                
-            di[name1][1].append(value)
-        
-    node_text = ""
-
-    for key, values in sorted(di.items()):
-        if blank == False:
-            if len(values[0]) == 0:
-                continue
-            
-        if len(node_text) > 0:
-            node_text += ",\n"
-        
-        if tooltip == True:
-            node_text += node_template.format(name1 = key, name2 = str(values[0]), value = str(values[1]))
-        else:
-            node_text += node2_template.format(name1 = key, name2 = str(values[0]))
-        
-    return node_text;
-    
-def blank_list(genome_size, node_size):
-    
-    di = {}
-    for i in range(len(genome_size)):
-        
-        item_num = int(genome_size[i][1]/node_size) + 1
-        
-        for j in range(item_num):
-            di.update({name_template.format(Chr = i, pos = "%04d" % j):[[],[]]})
-    
-    return di
-
-def create_html(input_file, output_html_dir, org_html, project_name, config):
     from paplot import tools
-    import os
-    
+
     df = load_csv(input_file)
+    if df == None:
+        return []
+        
+    if len(df.data) == 0:
+        print ("skip blank file %s" % input_file)
+        return []
+        
+    genome_size = load_genome_size(config)
+    if len(genome_size) == 0:
+        return []
+
+    genome = ""
+    for i in range(len(genome_size)):
+        if len(genome) > 0:
+            genome += ",\n"
+        genome += genome_size_template.format(Chr=i, size = genome_size[i][1])
+
+    snippet_th = tools.config_getint(config, "sv", "snippet_threshold")
+    snippet_type = tools.config_getstr(config, "sv", "snippet_sv_type").lower().replace(" ", "").split(",")
     
-    id_list = create_id_list(df)
+    id_list = []
+    links = ""
+    for row in df.data:
+
+        chr1 = row[df.name_to_index("chr1")]
+        chr2 = row[df.name_to_index("chr2")]        
+        pos1 = row[df.name_to_index("break1")]
+        pos2 = row[df.name_to_index("break2")]
+        
+        [index1, rang] = insite_genome(genome_size, chr1, pos1)
+        if rang > 0:
+            print("breakpoint 1 is over range. chr%s: input=%d, range=%d" % (chr1, pos1, rang))
+            continue
+        if rang < 0:
+            #print("chr1 is undefined. %s" % (chr1))
+            continue
+        
+        [index2, rang] = insite_genome(genome_size, chr2, pos2)
+        if rang > 0:
+            print("breakpoint 2 is over range. chr%s: input=%d, range=%d" % (chr2, pos2, rang))
+            continue
+        if rang < 0:
+            #print("chr2 is undefined. %s" % (chr2))
+            continue
+        
+        inter_flg = "false"
+        snippet_flg = "false"
+        if (chr1 == chr2):
+            if abs(pos2 - pos1) < snippet_th:
+                for t in snippet_type:
+                    if row[df.name_to_index("type")].lower() == t:
+                        snippet_flg = "true"
+                        break
+            
+            names1 = row[df.name_to_index("gene_name1")].replace(" ", "").split(";")
+            names2 = row[df.name_to_index("gene_name1")].replace(" ", "").split(";")
+            for n1 in names1:
+                for n2 in names2:
+                    if n1 == n2:
+                        inter_flg = "true"
+                        break
+        
+        if len(links) > 0:
+            links += ",\n"
+            
+        links += links_template.format(ID=row[df.name_to_index("ID")], \
+            Chr1=index1, pos1=pos1, dir1=row[df.name_to_index("direction1")], name1=row[df.name_to_index("gene_name1")], \
+            Chr2=index2, pos2=pos2, dir2=row[df.name_to_index("direction2")], name2=row[df.name_to_index("gene_name2")], \
+            ttype=row[df.name_to_index("type")], inter_flg=inter_flg, snippet_flg=snippet_flg)
+            
+        id_list.append(row[df.name_to_index("ID")])
+    
+    id_list_sort = list(set(id_list))
+    id_list_sort.sort()
+    Ids = ""
+    for iid in id_list_sort:
+        if len(Ids) > 0:
+            Ids += ",\n"
+        Ids += "'" + iid + "'"
+
+    f = open(output_file, "w")
+    f.write(js_header \
+        + js_dataset.format(node_size_detail = calc_node_size(genome_size, 500), \
+        node_size_thumb = calc_node_size(genome_size, 60), \
+        node_size_select = 5000000,\
+        item_num = len(id_list), \
+        IDs = Ids, \
+        genome_size = genome, \
+        links = links)
+        + js_function)
+    f.close()
+
+    return id_list_sort
+
+def create_html(id_list, output_html_dir, org_html, project_name, config):
+    from paplot import tools    
+    import os
+
     div_txt = ""    
     call_txt = ""
     detail_txt = ""

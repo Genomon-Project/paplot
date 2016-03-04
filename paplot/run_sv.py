@@ -4,8 +4,8 @@ Created on Wed Dec 02 17:43:52 2015
 
 @author: okada
 
-$Id: run_sv.py 52 2016-02-26 01:25:42Z aokada $
-$Rev: 52 $
+$Id: run_sv.py 64 2016-03-04 06:52:57Z aokada $
+$Rev: 64 $
 """
 prog = "pa_plot sv"
 
@@ -48,11 +48,8 @@ def main(argv):
     if prep.extract_result(output_html_dir + "/merge_sv.csv", output_html_dir + "/data_sv.csv", "sv", config) == False:
         print ("prep.extract_result: input file is invalid.")
         return
-    if sv.convert_tojs_thumb(output_html_dir + "/data_sv.csv", output_html_dir + "/data_sv_thumb.js", config) == False:
-        print ("sv.convert_tojs_thumb: input file is invalid.")
-        return
-
-    sv.convert_tojs(output_html_dir + "/data_sv.csv", output_html_dir + "/data_sv.js", config)
-    sv.create_html(output_html_dir + "/data_sv.csv", output_html_dir, "graph_sv.html", args.project_name, config)
+    sv.output_html(output_html_dir + "/data_sv.csv", output_html_dir + "/data_sv.js", \
+                output_html_dir, "graph_sv.html", args.project_name, config)
     
+    prep.create_index(args.output_dir,  args.project_name, config)
     

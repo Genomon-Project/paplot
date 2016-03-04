@@ -30,10 +30,55 @@ style_qc = {
 	],
 };
 
+// style of genome-wide bar plot
+style_sv_bar = {
+	
+	// fill color options
+	bar_color_inter: "#51BF69",
+	bar_color_intra: "#9E4A98",
+	bar_color_snippet: "goldenrod",
+	
+	// legend's text options
+	bar_label_inter: "Intra gene.",
+	bar_label_intra: "Inter gene.",
+	bar_label_snippet: "Snippet.",
+	
+	// title's text options
+	title_top: "Genome-wide SVs identify",
+	title_y: "samples with SV breakp.",
+	title_x: "Chromosome",
+	
+	// circular sector's label options
+	axis_x_label: [
+		"1",  // chr1
+		"2",  // chr2
+		"3",  // chr3
+		"4",  // chr4
+		"5",  // chr5
+		"6",  // chr6
+		"7",  // chr7
+		"8",  // chr8
+		"9",  // chr9
+		"10", // chr10
+		"11", // chr11
+		"12", // chr12
+		"13", // chr13
+		"14", // chr14
+		"15", // chr15
+		"16", // chr16
+		"17", // chr17
+		"18", // chr18
+		"19", // chr19
+		"20", // chr20
+		"21", // chr21
+		"22", // chr22
+		"X",  // chrX
+		"Y",  // chrY
+	],
+};
+
 // style of thumbnails
 style_sv_thumb = {
-	bar_select_color: "#1F77B4",
-	
 	// circular sector's fill color options
 	arc_fill_color: [
 		"#BBBBBB", // chr1
@@ -93,8 +138,9 @@ style_sv_thumb = {
 	arc_stroke_opacity: 1.0,
 	
 	// link options
-	link_color_inner: "#51BF69",
-	link_color_outer: "#9E4A98",
+	link_color_inter: "#51BF69",
+	link_color_intra: "#9E4A98",
+	link_color_snippet: "goldenrod",
 	link_width: "1px",
 	link_opacity: 1.0,
 	link_tension: 0.85,
@@ -198,8 +244,9 @@ style_sv_detail = {
 	arc_label_color: "#333333",
 	
 	// link options
-	link_color_inner: "#51BF69",
-	link_color_outer: "#9E4A98",
+	link_color_inter: "#51BF69",
+	link_color_intra: "#9E4A98",
+	link_color_snippet: "goldenrod",
 	link_width: "2px",
 	link_opacity: 1.0,
 	link_tension: 0.85,
