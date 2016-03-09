@@ -4,8 +4,8 @@ Created on Wed Dec 02 17:43:52 2015
 
 @author: okada
 
-$Id: run_qc.py 64 2016-03-04 06:52:57Z aokada $
-$Rev: 64 $
+$Id: run_qc.py 65 2016-03-08 05:18:34Z aokada $
+$Rev: 65 $
 """
 prog = "pa_plot qc"
 
@@ -14,8 +14,6 @@ def main(argv):
     from paplot import qc
     from paplot import prep
     import argparse
-    import glob
-    
     
     parser = argparse.ArgumentParser(prog = prog)
     
@@ -34,7 +32,7 @@ def main(argv):
         [config, conf_file] = tools.load_config("")
 
     # call functions
-    input_list = glob.glob(tools.win_to_unix(args.input))
+    input_list = get_inputlist(args.input)
     if len(input_list) == 0:
         print ("input no file.")
         return

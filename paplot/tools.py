@@ -4,8 +4,8 @@ Created on Wed Dec 02 17:43:52 2015
 
 @author: okada
 
-$Id: tools.py 52 2016-02-26 01:25:42Z aokada $
-$Rev: 52 $
+$Id: tools.py 65 2016-03-08 05:18:34Z aokada $
+$Rev: 65 $
 """
 
 def win_to_unix(win_path):
@@ -13,6 +13,17 @@ def win_to_unix(win_path):
     
     return re.escape(win_path).replace("\\\\", "/").replace("\\\t", "/t").replace("\\\n", "/n").replace("\\\r", "/r").replace("\\", "")
 
+def get_inputlist(pattern):
+    import glob
+    
+    inputs = pattern.lstrip("'").lstrip('"').rstrip("'").rstrip('"').split(",")
+
+    all_list = []
+    for item in inputs:
+        all_list.extend(glob.glob(win_to_unix(item).lstrip(" ").rstrip(" ")))
+    
+    return list(set(all_list))
+        
 def version_text():
     f = __file__.replace("\\", "/")
     sept = f.split('/')
