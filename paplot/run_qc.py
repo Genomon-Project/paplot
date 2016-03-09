@@ -4,8 +4,8 @@ Created on Wed Dec 02 17:43:52 2015
 
 @author: okada
 
-$Id: run_qc.py 65 2016-03-08 05:18:34Z aokada $
-$Rev: 65 $
+$Id: run_qc.py 66 2016-03-09 08:28:17Z aokada $
+$Rev: 66 $
 """
 prog = "pa_plot qc"
 
@@ -32,7 +32,7 @@ def main(argv):
         [config, conf_file] = tools.load_config("")
 
     # call functions
-    input_list = get_inputlist(args.input)
+    input_list = tools.get_inputlist(args.input)
     if len(input_list) == 0:
         print ("input no file.")
         return

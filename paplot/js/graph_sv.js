@@ -571,15 +571,7 @@ function draw_bandle (obj, ID)
 	var label_t = 50;
 	var cluster_size = 50;
 
-	classes = bundle_data_sv.get_data_detail(ID);
-	
 	var bundle = d3.layout.bundle();
-
-	var line = d3.svg.line.radial()
-		.interpolate("bundle")
-		.tension(style_sv_detail.link_tension)
-		.radius(function(d) { return d.y; })
-		.angle(function(d) { return d.x / 180 * Math.PI; });
 
 	var div = d3.select("#" + obj)
 		.style("width", w + "px")
@@ -596,12 +588,13 @@ function draw_bandle (obj, ID)
 		.size([360, ry - cluster_size])
 		.sort(function(a, b) { return d3.ascending(a.key, b.key); });
 
-	var nodes = cluster.nodes(packages.root(classes[0]));
-
+	var nodes = cluster.nodes(packages.root(bundle_data_sv.get_arc_data_detail()));
+//    var nodes = cluster.nodes(packages.root(classes[0]));
+    
 	var groupData = svg.selectAll("g.group")
 		.data(nodes.filter(function(d) { 
 			var ret = (d.depth == 2) && d.children;
-			return ret; 
+			return ret;
 		}))
 		.enter().append("group")
 		.attr("class", "group");
@@ -610,10 +603,10 @@ function draw_bandle (obj, ID)
 		.innerRadius(ir)
 		.outerRadius(or)
 		.startAngle(function(d) { 
-			return (findStartAngle(d.__data__.children)+0) * Math.PI / 180;
+			return (findStartAngle(d.__data__.children)-0.5) * Math.PI / 180;
 		})
 		.endAngle(function(d) { 
-			return (findEndAngle(d.__data__.children)-0) * Math.PI / 180
+			return (findEndAngle(d.__data__.children)+0) * Math.PI / 180
 		});
 
 	svg.selectAll("g.arc")
@@ -657,13 +650,26 @@ function draw_bandle (obj, ID)
 		;
 	
 	// links
+	var line_outer = d3.svg.line.radial()
+    	.interpolate("bundle")
+    	.tension(style_sv_detail.link_tension)
+    	.radius(function(d) { return d.y; })
+    	.angle(function(d) { return d.x / 180 * Math.PI; });
+    
+    var line_inner = d3.svg.line.radial()
+		.interpolate("bundle")
+        .tension(0.2)
+		.radius(function(d) { return d.y; })
+		.angle(function(d) { return d.x / 180 * Math.PI; })
+    
 	var names = ["link_outer", "link_inner", "link_snippet"];
 	var colors = [style_sv_detail.link_color_intra, style_sv_detail.link_color_inter, style_sv_detail.link_color_snippet];
     var link_data = [];
     
+    var classes = bundle_data_sv.get_data_detail(ID);
+    
 	for (var idx=0; idx<3; idx++) {
 		link_data[idx] = setLinkData(classes[idx]);
-
 		var links = packages.ends(cluster.nodes(packages.root(classes[idx])));
 		var splines = bundle(links);
 		
@@ -675,7 +681,8 @@ function draw_bandle (obj, ID)
 			.append("path")
 			.attr("class", names[idx])
 			.attr("d", function(d, i) { 
-				return line(splines[i]); 
+				if (idx == 1) { return line_inner(splines[i]); }
+				return line_outer(splines[i]); 
 			})
 			.style("stroke", colors[idx])
 			.style("stroke-width", style_sv_detail.link_width)
@@ -758,24 +765,17 @@ function draw_bandle_thumb (iid, ID)
 	var label_t = 8;
 	var cluster_size = 14;
 	
-	classes = bundle_data_sv.get_data_thumb(ID);
-	
 	var bundle = d3.layout.bundle();
-
-	var line = d3.svg.line.radial()
-		.interpolate("bundle")
-		.tension(style_sv_thumb.link_tension)
-		.radius(function(d) { return d.y; })
-		.angle(function(d) { return d.x / 180 * Math.PI; });
 
 	var div = d3.select("#thumb" + iid)
 		.style("width", w + 0 + "px")
-		.style("height", w + 20 + "px")
+		//.style("height", h + 20 + "px")
+        .style("height", h + 0 + "px")
 		.style("position", "absolute");
 
 	var svg = div.append("svg:svg")
 		.attr("width", w)
-		.attr("height", w)
+		.attr("height", h)
 		.append("svg:g")
 		.attr("transform", "translate(" + rx + "," + ry + ")")
 		;
@@ -783,13 +783,13 @@ function draw_bandle_thumb (iid, ID)
 	var cluster = d3.layout.cluster()
 		.size([360, ry - cluster_size])
 		.sort(function(a, b) { return d3.ascending(a.key, b.key); });
-
-	var nodes = cluster.nodes(packages.root(classes[0]));
+    
+    var nodes = cluster.nodes(packages.root(bundle_data_sv.get_arc_data_thumb()));
 
 	var groupData = svg.selectAll("g.group")
 		.data(nodes.filter(function(d) { 
 			var ret = (d.depth == 2) && d.children;
-			return ret; 
+			return ret;
 		}))
 		.enter().append("group")
 		.attr("class", "group");
@@ -798,10 +798,10 @@ function draw_bandle_thumb (iid, ID)
 		.innerRadius(ir)
 		.outerRadius(or)
 		.startAngle(function(d) { 
-			return (findStartAngle(d.__data__.children)-2) * Math.PI / 180;
+			return (findStartAngle(d.__data__.children)-0) * Math.PI / 180;
 		})
-		.endAngle(function(d) { 
-			return (findEndAngle(d.__data__.children)+2) * Math.PI / 180
+		.endAngle(function(d) {
+			return (findEndAngle(d.__data__.children)+1) * Math.PI / 180
 		});
 
 	svg.selectAll("g.arc")
@@ -817,11 +817,27 @@ function draw_bandle_thumb (iid, ID)
 		;
 
 	// links
+    var line_outer = d3.svg.line.radial()
+		.interpolate("bundle")
+		.tension(style_sv_thumb.link_tension)
+		.radius(function(d) { return d.y; })
+		.angle(function(d) { return d.x / 180 * Math.PI; })
+    ;
+    
+    var line_inner = d3.svg.line.radial()
+		.interpolate("bundle")
+        .tension(0.2)
+		.radius(function(d) { return d.y; })
+		.angle(function(d) { return d.x / 180 * Math.PI; })
+    ;
+    
 	var names = ["link_outer", "link_inner", "link_snippet"];
 	var colors = [style_sv_thumb.link_color_intra, style_sv_thumb.link_color_inter, style_sv_thumb.link_color_snippet];
 	
+    var classes = bundle_data_sv.get_data_thumb(ID);
+    
 	for (var idx=0; idx<3; idx++) {
-		var links = packages.ends(cluster.nodes(packages.root(classes[idx])));
+	    var links = packages.ends(cluster.nodes(packages.root(classes[idx])));
 		var splines = bundle(links);
 
 		svg.append("g")
@@ -830,8 +846,9 @@ function draw_bandle_thumb (iid, ID)
 			.data(links)
 			.enter()
 			.append("path")
-			.attr("d", function(d, i) { 
-				return line(splines[i]); 
+			.attr("d", function(d, i) {
+			    if (idx == 1) { return line_inner(splines[i]); }
+				return line_outer(splines[i]); 
 			})
 			.style("stroke", colors[idx])
 			.style("stroke-width", style_sv_thumb.link_width)

@@ -4,8 +4,8 @@ Created on Wed Feb 03 12:31:47 2016
 
 @author: okada
 
-$Id: sv.py 63 2016-03-03 09:15:29Z aokada $
-$Rev: 63 $
+$Id: sv.py 66 2016-03-09 08:28:17Z aokada $
+$Rev: 66 $
 """
 
 ########### js template
@@ -34,18 +34,44 @@ js_header = """(function() {
 bundle_data_sv = {};
 """
 js_function = """
-var create_blank_nodes = function(node_size) {
+var node_name = function(Chr, index, leveling) {
+    if (leveling == null) {
+        leveling = false;
+    }
+    var ret;
+    if (leveling == true) {
+        ret = "root." + Chr + "." + Chr + "_" + ("000" + index).substr(-4);
+    }
+    else {
+        ret = Chr + "_" + ("000" + index).substr(-4);
+    }
+    return ret;
+};
+
+var create_blank_nodes = function(node_size, leveling) {
+    if (leveling == null) {
+        leveling = false;
+    }
     var nodes = [];
     for (var i = 0; i < bundle_data_sv.genome_size.length; i++){
         var item_num = Math.floor(bundle_data_sv.genome_size[i].size/node_size) + 1;
+        if (leveling == false) {
+            item_num = item_num + 1;
+        }
         for (var j = 0; j < item_num; j++){
-            var start = "root." + bundle_data_sv.genome_size[i].chr + "." + bundle_data_sv.genome_size[i].chr + "_" + ("000" + j).substr(-4);
+            var start;
+            if (leveling == true) {
+                start = node_name(bundle_data_sv.genome_size[i].chr, j, true);
+            }
+            else {
+                start = node_name(bundle_data_sv.genome_size[i].chr, j, false);
+            }
             nodes.push({"start":start, "ends":[], "tooltip":[]});
         }
     }
     return nodes
 };
-    
+
 var create_bundle_dataset = function (ID, node_size, tooltip) {
 
     var dataset_outer = create_blank_nodes(node_size);
@@ -57,7 +83,7 @@ var create_bundle_dataset = function (ID, node_size, tooltip) {
             continue;
         }
         
-        var start = "root." + bundle_data_sv.links[i][1] + "." + bundle_data_sv.links[i][1] + "_" + ("000" + Math.floor(bundle_data_sv.links[i][2]/node_size)).substr(-4);
+        var start = node_name(bundle_data_sv.links[i][1], Math.floor(bundle_data_sv.links[i][2]/node_size));
         var index = -1;
         for (var j = 0; j < dataset_outer.length; j++){
             if (dataset_outer[j].start == start) {
@@ -69,17 +95,16 @@ var create_bundle_dataset = function (ID, node_size, tooltip) {
             continue;
         }
         var end_pos = Math.floor(bundle_data_sv.links[i][6]/node_size);
-        var end = "root." + bundle_data_sv.links[i][5] + "." + bundle_data_sv.links[i][5] + "_" + ("000" + end_pos).substr(-4);
+        var end = node_name(bundle_data_sv.links[i][5], end_pos);
         // if same position, sift end position.
         if (start == end) {
             if (end_pos == Math.floor(bundle_data_sv.genome_size[Number(bundle_data_sv.links[i][5])].size/node_size)) {
-                end = "root." + bundle_data_sv.links[i][5] + "." + bundle_data_sv.links[i][5] + "_" + ("000" + (end_pos - 1)).substr(-4);
+                end = node_name(bundle_data_sv.links[i][5], end_pos - 1);
             }
             else {
-                end = "root." + bundle_data_sv.links[i][5] + "." + bundle_data_sv.links[i][5] + "_" + ("000" + (end_pos + 1)).substr(-4);
+                end = node_name(bundle_data_sv.links[i][5], end_pos + 1);
             }
         }
-        
         
         // link type
         if (bundle_data_sv.links[i][11] == true) {
@@ -133,8 +158,16 @@ bundle_data_sv.get_data_thumb = function (ID) {
     return create_bundle_dataset(ID, bundle_data_sv.node_size_thumb, false);
 };
 
+bundle_data_sv.get_arc_data_thumb = function () {
+    return create_blank_nodes(bundle_data_sv.node_size_thumb, true);
+};
+
 bundle_data_sv.get_data_detail = function (ID) {
     return create_bundle_dataset(ID, bundle_data_sv.node_size_detail, true);
+};
+
+bundle_data_sv.get_arc_data_detail = function (ID) {
+    return create_blank_nodes(bundle_data_sv.node_size_detail, true);
 };
 
 var key_to_index = function (list, key) {
@@ -155,7 +188,7 @@ bundle_data_sv.get_select = function () {
     for (var i = 0; i < bundle_data_sv.genome_size.length; i++){
         var item_num = Math.floor(bundle_data_sv.genome_size[i].size/node_size) + 1;
         for (var j = 0; j < item_num; j++){
-            var key = "root." + bundle_data_sv.genome_size[i].chr + "." + bundle_data_sv.genome_size[i].chr + "_" + ("000" + j).substr(-4);
+            var key = node_name(bundle_data_sv.genome_size[i].chr, j, true);
             dataset.key[c] = key;
             dataset.item[0][c] = [];  // outer
             dataset.item[1][c] = [];  // inner
@@ -168,9 +201,9 @@ bundle_data_sv.get_select = function () {
     }
     for (var i = 0; i < bundle_data_sv.links.length; i++) {
         
-        var key  = "root." + bundle_data_sv.links[i][1] + "." + bundle_data_sv.links[i][1] + "_" + ("000" + Math.floor(bundle_data_sv.links[i][2]/node_size)).substr(-4);
-        var item = "root." + bundle_data_sv.links[i][5] + "." + bundle_data_sv.links[i][5] + "_" + ("000" + Math.floor(bundle_data_sv.links[i][6]/node_size)).substr(-4);
-
+        var key = node_name(bundle_data_sv.links[i][1], Math.floor(bundle_data_sv.links[i][2]/node_size), true);
+        var item = node_name(bundle_data_sv.links[i][5], Math.floor(bundle_data_sv.links[i][6]/node_size), true);
+        
         var idx1 = key_to_index(dataset.key, key);
         var idx2 = key_to_index(dataset.key, item);
 
@@ -222,6 +255,7 @@ bundle_data_sv.get_select = function () {
     return dataset;
 };
 })();
+
 """
 
 genome_size_template = '{{"chr":"{Chr:0>2}", "size":{size}}}'
@@ -382,18 +416,11 @@ def convert_tojs(input_file, output_file, config):
         inter_flg = "false"
         snippet_flg = "false"
         if (chr1 == chr2):
+            inter_flg = "true"
             if abs(pos2 - pos1) < snippet_th:
                 for t in snippet_type:
                     if row[df.name_to_index("type")].lower() == t:
                         snippet_flg = "true"
-                        break
-            
-            names1 = row[df.name_to_index("gene_name1")].replace(" ", "").split(";")
-            names2 = row[df.name_to_index("gene_name1")].replace(" ", "").split(";")
-            for n1 in names1:
-                for n2 in names2:
-                    if n1 == n2:
-                        inter_flg = "true"
                         break
         
         if len(links) > 0:
@@ -417,7 +444,7 @@ def convert_tojs(input_file, output_file, config):
     f = open(output_file, "w")
     f.write(js_header \
         + js_dataset.format(node_size_detail = calc_node_size(genome_size, 500), \
-        node_size_thumb = calc_node_size(genome_size, 60), \
+        node_size_thumb = calc_node_size(genome_size, 250), \
         node_size_select = 5000000,\
         item_num = len(id_list), \
         IDs = Ids, \
