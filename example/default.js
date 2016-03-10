@@ -39,9 +39,9 @@ style_sv_bar = {
 	bar_color_snippet: "goldenrod",
 	
 	// legend's text options
-	bar_label_inter: "Intra gene.",
-	bar_label_intra: "Inter gene.",
-	bar_label_snippet: "Snippet.",
+	bar_label_intra: "Intra Chromosome",
+	bar_label_inter: "Inter Chromosome",
+	bar_label_snippet: "Short Inversion",
 	
 	// title's text options
 	title_top: "Genome-wide SVs identify",
