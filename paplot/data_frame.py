@@ -4,8 +4,8 @@ Created on Thu Feb 25 11:34:07 2016
 
 @author: okada
 
-$Id: data_frame.py 52 2016-02-26 01:25:42Z aokada $
-$Rev: 52 $
+$Id: data_frame.py 69 2016-03-10 08:15:34Z aokada $
+$Rev: 69 $
 """
 
 class DataFrame:
@@ -56,20 +56,20 @@ class DataFrame:
         
         title_text = ""
         if header == True:
-            for item in self.title:
-                if len(title_text) > 0:
+            for i in range(len(self.title)):
+                if i > 0:
                     title_text += sept
-                title_text += str(item)
+                title_text += str(self.title[i])
             
             title_text += "\n"
     
         data_text = ""
         for row in self.data:
             row_text = ""
-            for item in row:
-                if len(row_text) > 0:
+            for i in range(len(row)):
+                if i > 0:
                     row_text += sept
-                row_text += str(item)
+                row_text += str(row[i])
         
             data_text += row_text + "\n"
         
@@ -120,10 +120,15 @@ def load_file(filepath, sept = ",", usecol = None, header = 0, skipfooter = 0):
         cols = row.split(sept)
         
         for j in range(len(usecol)):
+            usecol_item = usecol[j]
+            value = ""
+            if usecol_item >= 0:
+                value = cols[usecol_item]
+            
             if i == 0:
-                title.append(cols[usecol[j]])
+                title.append(value)
             else:
-                title[j] += (cols[usecol[j]])
+                title[j] += value
 
     # load to data[row][col]
     tmp = []
@@ -137,10 +142,10 @@ def load_file(filepath, sept = ",", usecol = None, header = 0, skipfooter = 0):
         cols = row.split(sept)
         picks = []
         for j in usecol:
-            if j < len(cols):
-                picks.append(cols[j])
-            else:
-                picks.append("")
+            value = ""
+            if (j >= 0) and (j < len(cols)):
+                value = cols[j]
+            picks.append(value)
                 
         tmp.append(picks)
     
