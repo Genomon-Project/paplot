@@ -589,7 +589,6 @@ function draw_bandle (obj, ID)
 		.sort(function(a, b) { return d3.ascending(a.key, b.key); });
 
 	var nodes = cluster.nodes(packages.root(bundle_data_sv.get_arc_data_detail()));
-//    var nodes = cluster.nodes(packages.root(classes[0]));
     
 	var groupData = svg.selectAll("g.group")
 		.data(nodes.filter(function(d) { 
@@ -769,8 +768,7 @@ function draw_bandle_thumb (iid, ID)
 
 	var div = d3.select("#thumb" + iid)
 		.style("width", w + 0 + "px")
-		//.style("height", h + 20 + "px")
-        .style("height", h + 0 + "px")
+		.style("height", h + 20 + "px")
 		.style("position", "absolute");
 
 	var svg = div.append("svg:svg")
