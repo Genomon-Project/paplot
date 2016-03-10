@@ -4,8 +4,8 @@ Created on Wed Feb 03 12:31:47 2016
 
 @author: okada
 
-$Id: sv.py 66 2016-03-09 08:28:17Z aokada $
-$Rev: 66 $
+$Id: sv.py 69 2016-03-10 08:15:34Z aokada $
+$Rev: 69 $
 """
 
 ########### js template
@@ -122,16 +122,41 @@ var create_bundle_dataset = function (ID, node_size, tooltip) {
         
         // tooltip
         if (tooltip == true) {
-            var tooltip_txt = style_sv_detail.arc_label_text[Number(bundle_data_sv.links[i][1])] + ": " +
-                bundle_data_sv.links[i][2].toLocaleString() + " (" +
-                bundle_data_sv.links[i][3] + ") " +
-                bundle_data_sv.links[i][4] + "; " +
-                style_sv_detail.arc_label_text[Number(bundle_data_sv.links[i][5])] + ": " +
-                bundle_data_sv.links[i][6].toLocaleString() + " (" +
-                bundle_data_sv.links[i][7] + ") " +
-                bundle_data_sv.links[i][8] + "; " +
-                bundle_data_sv.links[i][9];
+            // Chr1 and breakpoint1
+            var must1 = "[" + style_sv_detail.arc_label_text[Number(bundle_data_sv.links[i][1])] + "] " + bundle_data_sv.links[i][2].toLocaleString();
+            // Chr2 and breakpoint2
+            var must2 = "; [" + style_sv_detail.arc_label_text[Number(bundle_data_sv.links[i][5])] + "] " + bundle_data_sv.links[i][6].toLocaleString();
             
+            // direction1
+            var dir1 = "";
+            if (bundle_data_sv.links[i][3].length > 0) {
+                dir1 = " (" + bundle_data_sv.links[i][3] + ")";
+            }
+            // direction2
+            var dir2 = "";
+            if (bundle_data_sv.links[i][7].length > 0) {
+                dir2 = " (" + bundle_data_sv.links[i][7] + ")";
+            }
+            
+            // gene name 1
+            var name1 = "";
+            if (bundle_data_sv.links[i][4].length > 0) {
+                name1 = " " + bundle_data_sv.links[i][4];
+            }
+            // gene name 2
+            var name2 = "";
+            if (bundle_data_sv.links[i][8].length > 0) {
+                name1 = " " + bundle_data_sv.links[i][8];
+            }
+            
+            // type
+            var sv_type = "";
+            if (bundle_data_sv.links[i][9].length > 0) {
+                sv_type = "; " + bundle_data_sv.links[i][9];
+            }
+            
+            var tooltip_txt = must1 + dir1 + name1 + must2 + dir2 + name2 + sv_type
+
             if (bundle_data_sv.links[i][11] == true) {
                 // snippet
                 dataset_snipp[index].tooltip.push(tooltip_txt);
@@ -391,11 +416,18 @@ def convert_tojs(input_file, output_file, config):
     id_list = []
     links = ""
     for row in df.data:
-
-        chr1 = row[df.name_to_index("chr1")]
-        chr2 = row[df.name_to_index("chr2")]        
-        pos1 = row[df.name_to_index("break1")]
-        pos2 = row[df.name_to_index("break2")]
+        try:
+            colname="chr1"
+            chr1 = str(row[df.name_to_index("chr1")])
+            colname="chr2"            
+            chr2 = str(row[df.name_to_index("chr2")])
+            colname="breakpoint1"
+            pos1 = int(row[df.name_to_index("break1")])
+            colname="breakpoint2"
+            pos2 = int(row[df.name_to_index("break2")])
+        except Exception as e:
+            print(colname + ": data type is invalid.\n" + e.message)
+            continue
         
         [index1, rang] = insite_genome(genome_size, chr1, pos1)
         if rang > 0:

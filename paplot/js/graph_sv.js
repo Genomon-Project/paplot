@@ -681,8 +681,8 @@ function draw_bandle (obj, ID)
 			.append("path")
 			.attr("class", names[idx])
 			.attr("d", function(d, i) { 
-				if (idx == 1) { return line_inner(splines[i]); }
-				return line_outer(splines[i]); 
+				if (idx == 0) { return line_outer(splines[i]); }
+				return line_inner(splines[i]); 
 			})
 			.style("stroke", colors[idx])
 			.style("stroke-width", style_sv_detail.link_width)
@@ -769,8 +769,7 @@ function draw_bandle_thumb (iid, ID)
 
 	var div = d3.select("#thumb" + iid)
 		.style("width", w + 0 + "px")
-		//.style("height", h + 20 + "px")
-        .style("height", h + 0 + "px")
+		.style("height", h + 20 + "px")
 		.style("position", "absolute");
 
 	var svg = div.append("svg:svg")
@@ -847,8 +846,8 @@ function draw_bandle_thumb (iid, ID)
 			.enter()
 			.append("path")
 			.attr("d", function(d, i) {
-			    if (idx == 1) { return line_inner(splines[i]); }
-				return line_outer(splines[i]); 
+			    if (idx == 0) { return line_outer(splines[i]); }
+				return line_inner(splines[i]); 
 			})
 			.style("stroke", colors[idx])
 			.style("stroke-width", style_sv_thumb.link_width)

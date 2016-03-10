@@ -4,8 +4,8 @@ Created on Wed Dec 02 17:43:52 2015
 
 @author: okada
 
-$Id: prep.py 64 2016-03-04 06:52:57Z aokada $
-$Rev: 64 $
+$Id: prep.py 69 2016-03-10 08:15:34Z aokada $
+$Rev: 69 $
 """
 
 def copy_dir_lib(dst):
@@ -136,6 +136,12 @@ def load_data(data_file, ID, mode, config):
         df.concat([cat_item, df.data], li) 
 
     return df
+
+def set_col(value, sift):
+    if value < 0:
+        return value
+        
+    return value + sift
     
 def set_header_info(mode, config):
     
@@ -144,23 +150,30 @@ def set_header_info(mode, config):
     [section_in, section_out] = tools.get_section(mode)
     info = {}
 
-    
     cor = 0
     if tools.config_getint(config, section_in, "col_pos_ID") < 0:
         cor = 1
             
     if mode == "sv":
+        chr1 = tools.config_getint(config, section_in, "col_pos_chr1")
+        chr2 = tools.config_getint(config, section_in, "col_pos_chr2")
+        break1 = tools.config_getint(config, section_in, "col_pos_start")
+        break2 = tools.config_getint(config, section_in, "col_pos_end")
+        
+        # check required param
+        if -1 in [chr1, chr2, break1, break2]:
+            return [[],[]]
         
         info = {"ID": tools.config_getint(config, section_in, "col_pos_ID") + cor, \
-            "chr1":tools.config_getint(config, section_in, "col_pos_chr1") + cor, \
-            "chr2":tools.config_getint(config, section_in, "col_pos_chr2") + cor, \
-            "break1":tools.config_getint(config, section_in, "col_pos_start") + cor, \
-            "break2":tools.config_getint(config, section_in, "col_pos_end") + cor, \
-            "type":tools.config_getint(config, section_in, "col_pos_type") + cor, \
-            "gene_name1":tools.config_getint(config, section_in, "col_pos_gene_name1") + cor, \
-            "gene_name2":tools.config_getint(config, section_in, "col_pos_gene_name2") + cor, \
-            "direction1":tools.config_getint(config, section_in, "col_pos_dir1") + cor, \
-            "direction2":tools.config_getint(config, section_in, "col_pos_dir2") + cor
+            "chr1": chr1 + cor, \
+            "chr2": chr2 + cor, \
+            "break1": break1 + cor, \
+            "break2": break2 + cor, \
+            "type": set_col(tools.config_getint(config, section_in, "col_pos_type"), cor), \
+            "gene_name1": set_col(tools.config_getint(config, section_in, "col_pos_gene_name1"), cor), \
+            "gene_name2": set_col(tools.config_getint(config, section_in, "col_pos_gene_name2"), cor), \
+            "direction1": set_col(tools.config_getint(config, section_in, "col_pos_dir1"), cor), \
+            "direction2": set_col(tools.config_getint(config, section_in, "col_pos_dir2"), cor)
             }
 
     elif mode == "mutation":
@@ -184,9 +197,16 @@ def set_header_info(mode, config):
             "read_length_r1":tools.config_getint(config, section_in, "col_pos_read_length_r1") + cor, \
             "read_length_r2":tools.config_getint(config, section_in, "col_pos_read_length_r2") + cor            
             }
-    
+        
+        # check required param
+        for key in info:
+            if key == "ID":
+                continue
+            if info[key] == 0:
+                return [[],[]]
+            
     info_sort = sorted(info.items(), key=lambda x: x[1])
-    
+
     usecols = []
     title = []
     for i in range(len(info_sort)):
@@ -237,8 +257,9 @@ def extract_result(data_file, output_file, mode, config):
             df = data_frame.load_file(data_file, sept = ",", header = 1, usecol = usecols)
             df.title = title
         else:
-            df = data_frame.load_file(data_file, sep = ",", header = 1)
-            
+            print ("column position is invalid. check your config file.")
+            return False
+
         df.save(output_file, header = True, mode = "w")
     
     except IndexError as e:
