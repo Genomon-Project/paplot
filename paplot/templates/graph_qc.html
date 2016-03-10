@@ -1,0 +1,41 @@
+<html lang="en">
+<head>
+  <title>QC - {project}</title>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+
+  <link rel="stylesheet" type="text/css" href="../lib/dc.js_v2.0.0-beta.25/dc.min.css"/>
+  <link rel="stylesheet" type="text/css" href="../js/paplot.css"/>
+</head>
+<body>
+<div class="b_footer">
+Generated on {date} for {project} by {version}.
+</div>
+
+<div class="container">
+<h2>QC - {project}</h2>
+
+<div id="select" style="margin-top: 20px; margin-bottom: 20px;">
+  <p class="muted pull-left" style="margin-right: 15px;">select a sort type</p>
+  <input type=radio name="operation" value="name" checked="true">name of bam
+  <input type=radio name="operation" value="val">average of depth
+</div>
+<div class="row">
+  <p class="muted pull-left" style="margin-right: 15px;">select a range to zoom in</p>
+  <div id="chart_brush">
+    <a class="reset" href="javascript:reset();" style="display: none;">reset</a>
+    <div class="clearfix"></div>
+  </div>
+</div>
+{charts}
+
+</div>
+
+<script type="text/javascript" src="../lib/d3_v3.5.13/d3.min.js"></script>
+<script type="text/javascript" src="../lib/crossfilter_v.1.3.12/crossfilter.min.js"></script>
+<script type="text/javascript" src="../lib/dc.js_v2.0.0-beta.25/dc.min.js"></script>
+<script type="text/javascript" src="data_qc.js"></script>
+<script type="text/javascript" src="{style}"></script>
+<script type="text/javascript" src="../js/graph_qc.js"></script>
+
+</body>
+</html>
