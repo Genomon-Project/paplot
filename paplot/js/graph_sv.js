@@ -760,7 +760,7 @@ function draw_bandle_thumb (iid, ID)
 	var rx = w / 2;
 	var ry = h / 2;
 
-	var ir = ry-13;
+	var ir = ry-14;
 	var or = ry-10;
 	var label_t = 8;
 	var cluster_size = 14;
