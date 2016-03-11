@@ -342,7 +342,7 @@ function draw_select()
         .attr("x", 0)
         .attr("width", 0)
         .attr("height", 0)
-        .style("fill", style_sv_bar.bar_color_intra)
+        .style("fill", style_sv_bar.bar_color_outer)
     ;
 
     svg.append("g")
@@ -355,7 +355,7 @@ function draw_select()
         .attr("y", 0)
         .attr("width", 0)
         .attr("height", 0)
-        .style("fill", style_sv_bar.bar_color_inter)
+        .style("fill", style_sv_bar.bar_color_inner)
     ;
 
     svg.append("g")
@@ -660,7 +660,7 @@ function draw_bandle (obj, ID)
         .angle(function(d) { return d.x / 180 * Math.PI; })
     
     var names = ["link_outer", "link_inner", "link_snippet"];
-    var colors = [style_sv_detail.link_color_intra, style_sv_detail.link_color_inter, style_sv_detail.link_color_snippet];
+    var colors = [style_sv_detail.link_color_outer, style_sv_detail.link_color_inner, style_sv_detail.link_color_snippet];
     var link_data = [];
     
     var classes = bundle_data_sv.get_data_detail(ID);
@@ -729,10 +729,10 @@ function draw_bandle (obj, ID)
             .on("mouseout", function() {
                    var color = style_sv_detail.link_color_snippet;
                    if (d3.select(this).classed("link_outer") == true) {
-                       color = style_sv_detail.link_color_intra;
+                       color = style_sv_detail.link_color_outer;
                    }
                    if (d3.select(this).classed("link_inner") == true) {
-                       color = style_sv_detail.link_color_inter;
+                       color = style_sv_detail.link_color_inner;
                    }
                 // link style
                 d3.select(this)
@@ -828,7 +828,7 @@ function draw_bandle_thumb (iid, ID)
     ;
     
     var names = ["link_outer", "link_inner", "link_snippet"];
-    var colors = [style_sv_thumb.link_color_intra, style_sv_thumb.link_color_inter, style_sv_thumb.link_color_snippet];
+    var colors = [style_sv_thumb.link_color_outer, style_sv_thumb.link_color_inner, style_sv_thumb.link_color_snippet];
     
     var classes = bundle_data_sv.get_data_thumb(ID);
     
@@ -1039,12 +1039,12 @@ function get_pos(id) {
 }
 
 function draw_legend(){
-    d3.select("#legend0").style("background-color", style_sv_bar.bar_color_intra);
-    d3.select("#legend1").style("background-color", style_sv_bar.bar_color_inter);
+    d3.select("#legend0").style("background-color", style_sv_bar.bar_color_outer);
+    d3.select("#legend1").style("background-color", style_sv_bar.bar_color_inner);
     d3.select("#legend2").style("background-color", style_sv_bar.bar_color_snippet);
     
-    d3.select("#legend0_text").attr("id",  "text").text(style_sv_bar.bar_label_intra);
-    d3.select("#legend1_text").attr("id",  "text").text(style_sv_bar.bar_label_inter);
+    d3.select("#legend0_text").attr("id",  "text").text(style_sv_bar.bar_label_outer);
+    d3.select("#legend1_text").attr("id",  "text").text(style_sv_bar.bar_label_inner);
     d3.select("#legend2_text").attr("id",  "text").text(style_sv_bar.bar_label_snippet);
 
     d3.select("#select_title").attr("id",  "text").text(style_sv_bar.title_top);

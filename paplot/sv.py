@@ -4,8 +4,8 @@ Created on Wed Feb 03 12:31:47 2016
 
 @author: okada
 
-$Id: sv.py 70 2016-03-11 02:20:49Z aokada $
-$Rev: 70 $
+$Id: sv.py 71 2016-03-11 08:26:34Z aokada $
+$Rev: 71 $
 """
 
 ########### js template
@@ -146,7 +146,7 @@ var create_bundle_dataset = function (ID, node_size, tooltip) {
             // gene name 2
             var name2 = "";
             if (bundle_data_sv.links[i][8].length > 0) {
-                name1 = " " + bundle_data_sv.links[i][8];
+                name2 = " " + bundle_data_sv.links[i][8];
             }
             
             // type

@@ -34,13 +34,13 @@ style_qc = {
 style_sv_bar = {
 	
 	// fill color options
-	bar_color_inter: "#51BF69",
-	bar_color_intra: "#9E4A98",
+	bar_color_outer: "#9E4A98",
+	bar_color_inner: "#51BF69",
 	bar_color_snippet: "goldenrod",
 	
 	// legend's text options
-	bar_label_intra: "Intra Chromosome",
-	bar_label_inter: "Inter Chromosome",
+	bar_label_outer: "Inter Chromosome",
+	bar_label_inner: "Intra Chromosome",
 	bar_label_snippet: "Short Inversion",
 	
 	// title's text options
@@ -138,8 +138,8 @@ style_sv_thumb = {
 	arc_stroke_opacity: 1.0,
 	
 	// link options
-	link_color_inter: "#51BF69",
-	link_color_intra: "#9E4A98",
+	link_color_outer: "#9E4A98",
+	link_color_inner: "#51BF69",
 	link_color_snippet: "goldenrod",
 	link_width: "1px",
 	link_opacity: 1.0,
@@ -244,8 +244,8 @@ style_sv_detail = {
 	arc_label_color: "#333333",
 	
 	// link options
-	link_color_inter: "#51BF69",
-	link_color_intra: "#9E4A98",
+	link_color_outer: "#9E4A98",
+	link_color_inner: "#51BF69",
 	link_color_snippet: "goldenrod",
 	link_width: "2px",
 	link_opacity: 1.0,
