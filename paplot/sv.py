@@ -4,8 +4,8 @@ Created on Wed Feb 03 12:31:47 2016
 
 @author: okada
 
-$Id: sv.py 69 2016-03-10 08:15:34Z aokada $
-$Rev: 69 $
+$Id: sv.py 70 2016-03-11 02:20:49Z aokada $
+$Rev: 70 $
 """
 
 ########### js template
@@ -348,7 +348,7 @@ def calc_node_size(genome_size, total):
         if _min > genome_size[i][1]:
             _min = genome_size[i][1]
             
-    size = int(_sum/total)
+    size = int(_sum/(total - len(genome_size)))
     if _min <= size:
         size = _min - 1
 
