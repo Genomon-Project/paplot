@@ -6,6 +6,8 @@ Paplot creates interactive graphs from text data of genome analysis.
 
 ## Demo
 
+Output example by PAPLOT.
+
 http://genomon-project.github.io/paplot/
 
 ## Documents
