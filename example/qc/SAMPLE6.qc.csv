@@ -1,2 +1,0 @@
-read_length_r1,read_length_r2,total_reads,mapped_reads,mean_insert_size,duplicate_reads,average_depth,2x_rt,10x_rt,20x_rt,30x_rt
-125,155,47526656,56156227,303.70,5588705,60.4026,0.7441,0.7136,0.7093,0.5626
