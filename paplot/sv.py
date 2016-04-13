@@ -4,8 +4,7 @@ Created on Wed Feb 03 12:31:47 2016
 
 @author: okada
 
-$Id: sv.py 71 2016-03-11 08:26:34Z aokada $
-$Rev: 71 $
+$Id: sv.py 81 2016-04-07 08:31:10Z aokada $
 """
 
 ########### js template
@@ -294,10 +293,11 @@ detail_template = """<div class="float_frame" id="float{id}"><table><tr><td clas
 """
 ########### functions
 
-def load_genome_size(config):
-    from paplot import tools
+import paplot.subcode.tools as tools
 
-    path = tools.config_getpath(config, "genome", "path", "../config/hg19.csv")
+def load_genome_size(config):
+    
+    path = tools.config_getpath(config, "genome", "path", "../../config/hg19.csv")
     use_chrs = tools.config_getstr(config, "sv", "use_chrs").lower().replace(" ", "").split(",")
     for i in range(len(use_chrs)):
         label = use_chrs[i]
@@ -355,8 +355,8 @@ def calc_node_size(genome_size, total):
     return size
         
 def load_csv(input_file):
-    from paplot import data_frame
-        
+    import paplot.subcode.data_frame as data_frame
+
     # data read
     try:
         df = data_frame.load_file(input_file, sept = ",", header = 1)
@@ -390,7 +390,6 @@ def output_html(input_file, output_js_file, output_html_dir, org_html, project_n
         create_html(id_list, output_html_dir, org_html, project_name, config)
         
 def convert_tojs(input_file, output_file, config):
-    from paplot import tools
 
     df = load_csv(input_file)
     if df == None:
@@ -458,12 +457,12 @@ def convert_tojs(input_file, output_file, config):
         if len(links) > 0:
             links += ",\n"
             
-        links += links_template.format(ID=row[df.name_to_index("ID")], \
-            Chr1=index1, pos1=pos1, dir1=row[df.name_to_index("direction1")], name1=row[df.name_to_index("gene_name1")], \
-            Chr2=index2, pos2=pos2, dir2=row[df.name_to_index("direction2")], name2=row[df.name_to_index("gene_name2")], \
+        links += links_template.format(ID=row[df.name_to_index("id")], \
+            Chr1=index1, pos1=pos1, dir1=row[df.name_to_index("dir1")], name1=row[df.name_to_index("gene_name1")], \
+            Chr2=index2, pos2=pos2, dir2=row[df.name_to_index("dir2")], name2=row[df.name_to_index("gene_name2")], \
             ttype=row[df.name_to_index("type")], inter_flg=inter_flg, snippet_flg=snippet_flg)
             
-        id_list.append(row[df.name_to_index("ID")])
+        id_list.append(row[df.name_to_index("id")])
     
     id_list_sort = list(set(id_list))
     id_list_sort.sort()
@@ -488,10 +487,9 @@ def convert_tojs(input_file, output_file, config):
     return id_list_sort
 
 def create_html(id_list, output_html_dir, org_html, project_name, config):
-    from paplot import tools    
     import os
 
-    div_txt = ""    
+    div_txt = ""
     call_txt = ""
     detail_txt = ""
     for i in range(len(id_list)):

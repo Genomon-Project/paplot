@@ -4,8 +4,7 @@ Created on Wed Dec 02 17:43:52 2015
 
 @author: okada
 
-$Id: qc.py 52 2016-02-26 01:25:42Z aokada $
-$Rev: 52 $
+$Id: qc.py 81 2016-04-07 08:31:10Z aokada $
 """
 
 def convert_tojs(input_file, output_file):
@@ -15,8 +14,7 @@ def convert_tojs(input_file, output_file):
 ];
 function get_data_base() {{return base;}}
 """
-
-    from paplot import data_frame
+    import paplot.subcode.data_frame as data_frame
 
     # data read
     try:
@@ -40,8 +38,8 @@ function get_data_base() {{return base;}}
             if val == "":
                 val = "0"
                 
-            if col_name == "ID":
-                item_text += col_name + ':"' + str(df.data[i][j]) + '",'
+            if col_name == "id":
+                item_text += 'ID:"' + str(df.data[i][j]) + '",'
             elif len(ratio) == 2:
                 item_text += 'ratio_%sx:' % (ratio[0]) + val + ','
             else:
@@ -61,8 +59,7 @@ def create_html(output_html_dir, org_html, project_name, config):
     <div id="{chart}"><strong>{title}</strong><br></div>
 </div>
 """
-
-    from paplot import tools
+    import paplot.subcode.tools as tools
     import os
     
     f_template = open(os.path.dirname(os.path.abspath(__file__)) + "/templates/" + org_html)

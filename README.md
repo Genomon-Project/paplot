@@ -4,12 +4,6 @@ Welcome to Post Analysis PLOT (PAPLOT).
 
 Paplot creates interactive graphs from text data of genome analysis.
 
-## Demo
-
-Output example by PAPLOT.
-
-http://genomon-project.github.io/paplot/
-
 ## Documents
 
 English:

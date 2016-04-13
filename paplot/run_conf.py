@@ -4,32 +4,23 @@ Created on Wed Dec 02 17:43:52 2015
 
 @author: okada
 
-$Id: run_conf.py 35 2016-02-15 09:44:57Z aokada $
-$Rev: 35 $
+$Id: run_conf.py 81 2016-04-07 08:31:10Z aokada $
 """
 prog = "pa_plot conf"
 
 def main(argv):
-    from paplot import tools
-    from paplot import prep
+    import paplot.subcode.tools as tools
     import argparse
     
     parser = argparse.ArgumentParser(prog = prog)
 
     parser.add_argument("--version", action = "version", version = tools.version_text())
     parser.add_argument("--config_file", help = "config file", type = str, default = "")
-    parser.add_argument("--config_text", help = "config text", type = str, default = "")
 
     args = parser.parse_args(argv)
     
     # config
-    if len(args.config_file) > 0:
-        [config, conf_file] = tools.load_config(args.config_file)
-    elif len(args.config_text) > 0:
-        config = tools.parse_config(args.config_text)
-        conf_file = ""
-    else:
-        [config, conf_file] = tools.load_config("")
+    [config, conf_file] = tools.load_config(args.config_file)
     
-    prep.print_conf(config, conf_file)
+    tools.print_conf(config, conf_file, "paplot")
     

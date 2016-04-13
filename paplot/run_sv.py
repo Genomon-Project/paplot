@@ -4,15 +4,15 @@ Created on Wed Dec 02 17:43:52 2015
 
 @author: okada
 
-$Id: run_sv.py 66 2016-03-09 08:28:17Z aokada $
-$Rev: 66 $
+$Id: run_sv.py 81 2016-04-07 08:31:10Z aokada $
 """
 prog = "pa_plot sv"
 
 def main(argv):
-    from paplot import tools
-    from paplot import sv
-    from paplot import prep
+    import paplot.subcode.tools as tools
+    import paplot.subcode.merge as merge
+    import paplot.sv as sv
+    import paplot.prep as prep
     import argparse
     
     parser = argparse.ArgumentParser(prog = prog)
@@ -22,6 +22,7 @@ def main(argv):
     parser.add_argument("output_dir", help = "output file path", type = str)
     parser.add_argument("project_name", help = "project name", type = str)
     parser.add_argument("--config_file", help = "config file", type = str, default = "")
+    parser.add_argument("--remarks", help = "optional text", type = str, default = "")
     
     args = parser.parse_args(argv)
     
@@ -30,19 +31,23 @@ def main(argv):
         [config, conf_file] = tools.load_config(tools.win_to_unix(args.config_file))
     else:
         [config, conf_file] = tools.load_config("")
-
+        
+    if len(args.remarks) > 0:
+        tools.config_set(config, "style", "remarks", args.remarks)
+        
     input_list = tools.get_inputlist(args.input)
     if len(input_list) == 0:
         print ("input no file.")
         return
-        
+    
+    [sec_in, sec_out] = tools.get_section("sv")
+    id_list = tools.get_IDlist(input_list, tools.config_getstr(config, sec_in, "suffix"))
+    
     # dirs
     output_html_dir = prep.create_dirs(tools.win_to_unix(args.output_dir), args.project_name, config)
         
-    if prep.merge_result(input_list, output_html_dir + "/merge_sv.csv", "sv", config) == False:
-        print ("prep.merge_result: input file is invalid.")
-        return
-    if prep.extract_result(output_html_dir + "/merge_sv.csv", output_html_dir + "/data_sv.csv", "sv", config) == False:
+    ret = merge.merge_result(input_list, id_list, output_html_dir + "/merge_sv.csv", "sv", config)
+    if merge.extract_result(output_html_dir + "/merge_sv.csv", output_html_dir + "/data_sv.csv", ret, "sv", config) == False:
         print ("prep.extract_result: input file is invalid.")
         return
     sv.output_html(output_html_dir + "/data_sv.csv", output_html_dir + "/data_sv.js", \
