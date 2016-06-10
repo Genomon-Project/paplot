@@ -46,6 +46,44 @@ padding-left: 15px;
 #tooltip p {
   margin: 0;
 }
+#spin {
+  left: 50%;
+  top: 50%;
+  width: 120px;
+  height: 120px;
+  margin-left: -60px;
+  margin-top: -60px;
+  position:fixed;
+  _position: absolute;
+  padding: 10px;
+  background-color: black;
+  color: white;
+  filter: alpha(opacity = 60);
+  -moz-opacity: 0.6;
+  opacity: 0.6;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+  -webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+  -moz-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+  pointer-events: none;
+  background-image: url("update.png");
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center center;
+}
+#spin.hidden {
+  display: none;
+}
+#spin p {
+  width: 100%;
+  height: auto;
+  text-align: center;
+  vertical-align: middle;
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 18px;
+}
 li.hidden {
   width: 0;
   height: 0;
@@ -92,7 +130,10 @@ li.hidden {
   top: -200px;
   left: -100px;
 }
-
+div.selected_text {
+  border-bottom: 1px dotted gray;
+  display:inline;
+}
 * {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
@@ -191,5 +232,5 @@ button, input, optgroup, select, textarea {
   height:100%;
 }
 .blank {
-	background-color: aliceblue;
+  background-color: aliceblue;
 }

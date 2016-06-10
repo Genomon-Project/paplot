@@ -4,14 +4,14 @@ Created on Wed Dec 02 17:43:52 2015
 
 @author: okada
 
-$Id: run_qc.py 84 2016-04-22 00:43:25Z aokada $
+$Id: run_mut.py 106 2016-05-25 08:54:02Z aokada $
 """
-prog = "pa_plot qc"
+prog = "pa_plot mutation"
 
 def main(argv):
     import paplot.subcode.tools as tools
     import paplot.subcode.merge as merge
-    import paplot.qc as qc
+    import paplot.mut as mut
     import paplot.prep as prep
     import argparse
     
@@ -31,7 +31,7 @@ def main(argv):
         [config, conf_file] = tools.load_config(tools.win_to_unix(args.config_file))
     else:
         [config, conf_file] = tools.load_config("")
-    
+        
     if len(args.remarks) > 0:
         tools.config_set(config, "style", "remarks", args.remarks)
         
@@ -40,20 +40,17 @@ def main(argv):
         print ("input no file.")
         return
     
-    [sec_in, sec_out] = tools.get_section("qc")
+    [sec_in, sec_out] = tools.get_section("mutation")
     id_list = tools.get_IDlist(input_list, tools.config_getstr(config, sec_in, "suffix"))
     
     # dirs
     output_html_dir = prep.create_dirs(tools.win_to_unix(args.output_dir), args.project_name, config)
-    positions = merge.merge_result(input_list, id_list, output_html_dir + "/data_qc.csv", "qc", config, extract = True)
+    positions = merge.merge_result(input_list, id_list, output_html_dir + "/data_mut.csv", "mutation", config, extract = True)
     if positions == {}:
         print ("merge.merge_result: input file is invalid.")
         return
-    if qc.convert_tojs(output_html_dir + "/data_qc.csv", output_html_dir + "/data_qc.js", positions, config) == False:
-        print ("qc.convert_tojs: input file is invalid.")
-        return
-        
-    qc.create_html(output_html_dir, "graph_qc.html", args.project_name, config)
-
+    mut.output_html(output_html_dir + "/data_mut.csv", output_html_dir + "/data_mut.js", \
+                output_html_dir, "graph_mut.html", args.project_name, positions, config)
+    
     prep.create_index(args.output_dir,  args.project_name, config)
-        
+    

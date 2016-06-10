@@ -1,8 +1,8 @@
 Metadata-Version: 1.0
 Name: paplot
-Version: 0.2.7devel
+Version: 0.3.0release
 Summary: parser result files created by genomon
-Home-page: https://github.com/Genomon-Project/Genomon.git
+Home-page: https://github.com/Genomon-Project/paplot.git
 Author: aokada
 Author-email: genomon_team@gamil.com
 License: GPL-3

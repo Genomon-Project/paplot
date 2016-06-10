@@ -4,7 +4,7 @@ Created on Wed Dec 02 17:43:52 2015
 
 @author: okada
 
-$Id: prep.py 81 2016-04-07 08:31:10Z aokada $
+$Id: prep.py 109 2016-06-02 06:59:42Z aokada $
 """
 
 def copy_dir_lib(dst):
@@ -50,6 +50,17 @@ def copy_dir_style(dst, config):
     if len(option) > 0:
         shutil.copy(option, dst)
 
+def copy_dir_img(dst):
+    import shutil
+    import os
+    import glob
+
+    pattern = os.path.dirname(os.path.abspath(__file__)) + "/img/*"
+    li_files = glob.glob(pattern)
+    
+    for f in li_files:
+        shutil.copy(f, dst)
+        
 def create_dirs(args_output_dir, project_name, config):
     import os
     
@@ -73,9 +84,14 @@ def create_dirs(args_output_dir, project_name, config):
     if (os.path.exists(output_style_dir) == False):
         os.makedirs(output_style_dir)
 
+    output_img_dir = output_dir + "/img"
+    if (os.path.exists(output_img_dir) == False):
+        os.makedirs(output_img_dir)
+
     copy_dir_lib(output_lib_dir)
     copy_dir_js(output_js_dir)
     copy_dir_style(output_style_dir, config)
+    copy_dir_img(output_img_dir)
     
     return output_html_dir
 
@@ -85,7 +101,12 @@ def create_index(output_dir, project_name, config):
 """
     link_sv = """<li><a href="{project}/graph_sv.html" target=_blank>SV graphs</a>......Structural Variation.</li>
 """
-
+    link_mut = """<li><a href="{project}/graph_mut.html" target=_blank>Mutation matrix</a>......Gene-sample mutational profiles.</li>
+"""
+    link_sv_nodata = """<li>SV graphs......No Data.</li>
+"""
+    link_mut_nodata = """<li>Mutation matrix......No Data.</li>
+"""
     import paplot.subcode.tools as tools
     import os
     
@@ -99,7 +120,16 @@ def create_index(output_dir, project_name, config):
     
     if os.path.exists(output_dir + "/" + project_name + "/graph_sv.html") == True:
         link_text += link_sv.format(project = project_name)
+        
+    elif os.path.exists(output_dir + "/" + project_name + "/data_sv.csv") == True:
+        link_text += link_sv_nodata
 
+    if os.path.exists(output_dir + "/" + project_name + "/graph_mut.html") == True:
+        link_text += link_mut.format(project = project_name)
+    
+    elif os.path.exists(output_dir + "/" + project_name + "/data_mut.csv") == True:
+        link_text += link_mut_nodata
+        
     f_html = open(output_dir + "/index.html", "w")
     f_html.write(
         html_template.format(project = project_name, 

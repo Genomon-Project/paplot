@@ -256,4 +256,9 @@ style_sv_detail = {
 	link_select_width: "3px",
 	link_select_opacity: 1.0,
 };
+
+// style of comut
+style_mut = {
+	func_title: "functions",
+};
 })();
