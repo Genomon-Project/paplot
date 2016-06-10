@@ -61,6 +61,9 @@ pa_plot qc "example/qc/*.csv" ~/tmp DUMMY --config_file example/example.cfg
 
 # create bundle graphs of Structural Variation (SV)
 pa_plot sv "example/sv/*.txt" ~/tmp DUMMY --config_file example/example.cfg
+
+# create sample-mutation plot (Mutation Matrix)
+pa_plot sv example/mutation/sample_merge.csv ~/tmp DUMMY --config_file example/example.cfg
 ```
 
 Description 
