@@ -4,7 +4,7 @@ Welcome to Post Analysis PLOT (PAPLOT).
 
 Paplot creates interactive graphs from text data of genome analysis.
 
-## Demo
+## 1. Demo
 
 Output example by PAPLOT.
 
@@ -12,7 +12,7 @@ http://genomon-project.github.io/paplot/
 
 -------------------------------------------------------------------------
 
-## 1. Documents
+## 2. Documents
 
 English:
 
@@ -25,7 +25,7 @@ http://paplot-jp.readthedocs.org/ja/latest/
 
 -------------------------------------------------------------------------
 
-## 2. Dependency
+## 3. Dependency
 
  - python >= 2.7
 
@@ -38,7 +38,7 @@ Required web browser for viewing result file.
 
 -------------------------------------------------------------------------
 
-## 3. Install
+## 4. Install
 
 ```
 git clone https://github.com/Genomon-Project/paplot.git
@@ -49,7 +49,7 @@ python setup.py build install --user
 
 -------------------------------------------------------------------------
 
-## 4. Run
+## 5. Run
 
 For example, (using sample data)
 
@@ -95,29 +95,23 @@ pa_plot {qc, sv} [-h] [--version] [--config_file CONFIG_FILE]
     configure file,<br>
     if not specified, use the default.
 
-## 5. Tree of output directory
+## 6. Tree of output directory
 
 <pre>
 {output_dir}
   ｜
   ├ {project_name}
-  ｜  ├ data_qc.csv
-  ｜  ├ data_qc.js
-  ｜  ├ data_sv.csv
-  ｜  ├ data_sv.js
-  ｜  ├ graph_sv.html
-  ｜  └ graph_qc.html
+  ｜  └ (data files and html files)
   ｜
   ├ js
-  ｜  ├ bundle_sv.js
-  ｜  ├ graph_qc.js
-  ｜  └ paplot.css
+  ｜  └ (paplot's js files)
+  ｜
   ├  lib
-  ｜  ├ crossfilter_v.1.3.12
-  ｜  ├ d3_v3.5.13
-  ｜  └ dc.js_v2.0.0-beta.25
+  ｜  └ (3rd-party's libraries)
+  ｜
   ├ style
   ｜  └ default.js
+  ｜
   └  index.html        <--------- open your browser
 
 </pre>
