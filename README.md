@@ -71,7 +71,7 @@ pa_plot {qc, sv} [-h] [--version] [--config_file CONFIG_FILE]
 
 ```
 
- - `{qc, sv}`
+ - `{qc, sv, mutation}`
  
     Sub commands
 
@@ -99,19 +99,19 @@ pa_plot {qc, sv} [-h] [--version] [--config_file CONFIG_FILE]
 
 <pre>
 {output_dir}
-  ｜
+  |
   ├ {project_name}
-  ｜  └ (data files and html files)
-  ｜
+  |  └ (data files and html files)
+  |
   ├ js
-  ｜  └ (paplot's js files)
-  ｜
+  |  └ (paplot's js files)
+  |
   ├  lib
-  ｜  └ (3rd-party's libraries)
-  ｜
+  |  └ (3rd-party's libraries)
+  |
   ├ style
-  ｜  └ default.js
-  ｜
+  |  └ default.js
+  |
   └  index.html        <--------- open your browser
 
 </pre>
