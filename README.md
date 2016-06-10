@@ -63,13 +63,13 @@ pa_plot qc "example/qc/*.csv" ~/tmp DUMMY --config_file example/example.cfg
 pa_plot sv "example/sv/*.txt" ~/tmp DUMMY --config_file example/example.cfg
 
 # create sample-mutation plot (Mutation Matrix)
-pa_plot sv example/mutation/sample_merge.csv ~/tmp DUMMY --config_file example/example.cfg
+pa_plot mutation example/mutation/sample_merge.csv ~/tmp DUMMY --config_file example/example.cfg
 ```
 
 Description 
 
 ```
-pa_plot {qc, sv} [-h] [--version] [--config_file CONFIG_FILE]
+pa_plot {qc, sv, mutation} [-h] [--version] [--config_file CONFIG_FILE]
                   input output_dir project_name
 
 ```
