@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-$Id: setup.py 67 2016-03-10 04:26:04Z aokada $
-$Rev: 67 $
+$Id: setup.py 114 2016-06-14 02:08:37Z aokada $
 """
 
 from setuptools import setup, find_packages

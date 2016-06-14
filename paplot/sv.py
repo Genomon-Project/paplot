@@ -4,7 +4,7 @@ Created on Wed Feb 03 12:31:47 2016
 
 @author: okada
 
-$Id: sv.py 94 2016-05-13 02:26:46Z aokada $
+$Id: sv.py 114 2016-06-14 02:08:37Z aokada $
 """
 
 ########### js template
@@ -397,11 +397,10 @@ def convert_tojs(input_file, output_file, positions, config):
     id_list = []
     links = ""
     
-    [section_in, section_out] = tools.get_section("qc")
     # read
     header = []
-    sept = ","
-    comment = tools.config_getstr(config, section_in, "comment")
+    sept = tools.config_getstr(config, "merge_format_sv", "sept")
+    comment = tools.config_getstr(config, "result_format_sv", "comment")
     
     for line in open(input_file):
         line = line.rstrip()

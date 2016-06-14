@@ -4,7 +4,7 @@ Created on Wed Dec 02 17:43:52 2015
 
 @author: okada
 
-$Id: qc.py 94 2016-05-13 02:26:46Z aokada $
+$Id: qc.py 114 2016-06-14 02:08:37Z aokada $
 """
 
 def convert_tojs(input_file, output_file, positions, config):
@@ -15,12 +15,11 @@ def convert_tojs(input_file, output_file, positions, config):
 function get_data_base() {{return base;}}
 """
     import paplot.subcode.tools as tools
-
-    [section_in, section_out] = tools.get_section("qc")
+    
     # read
     header = []
-    sept = ","
-    comment = tools.config_getstr(config, section_in, "comment")
+    sept = tools.config_getstr(config, "merge_format_qc", "sept")
+    comment = tools.config_getstr(config, "result_format_qc", "comment")
     
     names = {}
     for key in positions["must"]:

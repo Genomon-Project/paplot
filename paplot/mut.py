@@ -4,7 +4,7 @@ Created on Wed Mar 16 15:40:29 2016
 
 @author: okada
 
-$Id: mut.py 109 2016-06-02 06:59:42Z aokada $
+$Id: mut.py 114 2016-06-14 02:08:37Z aokada $
 """
 
 ########### js template
@@ -710,6 +710,7 @@ def value_to_index(li, value, default):
 def list_to_text(li):
     text = ""
     for item in li:
+        if item == "": item = "(blank)"
         text += "'" + str(item) + "',"
     return text
 
