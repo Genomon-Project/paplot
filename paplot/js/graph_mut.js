@@ -27,8 +27,8 @@ var func_flgs = {};
 var genes_length = 0;
 
 // figure options
-var BAR_TOP_AXIS_Y = 40;
-var BAR_LEFT_AXIS_Y = 50;
+var BAR_TOP_AXIS_Y = 50;
+var BAR_LEFT_AXIS_Y = 40;
 var MULTI_SELECT = false;
 var SPIN_WAIT = 200;
 
@@ -64,32 +64,41 @@ function update_div() {
 
     var margin_left = 100, margin_right = 100;
     
+    // width
     var w = (window.innerWidth - margin_left - margin_right)/(4+16+4);
+    var w_center = w*16;
+    var w_center_min = mut_data.Ids.length*6;
+    if (w_center_min > w_center) w_center = w_center_min;
+    
+    // height
     var cell = 12;
     var h = cell * genes_length + BAR_LEFT_AXIS_Y;
+    var w_side = w*4;
+    var w_side_min = 200;
+    if (w_side_min > w_side) w_side = w_side_min;
     
-    d3.select("#div_mut1").style("width", Math.floor(w*4) + "px");
-    d3.select("#div_mut1").style("height", Math.floor(w*4) + "px");
-    d3.select("#div_bar_top").style("width", Math.floor(w*16) + "px");
-    d3.select("#div_bar_top").style("height", Math.floor(w*4) + "px");
-    d3.select("#div_mut2").style("width", Math.floor(w*4) + "px");
-    d3.select("#div_mut2").style("height", Math.floor(w*4) + "px");
+    d3.select("#div_mut1").style("width", Math.floor(w_side) + "px");
+    d3.select("#div_mut1").style("height", Math.floor(w_side) + "px");
+    d3.select("#div_bar_top").style("width", Math.floor(w_center) + "px");
+    d3.select("#div_bar_top").style("height", Math.floor(w_side) + "px");
+    d3.select("#div_mut2").style("width", Math.floor(w_side) + "px");
+    d3.select("#div_mut2").style("height", Math.floor(w_side) + "px");
     
-    d3.select("#div_bar_left").style("width", Math.floor(w*4) + "px");
+    d3.select("#div_bar_left").style("width", Math.floor(w_side) + "px");
     d3.select("#div_bar_left").style("height", Math.floor(h) + "px");
-    d3.select("#div_checker").style("width", Math.floor(w*16) + "px");
+    d3.select("#div_checker").style("width", Math.floor(w_center) + "px");
     d3.select("#div_checker").style("height", Math.floor(h) + "px");
-    d3.select("#div_mut3").style("width", Math.floor(w*4) + "px");
+    d3.select("#div_mut3").style("width", Math.floor(w_side) + "px");
     d3.select("#div_mut3").style("height", Math.floor(h) + "px");
 
     var sub_h = 50;
     
     for (var i = 0; i < divs_sub.length; i++) {
-        d3.select("#" + divs_sub[i].id + "_t").style("width", Math.floor(w*4) + "px");
+        d3.select("#" + divs_sub[i].id + "_t").style("width", Math.floor(w_side) + "px");
         d3.select("#" + divs_sub[i].id + "_t").style("height", sub_h + "px");
-        d3.select("#" + divs_sub[i].id + "_p").style("width", Math.floor(w*16) + "px");
+        d3.select("#" + divs_sub[i].id + "_p").style("width", Math.floor(w_center) + "px");
         d3.select("#" + divs_sub[i].id + "_p").style("height", sub_h + "px");
-        d3.select("#" + divs_sub[i].id + "_l").style("width", Math.floor(w*4) + "px");
+        d3.select("#" + divs_sub[i].id + "_l").style("width", Math.floor(w_side) + "px");
         d3.select("#" + divs_sub[i].id + "_l").style("height", sub_h + "px");
     }
 }
@@ -195,6 +204,16 @@ function selection_retry() {
 // *********************************************
 // change view gene function
 // *********************************************
+
+function filter_sample() {
+    var text = d3.select("#viewsample_mutation_max").property("value");
+    if (text == "") {
+        div_mut_bar_top.set_bar_max(0);
+    }
+    else {
+        div_mut_bar_top.set_bar_max(parseInt(text));
+    }
+}
 
 function filter_gene() {
 

@@ -61,6 +61,15 @@ Generated on {date} for {project} by {version}.
     </section>
   </div>
 
+  <div style="margin-top:20;"><b>sample filter</b></div>
+  <div style="margin-left:20;">
+    <div style="height: 10px;" class="spacer"></div>
+    <section><b>Display maximum</b>
+      <input type="number" id="viewsample_mutation_max" name="viewgene_rate" min="0" step="1" value="" style="width:100px;" /> (Number of mutation)
+    </section>
+    <input type="button" value="update filter" onclick="filter_sample()" style="margin-top:10" />
+  </div>
+  
   <div style="margin-top:20;"><b>genes filter</b></div>
   <div style="margin-left:20;">
     <div>
@@ -69,7 +78,7 @@ Generated on {date} for {project} by {version}.
     </div>
     <div style="height: 10px;" class="spacer"></div>
     <section><b>Rate</b>
-      <input type="number" id="viewgene_rate" name="viewgene_rate" min="0" max="100" step="1" value="5" style="width:50px;" /> % (Samples with mutation)
+      <input type="number" id="viewgene_rate" name="viewgene_rate" min="0" max="100" step="1" value="0" style="width:50px;" /> % (Samples with mutation)
     </section>
     <section><b>Display maximum</b>
       <input type="number" id="viewgene_number" name="viewgene_number" min="1" step="1" value="100" style="width:100px;" /> genes
@@ -80,25 +89,30 @@ Generated on {date} for {project} by {version}.
 
 <div style="height: 50px;" class="spacer"></div>
 
-<div style="float: left; position: relative;" id="div_mut1"></div>
-<!-- bar top -->
-<div style="float: left; " id="div_bar_top"></div>
-<div style="float: left; padding:10px;" id="div_mut2"></div>
-
+<table>
+<tr>
+<td><div  id="div_mut1"></div></td>
+<td><!-- bar top --><div id="div_bar_top"></div></td>
+<td><div style="padding:10px;" id="div_mut2"></div></td>
+</tr>
 
 {sub1}
 
-<div style="float: left; height: 10px; width: 100%" class="spacer"></div>
-<!-- bar left -->
-<div style="float: left;" id="div_bar_left"></div>
-<!-- checker -->
-<div style="float: left;" id="div_checker"></div>
-<div style="float: left; padding-top:10px; padding-left:30px; overflow: auto;" id="div_mut3">
+<!-- spacer -->
+<tr height=10><td></td><td></td><td></td></tr>
+
+<tr>
+<td><!-- bar left --><div id="div_bar_left"></div></td>
+<td><!-- checker --><div id="div_checker"></div></td>
+<td><div style="padding-top:10px; padding-left:30px; overflow: auto;" id="div_mut3">
 <div id="legend_title"></div>
 {legend}
-</div>
+</div></td>
+</tr>
 
 {sub2}
+
+</table>
 
 <div style="float: left; width: 100px; height: 100px;" class="spacer"></div>
 </div>

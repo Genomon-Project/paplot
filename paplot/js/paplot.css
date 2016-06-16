@@ -13,10 +13,8 @@ padding-right: 15px;
 padding-left: 15px;
   margin-right: auto;
   margin-left: 100px;
-//  width: 1200px;
 }
 .link {
-//  marker-end: none;
 }
 .link.select {
 //  marker-end: url(#arrowhead);
@@ -121,7 +119,6 @@ li.hidden {
   left: 0px;
   padding: 15px;
   cursor: move;
-//  border: solid 1px red;
 }
 .float_move {
   position:relative;
@@ -214,15 +211,14 @@ button, input, optgroup, select, textarea {
   shape-rendering: crispEdges;
 }
 .legend_bar {
-//  display: inline-block;
   width: 15px;
   height: 10px;
   margin-left: 8px;
   margin-right: 5px;
 }
 .legend_label {
-//  display: inline-block;
   margin-right: 10px;
+  font-size: 12px;
 }
 .legend {
   display: inline-block;

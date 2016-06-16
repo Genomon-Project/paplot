@@ -26,8 +26,12 @@ tooltip_templete = "{{format:[{formats}], keys: '{keys}'}}"
 tooltip_detail_templete = "{{label:'{label}',type:'{type}',keys:[{keys}],ext:'{ext}'}},"
 
 js_mutations_1 = "mut_data.mutations = ["
-js_mutations_2 = "];"
+js_mutations_2 = """];
+mut_data.mutations_sum = {mutations_sum};
+"""
 mu_mutations_template = '[{ID},{func},{gene},{num},[{tooltip}]],'
+
+
 
 js_subdata_1 = "mut_data.subdata = ["
 js_subdata_2 = "];"
@@ -35,116 +39,26 @@ subdata_template = '{{name:"{name}",title:"{title}", type:"{type}",item:[{item}]
 subdata_data_template = '[{id},{item}],'
 
 js_function = """
-function calc_option(format, pos, mutation) {
+function calc_option(format, pos, sum, value) {
     
     var id = pos[0];
     var func = pos[1];
     var gene = pos[2];
     
     var obj = {id: mut_data.Ids[id], func: mut_data.funcs[func], gene: mut_data.genes[gene],
-        '#number_gene': mut_data.genes.length, '#number_id': mut_data.Ids.length, '#number_mutaion_all': mut_data.mutations.length
+        '#number_gene': mut_data.genes.length, 
+        '#number_id': mut_data.Ids.length, 
+        '#number_mutaion_all': mut_data.mutations.length, 
+        '#sum_mutaion_all': mut_data.mutations_sum,
+        '#sum_item_value': sum,
+        '#item_value': value,
     };
 
-    
-    var label = '#sum_mutaion_id';
-    if ((id != null) && (format.keys.indexOf('{' + label +'}') >= 0)) {
-        var data_filt = mut_data.mutations.filter(function(item, index){
-            if (item[0] == id) return true;
-        });
-        var sum = 0;
-        for (var d in data_filt) sum += data_filt[d][3];
-        obj[label] = sum;
-     }
-    
-    var label = '#number_mutaion_id';
-    if ((id != null) && (format.keys.indexOf('{' + label +'}') >= 0)) {
-        var data_filt = mut_data.mutations.filter(function(item, index){
-            if (item[0] == id) return true;
-        });
-        obj[label] = data_filt.length;
-     }
-    
-    var label = '#sum_mutaion_gene';
-    if ((gene != null) && (format.keys.indexOf('{' + label +'}') >= 0)) {
-        var data_filt = mut_data.mutations.filter(function(item, index){
-            if (item[2] == gene) return true;
-        });
-        var sum = 0;
-        for (var d in data_filt) sum += data_filt[d][3];
-        obj[label] = sum;
-     }
-    
-    var label = '#number_mutaion_gene';
-    if ((gene != null) && (format.keys.indexOf('{' + label +'}') >= 0)) {
-        var data_filt = mut_data.mutations.filter(function(item, index){
-            if (item[2] == gene) return true;
-        });
-        obj[label] = data_filt.length;
-     }
-    
-    var label = '#sum_item';
-    if (format.keys.indexOf('{' + label +'}') >= 0) {
-        if (mutation != null) {
-            var sum = 0;
-            for (var d in mutation) sum += mutation[d][3];
-            obj[label] = sum;
-        }
-        else if ((id != null) && (gene != null)){
-            var data_filt = mut_data.mutations.filter(function(item, index){
-                if ((item[0] == id) && (item[2] == gene)) return true;
-            });
-            var sum = 0;
-            for (var d in data_filt) sum += data_filt[d][3];
-            obj[label] = sum;
-        }
-        else if (id != null) {
-            var data_filt = mut_data.mutations.filter(function(item, index){
-                if (item[0] == id) return true;
-            });
-            var sum = 0;
-            for (var d in data_filt) sum += data_filt[d][3];
-            obj[label] = sum;
-        }
-        else if (gene != null) {
-            var data_filt = mut_data.mutations.filter(function(item, index){
-                if (item[2] == gene) return true;
-            });
-            var sum = 0;
-            for (var d in data_filt) sum += data_filt[d][3];
-            obj[label] = sum;
-        }
-    }
-    
-    var label = '#number_item';
-    if (format.keys.indexOf('{' + label +'}') >= 0) {
-        if (mutation != null) {
-            obj[label] = mutation.length;
-        }
-        else if ((id != null) && (gene != null)){
-            var data_filt = mut_data.mutations.filter(function(item, index){
-                if ((item[0] == id) && (item[2] == gene)) return true;
-            });
-            obj[label] = data_filt.length;
-        }
-        else if (id != null) {
-            var data_filt = mut_data.mutations.filter(function(item, index){
-                if (item[0] == id) return true;
-            });
-            obj[label] = data_filt.length;
-        }
-        else if (gene != null) {
-            var data_filt = mut_data.mutations.filter(function(item, index){
-                if (item[2] == gene) return true;
-            });
-            obj[label] = data_filt.length;
-        }
-    }
-    
     return obj;
 }
-function tooltip_title(format, pos) {
+function tooltip_title(format, pos, sum) {
     
-    var obj = calc_option(format, pos);
+    var obj = calc_option(format, pos, sum, 0);
     
     var tooltip = [];
     for (var t in format.format) {
@@ -153,9 +67,9 @@ function tooltip_title(format, pos) {
     return tooltip;
 };
 
-function tooltip_partial(format, pos, mutation, loop) {
+function tooltip_partial(format, pos, mutation, loop, value) {
     
-    var obj = calc_option(format, pos, mutation);
+    var obj = calc_option(format, pos, 0, value);
     
     var tooltip = [];
     for (var m in mutation) {
@@ -212,10 +126,10 @@ mut_data.get_dataset_id = function () {
     var data = [];
     var keys = [];
     var tooltips = {};
-   
+    var sum_par_id = [];
     for (var i=0; i < mut_data.Ids.length; i++) {
-        tooltips[mut_data.Ids[i]] = tooltip_title(mut_data.tooltip_format.id_title, [i, null, null]);
-        //tooltips[mut_data.Ids[i]] = [];
+        tooltips[mut_data.Ids[i]] = [];
+        sum_par_id[i] = 0;
     }
     
     // par func
@@ -236,10 +150,18 @@ mut_data.get_dataset_id = function () {
             if (sum > 0) {
                 data[f].push(sum);
                 keys[f].push(mut_data.Ids[i]);
-                tooltips[mut_data.Ids[i]].push(tooltip_partial(mut_data.tooltip_format.id_partial, [i, f, null], data_filt, false));
+                tooltips[mut_data.Ids[i]].push(tooltip_partial(mut_data.tooltip_format.id_partial, [i, f, null], data_filt, false, sum));
+                sum_par_id[i] += sum;
             }
         }
     }
+    for (var i=0; i < mut_data.Ids.length; i++) {
+        title = tooltip_title(mut_data.tooltip_format.id_title, [i, null, null], sum_par_id[i]);
+        for (var t = 0; t < title.length; t++) {
+            tooltips[mut_data.Ids[i]].splice(t, 0, title[t]);
+        }
+    }
+    
     var tooltips_ex = [];
     for (var f=0; f < keys.length; f++) {
         tooltips_ex[f] = [];
@@ -271,10 +193,15 @@ mut_data.get_dataset_checker = function (func_flgs, use_genes) {
             if (use_genes.indexOf(mut_data.genes[data[2]]) < 0) continue;
             
             if (tooltips_matrix[data[0]][mut_data.genes[data[2]]] == null) {
-                tooltips_matrix[data[0]][mut_data.genes[data[2]]] = tooltip_title(mut_data.tooltip_format.checker_title, [data[0], null, data[2]]);
-                //tooltips_matrix[data[0]][mut_data.genes[data[2]]] = [];
+                var data_filt = mut_data.mutations.filter(function(item, index){
+                    if ((item[0] == data[0]) && (item[2] == data[2])) return true;
+                });
+                
+                var sum = 0;
+                for (var d in data_filt) sum += data_filt[d][3];
+                tooltips_matrix[data[0]][mut_data.genes[data[2]]] = tooltip_title(mut_data.tooltip_format.checker_title, [data[0], null, data[2]], sum);
             }
-            var texts = tooltip_partial(mut_data.tooltip_format.checker_partial, [data[0],data[1],data[2]], [data], true);
+            var texts = tooltip_partial(mut_data.tooltip_format.checker_partial, [data[0],data[1],data[2]], [data], true, 1);
             for (var t in texts) {
                 tooltips_matrix[data[0]][mut_data.genes[data[2]]].push(texts[t]);
             }
@@ -389,39 +316,37 @@ mut_data.get_dataset_gene = function (func_flgs, gene_th, gene_max, sort_name_y,
 
     var gene_ids = [];
     var tooltips = {};
-    for (var g=0; g < mut_data.genes.length; g++) {
-        gene_ids[g] = [];
-
-        if (ex_genes.names.indexOf(mut_data.genes[g]) < 0) continue;
-        tooltips[mut_data.genes[g]] =  tooltip_title(mut_data.tooltip_format.gene_title, [null, null, g]);
-        
+    for (var ex_g=0; ex_g < ex_genes.names.length; ex_g++) {
+        var g = mut_data.genes.indexOf(ex_genes.names[ex_g]);
+        gene_ids[ex_g] = [];
+        tooltips[ex_genes.names[ex_g]] = tooltip_title(mut_data.tooltip_format.gene_title, [null, null, g], ex_genes.values[ex_g]);
     }
     
     // par func
     for (var f=0; f < mut_data.funcs.length; f++) {
         if (func_flgs[mut_data.funcs[f]] == false) continue;
         // par gene
-        for (var g=0; g < mut_data.genes.length; g++) {
-            if (ex_genes.names.indexOf(mut_data.genes[g]) < 0) continue;
+        for (var ex_g=0; ex_g < ex_genes.names.length; ex_g++) {
+            var g = mut_data.genes.indexOf(ex_genes.names[ex_g]);
             var data_filt = mut_data.mutations.filter(function(item, index){
                 if ((item[2] == g) && (item[1] == f)) return true;
             });
             var sum = 0;
             // par data
             for (var d=0; d < data_filt.length;d++) {
-                if (gene_ids[g].indexOf(data_filt[d][0]) >= 0) continue;
-                gene_ids[g].push(data_filt[d][0]);
+                if (gene_ids[ex_g].indexOf(data_filt[d][0]) >= 0) continue;
+                gene_ids[ex_g].push(data_filt[d][0]);
                 sum = sum + 1;
             }
             if (sum > 0) {
                 var value = sum * 100.0 / mut_data.Ids.length;
                 
                 gene_nums[f].push(value);
-                genes[f].push(mut_data.genes[g]);
+                genes[f].push(ex_genes.names[ex_g]);
                 
-                var texts = tooltip_partial(mut_data.tooltip_format.gene_partial, [null, f, g], data_filt, false);
+                var texts = tooltip_partial(mut_data.tooltip_format.gene_partial, [null, f, g], data_filt, false, sum);
                 for (var t in texts) {
-                    tooltips[mut_data.genes[g]].push(texts[t]);
+                    tooltips[ex_genes.names[ex_g]].push(texts[t]);
                 }
             }
         }
@@ -656,30 +581,31 @@ if (String.prototype.format == undefined) {
         return this.replace(/\{(\w+:?[A-Za-z0-9,.]+)\}/g, rep_fn);
     }
 }
+
 """
 ########### html template
 subplot_template = """
 <!-- sub bar -->
-<div style="float: left; position: relative;" id="div_sub{i}_t">
-    <div style="position: absolute; right: 0;"><b>{title}</b>
+<tr>
+<td><div id="div_sub{i}_t"><b>{title}</b>
       <section>
         <input type="radio" name="optSub{i}" value="0" id="xSub{i}_0" onclick="sort_sub({i}, 0)" checked /><label for="xSub{i}_0" class="radio">none</label>
         <input type="radio" name="optSub{i}" value="1" id="xSub{i}_1" onclick="sort_sub({i}, 1)" />        <label for="xSub{i}_1" class="radio">ASC </label>
         <input type="radio" name="optSub{i}" value="2" id="xSub{i}_2" onclick="sort_sub({i}, 2)" />        <label for="xSub{i}_2" class="radio">DESC</label>
       </section>
-    </div>
-</div> 
-<div style="float: left;" id="div_sub{i}_p"></div>
-<div style="float: left; overflow: auto;" id="div_sub{i}_l">
+</div></td>
+<td><div id="div_sub{i}_p"></div></td>
+<td><div style="overflow: auto;" id="div_sub{i}_l">
     {sub_legend}    
-</div>
+</div></td>
+</tr>
 """
 
 sub_legend_template = """
     <div class="legend"><div id="sub{i}_legend{n}" class="legend legend_bar"></div><div id="sub{i}_legend{n}_text" class="legend legend_label"></div></div>"""
 
 legend_template = """
-    <div><input type="checkbox" id="v{n}" onclick="change_stack('v{n}', '{text}')" checked><div id="legend{n}" class="legend legend_bar"></div><div id="legend{n}_text" class="legend legend_label">text</div></div>"""
+    <div><input type="checkbox" id="v{n}" onclick="change_stack('v{n}', '{text}')" checked><div id="legend{n}" class="legend legend_bar"></div><div id="legend{n}_text" class="legend legend_label"></div></div>"""
 
 js_set_legend_template = """
     d3.select("#legend{n}").style("background-color", "{color}");
@@ -710,7 +636,6 @@ def value_to_index(li, value, default):
 def list_to_text(li):
     text = ""
     for item in li:
-        if item == "": item = "(blank)"
         text += "'" + str(item) + "',"
     return text
 
@@ -786,6 +711,7 @@ def funcs_list(colmun, config):
         
         for func in splt:
             func = func.strip()
+            
             if func == "": continue
             if len(limited_list) > 0:
                 if (func in limited_list) == False: continue   
@@ -919,6 +845,14 @@ def convert_tojs(input_file, output_file, positions, config):
         print ("no data %s" % input_file)
         return None
 
+    # func replace 
+    for f in range(len(df.data)):
+        func_pos = df.name_to_index(cols_di["func"])
+        func = df.data[f][func_pos]
+        df.data[f][func_pos] = func.replace(" ", "_")
+        if func == "":
+            df.data[f][func_pos] = "(blank)"
+
     [funcs, colors_n, colors_h] = funcs_list(df.column(cols_di["func"]), config)
 
     # ID list
@@ -993,6 +927,7 @@ def convert_tojs(input_file, output_file, positions, config):
 
                 tooltips[iid][func][gene].append(tooltip_items)
 
+    mutations_sum = 0
     for iid in mutations:
         for func in mutations[iid]:
             for gene in mutations[iid][func]:
@@ -1011,8 +946,10 @@ def convert_tojs(input_file, output_file, positions, config):
                         gene = idx_g, \
                         num = mutations[iid][func][gene],
                         tooltip = tooltip_items))
-    
-    f.write(js_mutations_2 + "\n")
+                        
+                    mutations_sum += mutations[iid][func][gene]
+                    
+    f.write(js_mutations_2.format(mutations_sum = mutations_sum))
     
     dataset = {"func":funcs, "color":colors_n}
     
@@ -1241,6 +1178,4 @@ def create_html(dataset, output_html_dir, org_html, project_name, config):
     f_html.close()
     
 if __name__ == "__main__":
-    
-    [config, conf_file] = tools.load_config(tools.win_to_unix("C:\cygwin\home\okada\svn/feature\trunk\paplot\paplot.cfg"))
-    convert_tojs(tools.win_to_unix("C:\cygwin\home\okada\svn\feature\trunk\paplot\paplot\data\merge_mutation_filt_pair_controlpanel_30.csv"), "data_comut.js", config)
+    pass

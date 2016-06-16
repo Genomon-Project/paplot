@@ -24,6 +24,7 @@ var mut_bar = (function()
             grid_xs: [],
             grid_y: 0,
             titles: [],
+            tall_limit: 0,
         };
 
         // don't touch
@@ -510,6 +511,8 @@ var mut_bar = (function()
         }
         var max =  Math.max.apply(null, sum_array);
         if (max == 0) max = 1;
+        y_size = max
+        if ((this.tall_limit > 0) && (max > this.tall_limit)) y_size = this.tall_limit;
         
         // bar
         var y = "y";
@@ -524,19 +527,24 @@ var mut_bar = (function()
         }
         for (var idx=0; idx < this.dataset.length; idx++) {
             this.svg_obj.selectAll("g." + this.dataset[idx].name).selectAll("rect")
-                    .attr(y, function(d, i) {
-                        var base = p.bar_base(that.dataset, idx, that.dataset[idx].keys[i]);
-                        if (that.asc.value == true) {
-                            return padding1 + (base) * plot1 / max;
-                        }
-                        return padding1 + plot1 - ((d + base) * plot1 / max);
-                    })
-                    .attr(height, function(d) {
-                        if (that.dataset[idx].enable == false) {
-                            return 0;
-                        }
-                        return (d * plot1 / max);
-                    });
+                .attr(y, function(d, i) {
+                    var base = p.bar_base(that.dataset, idx, that.dataset[idx].keys[i]);
+                    if (that.asc.value == true) {
+                        if (base > y_size) return padding1 + plot1;
+                        return padding1 + (base) * plot1 / y_size;
+                    }
+                    if ((d + base) > y_size) return padding1;
+                    return padding1 + plot1 - ((d + base) * plot1 / y_size);
+                })
+                .attr(height, function(d, i) {
+                    if (that.dataset[idx].enable == false) {
+                        return 0;
+                    }
+                    var base = p.bar_base(that.dataset, idx, that.dataset[idx].keys[i]);
+                    if (base > y_size) return 0;
+                    if ((d + base) > y_size) return ((y_size-base) * plot1 / y_size);
+                    return (d * plot1 / y_size);
+                });
         }
         
         // y-axis
@@ -567,7 +575,7 @@ var mut_bar = (function()
             }
             
             var y_scale = d3.scale.linear()
-                .domain([0, max])   // original
+                .domain([0, y_size])   // original
                 .range(y_range);
             
             this.svg_obj.selectAll("g.axis")
@@ -583,7 +591,14 @@ var mut_bar = (function()
                 .style("stroke-opacity", this.options.grid_y.border_opacity);
         }
     }
-        
+
+    // -----------------------------------
+    // set bar's max height
+    // -----------------------------------
+    p.set_bar_max = function(limit) {
+        this.tall_limit = limit;
+        this.change_stack();
+    }
     // -----------------------------------
     // update
     // -----------------------------------
