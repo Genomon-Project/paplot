@@ -222,6 +222,7 @@ function filter_gene() {
     timer = setTimeout(function() {
         filter_gene_exec();
         d3.select("#spin").classed("hidden", true);
+        clearTimeout(timer);
     }, SPIN_WAIT);
     
 }
@@ -305,6 +306,7 @@ function change_stack(id, name) {
     timer = setTimeout(function() {
         change_stack_exec(id, name);
         d3.select("#spin").classed("hidden", true);
+        clearTimeout(timer);
     }, SPIN_WAIT);
 }
 
@@ -610,6 +612,7 @@ function sort_waterfall() {
     timer = setTimeout(function() {
         sort_waterfall_exec();
         d3.select("#spin").classed("hidden", true);
+        clearTimeout(timer);
     }, SPIN_WAIT);
 }
 
