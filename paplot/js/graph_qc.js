@@ -8,12 +8,12 @@ var chart_duplicate = dc.barChart('#chart_duplicate');
 var chart_length = dc.barChart('#chart_length'); 
 
 var data = get_data_base();
-render(sort_by(data, "ID"));
+render(sort_by(data, "id"));
 
 d3.selectAll('#select input').on('click', function() {
 	if (this.value == "name"){
 		reset();
-		render(sort_by(data, "ID"));
+		render(sort_by(data, "id"));
 	}
 	else if (this.value == "val"){
 		reset();
@@ -69,7 +69,7 @@ function render(data) {
 		var dd = dateFormat.parse(String(i+idx_start));
 		var year = d3.time.year(dd);
 		data[i].year = year;
-		IDs.push(data[i].ID);
+		IDs.push(data[i].id);
 	}
 	
 	// ##### Dimension by index (year)
@@ -86,7 +86,7 @@ function render(data) {
 			
 			p.average_depth += v.average_depth;
 			p.count += 1;
-			p.ID += v.ID;
+			p.id += v.id;
 			
 			p.read_length_r1 += v.read_length_r1;
 			p.read_length_r2 += v.read_length_r2;
@@ -104,7 +104,7 @@ function render(data) {
 			
 			p.average_depth -= v.average_depth;
 			p.count -= 1;
-			p.ID -= v.ID;
+			p.id -= v.id;
 			
 			p.read_length_r1 -= v.read_length_r1;
 			p.read_length_r2 -= v.read_length_r2;
@@ -123,7 +123,7 @@ function render(data) {
 				
 				average_depth: 0,
 				count: 0,
-				ID: "",
+				id: "",
 				
 				read_length_r1: 0,
 				read_length_r2: 0,
@@ -229,7 +229,7 @@ function render(data) {
 			.autoItemWidth(true)
 		)
 		.title(function(d) {
-	    	return "ID: " + d.value.ID + "\n" +
+	    	return "ID: " + d.value.id + "\n" +
 	    	"ratio_2x: " + numberFormat(d.value.ratio_2x + d.value.ratio_10x + d.value.ratio_20x + d.value.ratio_30x) + "\n" +
 	    	"ratio_10x: " + numberFormat(d.value.ratio_10x + d.value.ratio_20x + d.value.ratio_30x) + "\n" +
 	    	"ratio_20x: " + numberFormat(d.value.ratio_20x + d.value.ratio_30x) + "\n" +
@@ -277,7 +277,7 @@ function render(data) {
 			.autoItemWidth(true)
 		)
 	    .title(function(d) {
-	    	return "ID: " + d.value.ID + "\n" +
+	    	return "ID: " + d.value.id + "\n" +
 	    	"depth average: " + numberFormat(d.value.average_depth);
 	    })
 		.ordinalColors([style_qc.bar_average_color])
@@ -322,7 +322,7 @@ function render(data) {
 			.autoItemWidth(true)
 		)
 	    .title(function(d) {
-	    	return "ID: " + d.value.ID + "\n" +
+	    	return "ID: " + d.value.id + "\n" +
 	    	"mapped_reads rate: " + numberFormat(d.value.mapped);
 	    })
 		.ordinalColors([style_qc.bar_mapped_color])
@@ -367,7 +367,7 @@ function render(data) {
 			.autoItemWidth(true)
 		)
 	    .title(function(d) {
-	    	return "ID: " + d.value.ID + "\n" +
+	    	return "ID: " + d.value.id + "\n" +
 	    	"mean_insert_size: " + numberFormat(d.value.mean_insert_size);
 	    })
 		.ordinalColors([style_qc.bar_insert_color])
@@ -412,7 +412,7 @@ function render(data) {
 			.autoItemWidth(true)
 		)
 	    .title(function(d) {
-	    	return "ID: " + d.value.ID + "\n" +
+	    	return "ID: " + d.value.id + "\n" +
 	    	"duplicate_reads rate: " + numberFormat(d.value.duplicate_reads);
 	    })
 		.ordinalColors([style_qc.bar_duplicate_color])
@@ -460,7 +460,7 @@ function render(data) {
 			.autoItemWidth(true)
 		)
 	    .title(function(d) {
-	    	return "ID: " + d.value.ID + "\n" +
+	    	return "ID: " + d.value.id + "\n" +
 	    	"read_length_r1: " + numberFormat(d.value.read_length_r1) + "\n" +
 	    	"read_length_r2: " + numberFormat(d.value.read_length_r2);
 	    })

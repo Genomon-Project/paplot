@@ -4,15 +4,14 @@ Created on Wed Dec 02 17:43:52 2015
 
 @author: okada
 
-$Id: pa_plot 78 2016-04-04 09:17:45Z aokada $
-$Rev: 78 $
+$Id: pa_plot 111 2016-06-08 02:04:29Z aokada $
 """
 
 def main():
     import paplot
     import sys
 
-    message = "$ paplot\nusage: pa_plot {qc, sv, conf} OPTIONS"
+    message = "$ paplot\nusage: pa_plot {qc, sv, mutation, conf} OPTIONS"
 
     if len(sys.argv) < 2:
         print (message)
@@ -25,6 +24,8 @@ def main():
             paplot.run_qc.main(sys.argv[2:len(sys.argv)])
         elif mode == "sv":
             paplot.run_sv.main(sys.argv[2:len(sys.argv)])
+        elif mode == "mutation":
+            paplot.run_mut.main(sys.argv[2:len(sys.argv)])
         else:
             print (message)
 

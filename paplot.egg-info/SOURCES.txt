@@ -3,14 +3,15 @@ paplot
 setup.cfg
 setup.py
 paplot/__init__.py
-paplot/data_frame.py
+paplot/color.py
+paplot/mut.py
 paplot/prep.py
 paplot/qc.py
 paplot/run_conf.py
+paplot/run_mut.py
 paplot/run_qc.py
 paplot/run_sv.py
 paplot/sv.py
-paplot/tools.py
 paplot.egg-info/PKG-INFO
 paplot.egg-info/SOURCES.txt
 paplot.egg-info/SOURCES.txt.skrold
@@ -18,3 +19,7 @@ paplot.egg-info/dependency_links.txt
 paplot.egg-info/entry_points.txt
 paplot.egg-info/not-zip-safe
 paplot.egg-info/top_level.txt
+paplot/subcode/__init__.py
+paplot/subcode/data_frame.py
+paplot/subcode/merge.py
+paplot/subcode/tools.py

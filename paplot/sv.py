@@ -4,7 +4,7 @@ Created on Wed Feb 03 12:31:47 2016
 
 @author: okada
 
-$Id: sv.py 81 2016-04-07 08:31:10Z aokada $
+$Id: sv.py 114 2016-06-14 02:08:37Z aokada $
 """
 
 ########### js template
@@ -353,19 +353,6 @@ def calc_node_size(genome_size, total):
         size = _min - 1
 
     return size
-        
-def load_csv(input_file):
-    import paplot.subcode.data_frame as data_frame
-
-    # data read
-    try:
-        df = data_frame.load_file(input_file, sept = ",", header = 1)
-
-    except Exception as e:
-        print ("failure open data %s, %s" % (input_file, e.message))
-        return None
-    
-    return df
 
 def insite_genome(genome_size, Chr, pos):
     # return [i,   0] : insite
@@ -384,21 +371,16 @@ def insite_genome(genome_size, Chr, pos):
     
     return [-1, -1]
 
-def output_html(input_file, output_js_file, output_html_dir, org_html, project_name, config):
-    id_list = convert_tojs(input_file, output_js_file, config)
+def output_html(input_file, output_js_file, output_html_dir, org_html, project_name, positions, config):
+    id_list = convert_tojs(input_file, output_js_file, positions, config)
     if len(id_list) > 0:
         create_html(id_list, output_html_dir, org_html, project_name, config)
-        
-def convert_tojs(input_file, output_file, config):
-
-    df = load_csv(input_file)
-    if df == None:
-        return []
-        
-    if len(df.data) == 0:
-        print ("skip blank file %s" % input_file)
-        return []
-        
+        return True
+    
+    return False
+    
+def convert_tojs(input_file, output_file, positions, config):
+    
     genome_size = load_genome_size(config)
     if len(genome_size) == 0:
         return []
@@ -414,16 +396,35 @@ def convert_tojs(input_file, output_file, config):
     
     id_list = []
     links = ""
-    for row in df.data:
+    
+    # read
+    header = []
+    sept = tools.config_getstr(config, "merge_format_sv", "sept")
+    comment = tools.config_getstr(config, "result_format_sv", "comment")
+    
+    for line in open(input_file):
+        line = line.rstrip()
+        if len(line.replace(sept, "")) == 0:
+            continue
+        
+        if comment != "" and line.find(comment) == 0:
+            continue
+        
+        if len(header) == 0:
+            header = line.split(sept)
+            continue
+        
+        data = line.split(sept)
+        
         try:
             colname="chr1"
-            chr1 = str(row[df.name_to_index("chr1")])
+            chr1 = data[header.index(positions["must"]["chr1"])]
             colname="chr2"            
-            chr2 = str(row[df.name_to_index("chr2")])
+            chr2 = data[header.index(positions["must"]["chr2"])]
             colname="breakpoint1"
-            pos1 = int(row[df.name_to_index("break1")])
+            pos1 = int(data[header.index(positions["must"]["break1"])])
             colname="breakpoint2"
-            pos2 = int(row[df.name_to_index("break2")])
+            pos2 = int(data[header.index(positions["must"]["break2"])])
         except Exception as e:
             print(colname + ": data type is invalid.\n" + e.message)
             continue
@@ -450,19 +451,21 @@ def convert_tojs(input_file, output_file, config):
             inter_flg = "true"
             if abs(pos2 - pos1) < snippet_th:
                 for t in snippet_type:
-                    if row[df.name_to_index("type")].lower() == t:
+                    if data[header.index(positions["option"]["type"])].lower() == t:
                         snippet_flg = "true"
                         break
         
         if len(links) > 0:
             links += ",\n"
             
-        links += links_template.format(ID=row[df.name_to_index("id")], \
-            Chr1=index1, pos1=pos1, dir1=row[df.name_to_index("dir1")], name1=row[df.name_to_index("gene_name1")], \
-            Chr2=index2, pos2=pos2, dir2=row[df.name_to_index("dir2")], name2=row[df.name_to_index("gene_name2")], \
-            ttype=row[df.name_to_index("type")], inter_flg=inter_flg, snippet_flg=snippet_flg)
+        links += links_template.format(ID=data[header.index(positions["option"]["id"])], \
+            Chr1=index1, pos1=pos1, dir1=data[header.index(positions["option"]["dir1"])], \
+            name1=data[header.index(positions["option"]["gene_name1"])], \
+            Chr2=index2, pos2=pos2, dir2=data[header.index(positions["option"]["dir2"])], \
+            name2=data[header.index(positions["option"]["gene_name2"])], \
+            ttype=data[header.index(positions["option"]["type"])], inter_flg=inter_flg, snippet_flg=snippet_flg)
             
-        id_list.append(row[df.name_to_index("id")])
+        id_list.append(data[header.index(positions["option"]["id"])])
     
     id_list_sort = list(set(id_list))
     id_list_sort.sort()

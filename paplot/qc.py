@@ -4,49 +4,54 @@ Created on Wed Dec 02 17:43:52 2015
 
 @author: okada
 
-$Id: qc.py 81 2016-04-07 08:31:10Z aokada $
+$Id: qc.py 114 2016-06-14 02:08:37Z aokada $
 """
 
-def convert_tojs(input_file, output_file):
+def convert_tojs(input_file, output_file, positions, config):
     
     js_template = """var base = [
 {data}
 ];
 function get_data_base() {{return base;}}
 """
-    import paplot.subcode.data_frame as data_frame
-
-    # data read
-    try:
-        df = data_frame.load_file(input_file, sept = ",", header = 1)
-
-    except Exception as e:
-        print ("failure open data %s, %s" % (input_file, e.message))
-        return None
-        
-    if len(df.data) == 0:
-        print ("skip blank file %s" % input_file)
-        return False
+    import paplot.subcode.tools as tools
+    
+    # read
+    header = []
+    sept = tools.config_getstr(config, "merge_format_qc", "sept")
+    comment = tools.config_getstr(config, "result_format_qc", "comment")
+    
+    names = {}
+    for key in positions["must"]:
+        names[positions["must"][key]] = key
+    for key in positions["option"]:
+        names[positions["option"][key]] = key
     
     data_text = ""
-    for i in range(len(df.data)):
+    for line in open(input_file):
+
+        line = line.rstrip()
+        if len(line.replace(sept, "")) == 0:
+            continue
+        
+        if comment != "" and line.find(comment) == 0:
+            continue
+        
+        if len(header) == 0:
+            header = line.split(sept)
+            continue
+        
+        data = line.split(sept)
+        
         item_text = "{"
-        for j in range(len(df.data[i])):
-            col_name = df.title[j]
-            ratio = col_name.split("x_ratio")
-            val = str(df.data[i][j]);
-            if val == "":
-                val = "0"
-                
-            if col_name == "id":
-                item_text += 'ID:"' + str(df.data[i][j]) + '",'
-            elif len(ratio) == 2:
-                item_text += 'ratio_%sx:' % (ratio[0]) + val + ','
+        for i in range(len(data)):
+            if names[header[i]] == "id":
+                item_text += names[header[i]] + ':"' + data[i] + '",'
             else:
-                item_text += col_name + ':' + val + ','
-                
+                item_text += names[header[i]] + ':' + data[i] + ','
+            
         data_text += item_text + "},\n"
-    
+
     f = open(output_file, "w")
     f.write(js_template.format(data=data_text))
     f.close()

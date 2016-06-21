@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 """
-$Id: setup.py 67 2016-03-10 04:26:04Z aokada $
-$Rev: 67 $
+$Id: setup.py 114 2016-06-14 02:08:37Z aokada $
 """
 
 from setuptools import setup, find_packages
 
-version = '0.2.8'
+version = '0.3.0'
 
 setup(name='paplot',
       version=version,
@@ -16,8 +15,8 @@ parser result files created by genomon (SV, mutaion-call and so on)""",
       classifiers=[], # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
       keywords='genomon post analysis',
       author='aokada',
-      author_email='genomon_team@gamil.com',
-      url='https://github.com/Genomon-Project/Genomon.git',
+      author_email='genomon.devel@gmail.com',
+      url='https://github.com/Genomon-Project/paplot.git',
       license='GPL-3',
       packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
       scripts=['pa_plot'],

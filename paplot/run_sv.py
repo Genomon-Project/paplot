@@ -4,7 +4,7 @@ Created on Wed Dec 02 17:43:52 2015
 
 @author: okada
 
-$Id: run_sv.py 81 2016-04-07 08:31:10Z aokada $
+$Id: run_sv.py 84 2016-04-22 00:43:25Z aokada $
 """
 prog = "pa_plot sv"
 
@@ -45,13 +45,12 @@ def main(argv):
     
     # dirs
     output_html_dir = prep.create_dirs(tools.win_to_unix(args.output_dir), args.project_name, config)
-        
-    ret = merge.merge_result(input_list, id_list, output_html_dir + "/merge_sv.csv", "sv", config)
-    if merge.extract_result(output_html_dir + "/merge_sv.csv", output_html_dir + "/data_sv.csv", ret, "sv", config) == False:
-        print ("prep.extract_result: input file is invalid.")
+    positions = merge.merge_result(input_list, id_list, output_html_dir + "/data_sv.csv", "sv", config, extract = True)
+    if positions == {}:
+        print ("merge.merge_result: input file is invalid.")
         return
     sv.output_html(output_html_dir + "/data_sv.csv", output_html_dir + "/data_sv.js", \
-                output_html_dir, "graph_sv.html", args.project_name, config)
+                output_html_dir, "graph_sv.html", args.project_name, positions, config)
     
     prep.create_index(args.output_dir,  args.project_name, config)
     

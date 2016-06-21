@@ -4,12 +4,24 @@ Created on Wed Dec 02 17:43:52 2015
 
 @author: okada
 
-$Id: merge.py 82 2016-04-11 08:48:18Z aokada $
+$Id: merge.py 107 2016-05-26 08:24:48Z aokada $
 """
 
 import tools
-import data_frame
 
+def _split_char(mode, config):
+    [section_in, section_out] = tools.get_section(mode)
+    sept_in = config.get(section_in, "sept")
+    sept_out= config.get(section_out, "sept")
+    
+    if sept_in == sept_out:
+        return ["", ""]
+        
+    if sept_in == ";" and sept_out == ",":
+            return [",", " "]
+        
+    return [",", ";"]
+    
 def load_potisions(mode, config):
 
     [section_in, section_out] = tools.get_section(mode)
@@ -44,14 +56,19 @@ def _load_option(mode, config):
     header = config.getboolean(section_in, "header")
     if header < 0:
         header = 0
-    sept = config.get(section_in, "sept")
+    sept = config.get(section_in, "sept").replace("\\t", "\t").replace("\\n", "\n").replace("\\r", "\r")
     comment = tools.config_getstr(config, section_in, "comment")
     lack = tools.config_getstr(config, section_out, "lack_column_complement")
+    suffix = tools.config_getstr(config, section_in, "suffix")
+    suffix_filt = tools.config_getstr(config, section_in, "suffix_filt")
+    sept_out = config.get(section_out, "sept").replace("\\t", "\t").replace("\\n", "\n").replace("\\r", "\r")
     
     # return option dict
-    return {"header": header, "sept": sept, "comment": comment, "lack": lack}
+    return {"header": header, "sept": sept, "comment": comment, "lack": lack, "suffix": suffix, "suffix_filt": suffix_filt, "sept_out":sept_out}
     
 def _merge_metadata(files, option):
+
+    import os
 
     # read all file's meta-data
     meta_data = []
@@ -93,35 +110,61 @@ def _merge_metadata(files, option):
                 f_text = ""
                 for f in values[key]:
                     if len(f_text) > 0:
-                        f_text += ","
-                    f_text += f
+                        f_text += ";"
+                    f_text += os.path.basename(f).replace(option["suffix"], "").replace(option["suffix_filt"], "")
                 meta_text += ":" + f_text
             meta_text += "\n"
     
     return meta_text
 
-def _merge_title(files, option):
+def _merge_title(files, mode, option, config):
 
     if option["header"] == False:
         return []
         
     # titles
-    titles = []
+    [rep1, rep2] = _split_char(mode, config)
+    merged_title = []
     for file_path in files:
-        try:
-            title = data_frame.load_title(file_path, sept = option["sept"], header = option["header"], comment = option["comment"])
-        except Exception as e:
-            print ("failure open data %s, %s" % (file_path, e.message))
-            continue
+        title = []
+        for line in open(file_path):
+            
+            line = line.rstrip()
+            if len(line.replace(option["sept"], "")) == 0:
+                continue
+            
+            if len(option["comment"]) > 0 and line.find(option["comment"]) == 0:
+                continue
+                
+            title = line.replace(rep1, rep2).split(option["sept"])
+            break
         
         for col in title:
-            if (col in titles) == False:
-                titles.append(col)
+            if (col in merged_title) == False:
+                merged_title.append(col)
     
-    return titles
+    return merged_title
 
-def merge_result(files, ids, output_file, mode, config):
+def merge_result(files, ids, output_file, mode, config, extract = False):
 
+    [section_in, section_out] = tools.get_section(mode)
+    
+    if tools.config_getboolean(config, section_in, "header") == True:
+        return with_header(files, ids, output_file, mode, config, extract)
+    else:
+        return with_noheader(files, ids, output_file, mode, config, extract)
+    
+def with_header(files, ids, output_file, mode, config, extract = False):
+
+    def calc_map(header, all_header):
+        mapper = [-1]*len(all_header)
+        for i in range(len(all_header)):
+            if all_header[i] in header:
+                mapper[i] = header.index(all_header[i])
+            else:
+                mapper[i] = -1
+        return mapper
+        
     import os
 
     if len(files) == 0:
@@ -129,199 +172,204 @@ def merge_result(files, ids, output_file, mode, config):
         
     for file_path in files:
         if os.path.exists(file_path) == False:
-            print ("[WARNING] file is not exist. %s" % file_path)
+            print ("[ERROR] file is not exist. %s" % file_path)
             files.remove(file_path)
             continue 
     
     option = _load_option(mode, config)
+    if option["header"] == False:
+        print ("[ERROR] header is necessary for this function.")
+        return {}
+        
     meta_text = _merge_metadata(files, option)
-    titles = _merge_title(files, option)
+
     positions = load_potisions(mode, config)
+    
+    if extract == False:
+        titles = _merge_title(files, mode, option, config)
+    else:
+        titles = []
+        for key in positions["must"]:
+            titles.append(positions["must"][key])
+        for key in positions["option"]:
+            titles.append(positions["option"][key])
 
     # update positions to merged title
-    if option["header"] == True:
-        if ("id" in positions["option"]) == False:
-            positions["option"]["id"] = "id"
-        if (positions["option"]["id"] in titles) == False:
-            titles.insert(0, positions["option"]["id"])
+    if ("id" in positions["option"]) == False:
+        positions["option"]["id"] = "id"
+    if (positions["option"]["id"] in titles) == False:
+        titles.insert(0, positions["option"]["id"])
 
-    else:
-        add_ID = False
-        if ("id" in positions["option"]) == False:
-            add_ID = True
-
-            for key in positions["must"]:
-                positions["must"][key] += 1
-            for key in positions["option"]:
-                positions["option"][key] += 1
-            positions["option"]["id"] = 0
-
+    [rep1, rep2] = _split_char(mode, config)
+    
     # write meta-data to file
-    f = open(output_file, mode = "w")
+    f = open(output_file + ".tmp", mode = "w")
     f.write(meta_text)
-            
-    first = True
-    column_num = []
+    f.write(option["sept_out"].join(titles))
+    f.write("\n")
     
     for idx in range(len(files)):
         file_path = files[idx]
         
-        try:
-            df = data_frame.load_file(file_path, sept = option["sept"], header = option["header"], comment = option["comment"])
-            
-        except Exception as e:
-            print ("failure open file %s, %s" % (file_path, e.message))
-            continue
-        
-        if df == None:
-            print ("failure read file %s" % file_path)
-            continue
-            
-        if len(df.data) == 0:
-            print ("skip blank file %s" % file_path)
-            continue
-        
-        ### add lack of data colmuns
-        if option["header"] == True:
-            new_data = []
-            for t in titles:
-                if (t in df.title) == True:
-                    new_data.append(df.column(t))
-                    continue
-                
-                cat_item = []
-                for i in range(0,len(df.data)):
-                    if t == positions["option"]["id"]:
-                        cat_item.append(ids[idx])
-                    else:
-                        cat_item.append(option["lack"])
-        
-                new_data.append(cat_item)
-                
-            df.concat(new_data, titles)
-        
-        else:        
-            column_num.append([file_path, len(df.data[0])])
-            for i in range(len(df.data[0])):
-                df.title.append("v%02d" % i)
-        
-            # ID column
-            if add_ID == True:
-                cat_item = []
-                for i in range(0,len(df.data)):
-                    cat_item.append(ids[idx])
-
-                li = ["id"]
-                li.extend(df.title)
-                df.concat([cat_item, df.data], li)
-
-        # replace "," -> ";"
-        df.replace(",", ";")
-        
-        # write to file
+        header = []
+        mapper = []
         lines = []
-        if first == True:
-            title_text = ""
-            for i in range(len(df.title)):
-                if i > 0:
-                    title_text += ","
-                title_text += str(df.title[i])
+        lines_count = 0
+        for line in open(file_path):
+            line = line.rstrip()
+            if len(line.replace(option["sept"], "")) == 0:
+                continue
             
-            lines.append(title_text + "\n")
-            first = False
+            if len(option["comment"]) > 0 and line.find(option["comment"]) == 0:
+                continue
             
-        for row in df.data:
-            row_text = ""
-            for i in range(len(row)):
-                if i > 0:
-                    row_text += ","
-                row_text += str(row[i])
-        
-            lines.append(row_text + "\n")
+            line = line.replace(rep1, rep2) 
+            if len(header) == 0:
+                header = line.split(option["sept"])
+                mapper = calc_map(header, titles)
+                continue
             
-        f.writelines(lines)
+            data = line.split(option["sept"])
+            sort_data = []
+            for i in range(len(titles)):
+                if mapper[i] < 0:
+                    if titles[i] == positions["option"]["id"]:
+                        sort_data.append(ids[idx])
+                    else:
+                        sort_data.append(option["lack"])
+                else:
+                    sort_data.append(data[mapper[i]])
+            
+            lines.append(option["sept_out"].join(sort_data) + "\n")
+            lines_count += 1
+            
+            if (lines_count > 10000):
+                f.writelines(lines)
+                lines = []
+                lines_count = 0
+
+        if (lines_count > 0):
+            f.writelines(lines)
         
     f.close()
-    
-    # warning message
-    # no header and different columns num
-    if option["header"] == False:
-        cols = []
-        for item in column_num:
-            cols.append(item[1])
-        li = list(set(cols))
-        if len(li) > 1:
-            print("[WARNING] merged files, different in columns number with no header.")
-            for item in column_num:
-                print("%d columns: %s" % (item[1], item[0]))
-    
+    os.rename(output_file + ".tmp", output_file)
     return positions
-      
-def header_info(data_file, colpos, mode, data_options):
 
-    [section_in, section_out] = tools.get_section(mode)
+def with_noheader(files, ids, output_file, mode, config, extract = False):
     
-    try:
-        title = data_frame.load_title(data_file, sept = data_options["sept"], header = data_options["header"], comment = data_options["comment"])
-    except Exception as e:
-        print ("failure open file %s, %s" % (data_file, e.message))
-        return [[],[]]
+    import os
+
+    if len(files) == 0:
+        return {}
+        
+    for file_path in files:
+        if os.path.exists(file_path) == False:
+            print ("[ERROR] file is not exist. %s" % file_path)
+            files.remove(file_path)
+            continue 
     
-    info = {}
-    for key in colpos["must"]:
-        if type(colpos["must"][key]) == type(""):
-            if (colpos["must"][key] in title) == False:
-                print ("column header '" + str(colpos["must"][key]) + "' is none. check your config file.")
-                return [[],[]]
+    option = _load_option(mode, config)
+    if option["header"] == True:
+        print ("[ERROR] this is function for no-header data.")
+        return {}
         
-            info[key] = title.index(colpos["must"][key])
-            
-        elif type(colpos["must"][key]) == type(0):
-            info[key] = colpos["must"][key]
-            
-    for key in colpos["option"]:
-        if type(colpos["option"][key]) == type(""):
-            if (colpos["option"][key] in title) == False: continue
-        
-            info[key] = title.index(colpos["option"][key])
-            
-        elif type(colpos["option"][key]) == type(0):
-            info[key] = colpos["option"][key]
-            
-        
-    info_sort = sorted(info.items(), key=lambda x: x[1])
+    meta_text = _merge_metadata(files, option)
+    positions = load_potisions(mode, config)
 
     usecols = []
-    title = []
-    for i in range(len(info_sort)):
-        usecols.append(info_sort[i][1])
-        title.append(info_sort[i][0])
+    for key in positions["must"]:
+        usecols.append(positions["must"][key])
+            
+    for key in positions["option"]:
+        usecols.append(positions["option"][key])
     
-    return [usecols, title]
+    add_id = False
+    if ("id" in positions["option"]) == False:
+        add_id = True
+            
+    [rep1, rep2] = _split_char(mode, config)
     
-def extract_result(data_file, output_file, colpos, mode, config):
-    # options read
-    data_options = {"sept": ',', "header": True, "comment": '#'}
-    [usecols, title] = header_info(data_file, colpos, mode, data_options)
+    # write meta-data to file
+    f = open(output_file + ".tmp", mode = "w")
+    f.write(meta_text)
     
-    # data read
-    try:
-        if len(usecols) > 0:
-            df = data_frame.load_file(data_file, sept = ",", header = 1, usecol = usecols)
-            df.title = title
-        else:
-            return False
+    titles = []
+    for idx in range(len(files)):
+        file_path = files[idx]
 
-        df.save(output_file, header = True, mode = "w")
-    
-    except IndexError as e:
-        print ("column position is invalid. check your config file.")
-        return False
-    except Exception as e:
-        print ("failure open file %s, %s" % (data_file, e.message))
-        return False
+        lines = []
+        lines_count = 0
+        for line in open(file_path):
+            line = line.rstrip()
+            if len(line.replace(option["sept"], "")) == 0:
+                continue
+            
+            if len(option["comment"]) > 0 and line.find(option["comment"]) == 0:
+                continue
+            
+            line = line.replace(rep1, rep2)
+            
+            data = line.split(option["sept"])
+            
+            # header
+            if titles == []:
+                if add_id == True:
+                    titles.append("id")
+                    
+                for i in range(len(data)):
+                    if extract == True:
+                        if i in usecols:
+                            titles.append("v%d" % i)
+                    else:
+                        titles.append("v%d" % i)
+
+                lines.append(option["sept_out"].join(titles) + "\n")
+                
+            # add id
+            cat_data = []
+            if add_id == True:
+                cat_data.append(ids[idx])
+                
+            for i in range(len(data)):
+                if extract == True:
+                    if i in usecols:
+                        cat_data.append(data[i])
+                else:
+                    cat_data.append(data[i])
+            
+            lines.append(option["sept_out"].join(cat_data) + "\n")
+            lines_count += 1
+            
+            if (lines_count > 10000):
+                f.writelines(lines)
+                lines = []
+                lines_count = 0
+
+        if (lines_count > 0):
+            f.writelines(lines)
         
-    return True
+    f.close()
+    os.rename(output_file + ".tmp", output_file)
+    
+    # update positions
+    for key in positions["must"]:
+        positions["must"][key] = "v%d" % (positions["must"][key])
+            
+    for key in positions["option"]:
+        positions["option"][key] = "v%d" % (positions["option"][key])
+        
+    if ("id" in positions["option"]) == False:
+        positions["option"]["id"] = "id"
+        
+    return positions
 
+def position_to_dict(position):
+    di = {}
+    for key in position["must"]:
+        di[key] = position["must"][key]
+    for key in position["option"]:
+        di[key] = position["option"][key]
+    return di
+        
 if __name__ == "__main__":
     pass

@@ -4,7 +4,7 @@ Created on Wed Dec 02 17:43:52 2015
 
 @author: okada
 
-$Id: tools.py 82 2016-04-11 08:48:18Z aokada $
+$Id: tools.py 109 2016-06-02 06:59:42Z aokada $
 """
    
 def config_getboolean(config, section, item):
@@ -28,7 +28,7 @@ def config_getpath(config, section, item, default=""):
     
     path = ""
     if config.has_option(section, item) == True:
-        path = win_to_unix(config.get(section, item))
+        path = win_to_unix(config.get(section, item).strip())
         if len(path) > 0 and os.path.exists(path) == False:
             print ("can not find file. [%s] %s=%s, so use default." % (section, item, path))
             path = ""
@@ -42,10 +42,19 @@ def config_getstr(config, section, item):
     
     value = ""
     if config.has_option(section, item) == True:
-        value = config.get(section, item)
-
+        value = config.get(section, item).strip().replace('"', '')
+        
     return value
 
+def config_getoptions(config, section, item_startswith):
+    
+    li = []
+    for item in config.options(section):
+        if item.startswith(item_startswith):
+            li.append(item)
+        
+    return li
+    
 def config_set(config, section, item, value):
 
     if config.has_section(section) == False:
@@ -156,6 +165,6 @@ def version_text():
 def win_to_unix(win_path):
     import re
     
-    return re.escape(win_path).replace("\\\\", "/").replace("\\\t", "/t").replace("\\\n", "/n").replace("\\\r", "/r").replace("\\", "")
+    return re.escape(win_path).replace("\\\\", "/").replace("\\\t", "/t").replace("\\\n", "/n").replace("\\\r", "/r").replace("\\\f", "/f").replace("\\", "")
 
            

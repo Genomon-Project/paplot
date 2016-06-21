@@ -13,10 +13,8 @@ padding-right: 15px;
 padding-left: 15px;
   margin-right: auto;
   margin-left: 100px;
-//  width: 1200px;
 }
 .link {
-//  marker-end: none;
 }
 .link.select {
 //  marker-end: url(#arrowhead);
@@ -45,6 +43,44 @@ padding-left: 15px;
 }
 #tooltip p {
   margin: 0;
+}
+#spin {
+  left: 50%;
+  top: 50%;
+  width: 120px;
+  height: 120px;
+  margin-left: -60px;
+  margin-top: -60px;
+  position:fixed;
+  _position: absolute;
+  padding: 10px;
+  background-color: black;
+  color: white;
+  filter: alpha(opacity = 60);
+  -moz-opacity: 0.6;
+  opacity: 0.6;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+  -webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+  -moz-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+  pointer-events: none;
+  background-image: url("update.png");
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center center;
+}
+#spin.hidden {
+  display: none;
+}
+#spin p {
+  width: 100%;
+  height: auto;
+  text-align: center;
+  vertical-align: middle;
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 18px;
 }
 li.hidden {
   width: 0;
@@ -83,7 +119,6 @@ li.hidden {
   left: 0px;
   padding: 15px;
   cursor: move;
-//  border: solid 1px red;
 }
 .float_move {
   position:relative;
@@ -92,7 +127,10 @@ li.hidden {
   top: -200px;
   left: -100px;
 }
-
+div.selected_text {
+  border-bottom: 1px dotted gray;
+  display:inline;
+}
 * {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
@@ -173,15 +211,14 @@ button, input, optgroup, select, textarea {
   shape-rendering: crispEdges;
 }
 .legend_bar {
-//  display: inline-block;
   width: 15px;
   height: 10px;
   margin-left: 8px;
   margin-right: 5px;
 }
 .legend_label {
-//  display: inline-block;
   margin-right: 10px;
+  font-size: 12px;
 }
 .legend {
   display: inline-block;
@@ -191,5 +228,5 @@ button, input, optgroup, select, textarea {
   height:100%;
 }
 .blank {
-	background-color: aliceblue;
+  background-color: aliceblue;
 }
