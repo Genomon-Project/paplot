@@ -1,17 +1,17 @@
 <html lang="en">
 <head>
-  <title>Matrix of Mutation - example</title>
+  <title>Matrix of Mutation - demo</title>
   <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 
   <link rel="stylesheet" type="text/css" href="../js/paplot.css"/>
 </head>
 <body>
 <div class="version">
-Generated on 2016-06-09 16:09:57 for example by paplot-0.3.0release-py2.7.
+Generated on 2016-06-22 17:21:13 for demo by paplot-0.3.0release-py2.7.
 </div>
 
 <div class="container">
-  <h2 id="title">Matrix of Mutation - example</h2>
+  <h2 id="title">Matrix of Mutation - demo</h2>
 
 <div>
   <div style="margin-top:20;">
@@ -61,6 +61,15 @@ Generated on 2016-06-09 16:09:57 for example by paplot-0.3.0release-py2.7.
     </section>
   </div>
 
+  <div style="margin-top:20;"><b>sample filter</b></div>
+  <div style="margin-left:20;">
+    <div style="height: 10px;" class="spacer"></div>
+    <section><b>Display maximum</b>
+      <input type="number" id="viewsample_mutation_max" name="viewgene_rate" min="0" step="1" value="" style="width:100px;" /> (Number of mutation)
+    </section>
+    <input type="button" value="update filter" onclick="filter_sample()" style="margin-top:10" />
+  </div>
+  
   <div style="margin-top:20;"><b>genes filter</b></div>
   <div style="margin-left:20;">
     <div>
@@ -69,7 +78,7 @@ Generated on 2016-06-09 16:09:57 for example by paplot-0.3.0release-py2.7.
     </div>
     <div style="height: 10px;" class="spacer"></div>
     <section><b>Rate</b>
-      <input type="number" id="viewgene_rate" name="viewgene_rate" min="0" max="100" step="1" value="5" style="width:50px;" /> % (Samples with mutation)
+      <input type="number" id="viewgene_rate" name="viewgene_rate" min="0" max="100" step="1" value="0" style="width:50px;" /> % (Samples with mutation)
     </section>
     <section><b>Display maximum</b>
       <input type="number" id="viewgene_number" name="viewgene_number" min="1" step="1" value="100" style="width:100px;" /> genes
@@ -80,88 +89,94 @@ Generated on 2016-06-09 16:09:57 for example by paplot-0.3.0release-py2.7.
 
 <div style="height: 50px;" class="spacer"></div>
 
-<div style="float: left; position: relative;" id="div_mut1"></div>
-<!-- bar top -->
-<div style="float: left; " id="div_bar_top"></div>
-<div style="float: left; padding:10px;" id="div_mut2"></div>
-
+<table>
+<tr>
+<td><div  id="div_mut1"></div></td>
+<td><!-- bar top --><div id="div_bar_top"></div></td>
+<td><div style="padding:10px;" id="div_mut2"></div></td>
+</tr>
 
 
 <!-- sub bar -->
-<div style="float: left; position: relative;" id="div_sub0_t">
-    <div style="position: absolute; right: 0;"><b>Clinical Gender</b>
+<tr>
+<td><div id="div_sub0_t"><b>Clinical Gender</b>
       <section>
         <input type="radio" name="optSub0" value="0" id="xSub0_0" onclick="sort_sub(0, 0)" checked /><label for="xSub0_0" class="radio">none</label>
         <input type="radio" name="optSub0" value="1" id="xSub0_1" onclick="sort_sub(0, 1)" />        <label for="xSub0_1" class="radio">ASC </label>
         <input type="radio" name="optSub0" value="2" id="xSub0_2" onclick="sort_sub(0, 2)" />        <label for="xSub0_2" class="radio">DESC</label>
       </section>
-    </div>
-</div> 
-<div style="float: left;" id="div_sub0_p"></div>
-<div style="float: left; overflow: auto;" id="div_sub0_l">
+</div></td>
+<td><div id="div_sub0_p"></div></td>
+<td><div style="overflow: auto;" id="div_sub0_l">
     
     <div class="legend"><div id="sub0_legend0" class="legend legend_bar"></div><div id="sub0_legend0_text" class="legend legend_label"></div></div>
     <div class="legend"><div id="sub0_legend1" class="legend legend_bar"></div><div id="sub0_legend1_text" class="legend legend_label"></div></div>    
-</div>
+</div></td>
+</tr>
 
 
-<div style="float: left; height: 10px; width: 100%" class="spacer"></div>
-<!-- bar left -->
-<div style="float: left;" id="div_bar_left"></div>
-<!-- checker -->
-<div style="float: left;" id="div_checker"></div>
-<div style="float: left; padding-top:10px; padding-left:30px; overflow: auto;" id="div_mut3">
+<!-- spacer -->
+<tr height=10><td></td><td></td><td></td></tr>
+
+<tr>
+<td><!-- bar left --><div id="div_bar_left"></div></td>
+<td><!-- checker --><div id="div_checker"></div></td>
+<td><div style="padding-top:10px; padding-left:30px; overflow: auto;" id="div_mut3">
 <div id="legend_title"></div>
 
-    <div><input type="checkbox" id="v0" onclick="change_stack('v0', 'UTR3')" checked><div id="legend0" class="legend legend_bar"></div><div id="legend0_text" class="legend legend_label">text</div></div>
-    <div><input type="checkbox" id="v1" onclick="change_stack('v1', 'UTR5')" checked><div id="legend1" class="legend legend_bar"></div><div id="legend1_text" class="legend legend_label">text</div></div>
-    <div><input type="checkbox" id="v2" onclick="change_stack('v2', 'downstream')" checked><div id="legend2" class="legend legend_bar"></div><div id="legend2_text" class="legend legend_label">text</div></div>
-    <div><input type="checkbox" id="v3" onclick="change_stack('v3', 'exonic')" checked><div id="legend3" class="legend legend_bar"></div><div id="legend3_text" class="legend legend_label">text</div></div>
-    <div><input type="checkbox" id="v4" onclick="change_stack('v4', 'intronic')" checked><div id="legend4" class="legend legend_bar"></div><div id="legend4_text" class="legend legend_label">text</div></div>
-    <div><input type="checkbox" id="v5" onclick="change_stack('v5', 'ncRNA_exonic')" checked><div id="legend5" class="legend legend_bar"></div><div id="legend5_text" class="legend legend_label">text</div></div>
-    <div><input type="checkbox" id="v6" onclick="change_stack('v6', 'ncRNA_intronic')" checked><div id="legend6" class="legend legend_bar"></div><div id="legend6_text" class="legend legend_label">text</div></div>
-    <div><input type="checkbox" id="v7" onclick="change_stack('v7', 'ncRNA_splicing')" checked><div id="legend7" class="legend legend_bar"></div><div id="legend7_text" class="legend legend_label">text</div></div>
-    <div><input type="checkbox" id="v8" onclick="change_stack('v8', 'splicing')" checked><div id="legend8" class="legend legend_bar"></div><div id="legend8_text" class="legend legend_label">text</div></div>
-    <div><input type="checkbox" id="v9" onclick="change_stack('v9', 'upstream')" checked><div id="legend9" class="legend legend_bar"></div><div id="legend9_text" class="legend legend_label">text</div></div>
-</div>
+    <div><input type="checkbox" id="v0" onclick="change_stack('v0', 'UTR3')" checked><div id="legend0" class="legend legend_bar"></div><div id="legend0_text" class="legend legend_label"></div></div>
+    <div><input type="checkbox" id="v1" onclick="change_stack('v1', 'UTR5')" checked><div id="legend1" class="legend legend_bar"></div><div id="legend1_text" class="legend legend_label"></div></div>
+    <div><input type="checkbox" id="v2" onclick="change_stack('v2', 'downstream')" checked><div id="legend2" class="legend legend_bar"></div><div id="legend2_text" class="legend legend_label"></div></div>
+    <div><input type="checkbox" id="v3" onclick="change_stack('v3', 'exonic')" checked><div id="legend3" class="legend legend_bar"></div><div id="legend3_text" class="legend legend_label"></div></div>
+    <div><input type="checkbox" id="v4" onclick="change_stack('v4', 'intergenic')" checked><div id="legend4" class="legend legend_bar"></div><div id="legend4_text" class="legend legend_label"></div></div>
+    <div><input type="checkbox" id="v5" onclick="change_stack('v5', 'intronic')" checked><div id="legend5" class="legend legend_bar"></div><div id="legend5_text" class="legend legend_label"></div></div>
+    <div><input type="checkbox" id="v6" onclick="change_stack('v6', 'ncRNA_exonic')" checked><div id="legend6" class="legend legend_bar"></div><div id="legend6_text" class="legend legend_label"></div></div>
+    <div><input type="checkbox" id="v7" onclick="change_stack('v7', 'ncRNA_intronic')" checked><div id="legend7" class="legend legend_bar"></div><div id="legend7_text" class="legend legend_label"></div></div>
+    <div><input type="checkbox" id="v8" onclick="change_stack('v8', 'ncRNA_splicing')" checked><div id="legend8" class="legend legend_bar"></div><div id="legend8_text" class="legend legend_label"></div></div>
+    <div><input type="checkbox" id="v9" onclick="change_stack('v9', 'splicing')" checked><div id="legend9" class="legend legend_bar"></div><div id="legend9_text" class="legend legend_label"></div></div>
+    <div><input type="checkbox" id="v10" onclick="change_stack('v10', 'upstream')" checked><div id="legend10" class="legend legend_bar"></div><div id="legend10_text" class="legend legend_label"></div></div>
+</div></td>
+</tr>
 
 
 <!-- sub bar -->
-<div style="float: left; position: relative;" id="div_sub1_t">
-    <div style="position: absolute; right: 0;"><b>Clinical Age</b>
+<tr>
+<td><div id="div_sub1_t"><b>Clinical Age</b>
       <section>
         <input type="radio" name="optSub1" value="0" id="xSub1_0" onclick="sort_sub(1, 0)" checked /><label for="xSub1_0" class="radio">none</label>
         <input type="radio" name="optSub1" value="1" id="xSub1_1" onclick="sort_sub(1, 1)" />        <label for="xSub1_1" class="radio">ASC </label>
         <input type="radio" name="optSub1" value="2" id="xSub1_2" onclick="sort_sub(1, 2)" />        <label for="xSub1_2" class="radio">DESC</label>
       </section>
-    </div>
-</div> 
-<div style="float: left;" id="div_sub1_p"></div>
-<div style="float: left; overflow: auto;" id="div_sub1_l">
+</div></td>
+<td><div id="div_sub1_p"></div></td>
+<td><div style="overflow: auto;" id="div_sub1_l">
     
     <div class="legend"><div id="sub1_legend0" class="legend legend_bar"></div><div id="sub1_legend0_text" class="legend legend_label"></div></div>
     <div class="legend"><div id="sub1_legend1" class="legend legend_bar"></div><div id="sub1_legend1_text" class="legend legend_label"></div></div>
     <div class="legend"><div id="sub1_legend2" class="legend legend_bar"></div><div id="sub1_legend2_text" class="legend legend_label"></div></div>
     <div class="legend"><div id="sub1_legend3" class="legend legend_bar"></div><div id="sub1_legend3_text" class="legend legend_label"></div></div>    
-</div>
+</div></td>
+</tr>
 
 <!-- sub bar -->
-<div style="float: left; position: relative;" id="div_sub2_t">
-    <div style="position: absolute; right: 0;"><b>Clinical BMI</b>
+<tr>
+<td><div id="div_sub2_t"><b>Clinical BMI</b>
       <section>
         <input type="radio" name="optSub2" value="0" id="xSub2_0" onclick="sort_sub(2, 0)" checked /><label for="xSub2_0" class="radio">none</label>
         <input type="radio" name="optSub2" value="1" id="xSub2_1" onclick="sort_sub(2, 1)" />        <label for="xSub2_1" class="radio">ASC </label>
         <input type="radio" name="optSub2" value="2" id="xSub2_2" onclick="sort_sub(2, 2)" />        <label for="xSub2_2" class="radio">DESC</label>
       </section>
-    </div>
-</div> 
-<div style="float: left;" id="div_sub2_p"></div>
-<div style="float: left; overflow: auto;" id="div_sub2_l">
+</div></td>
+<td><div id="div_sub2_p"></div></td>
+<td><div style="overflow: auto;" id="div_sub2_l">
     
     <div class="legend"><div id="sub2_legend0" class="legend legend_bar"></div><div id="sub2_legend0_text" class="legend legend_label"></div></div>
     <div class="legend"><div id="sub2_legend1" class="legend legend_bar"></div><div id="sub2_legend1_text" class="legend legend_label"></div></div>    
-</div>
+</div></td>
+</tr>
 
+
+</table>
 
 <div style="float: left; width: 100px; height: 100px;" class="spacer"></div>
 </div>
@@ -193,17 +208,19 @@ Generated on 2016-06-09 16:09:57 for example by paplot-0.3.0release-py2.7.
     d3.select("#legend3").style("background-color", "#E85299");
     d3.select("#legend3_text").attr("id", "text").text('exonic');
     d3.select("#legend4").style("background-color", "#00A4DB");
-    d3.select("#legend4_text").attr("id", "text").text('intronic');
+    d3.select("#legend4_text").attr("id", "text").text('intergenic');
     d3.select("#legend5").style("background-color", "#009943");
-    d3.select("#legend5_text").attr("id", "text").text('ncRNA_exonic');
+    d3.select("#legend5_text").attr("id", "text").text('intronic');
     d3.select("#legend6").style("background-color", "#D7C447");
-    d3.select("#legend6_text").attr("id", "text").text('ncRNA_intronic');
+    d3.select("#legend6_text").attr("id", "text").text('ncRNA_exonic');
     d3.select("#legend7").style("background-color", "#6BBB5A");
-    d3.select("#legend7_text").attr("id", "text").text('ncRNA_splicing');
+    d3.select("#legend7_text").attr("id", "text").text('ncRNA_intronic');
     d3.select("#legend8").style("background-color", "#00ADA6");
-    d3.select("#legend8_text").attr("id", "text").text('splicing');
+    d3.select("#legend8_text").attr("id", "text").text('ncRNA_splicing');
     d3.select("#legend9").style("background-color", "#007AC2");
-    d3.select("#legend9_text").attr("id", "text").text('upstream');
+    d3.select("#legend9_text").attr("id", "text").text('splicing');
+    d3.select("#legend10").style("background-color", "#B6007B");
+    d3.select("#legend10_text").attr("id", "text").text('upstream');
 
     
     d3.select("#sub0_legend0").style("background-color", "#0000ff");
