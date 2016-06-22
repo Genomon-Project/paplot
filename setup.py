@@ -20,7 +20,7 @@ parser result files created by genomon (SV, mutaion-call and so on)""",
       license='GPL-3',
       packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
       scripts=['pa_plot'],
-      data_files=[('config', ['paplot.cfg']), ('config', ['genome/hg19.csv'])],
+      data_files=[('config', ['paplot.cfg']), ('config', ['genome/hg19.csv']), ('example', ['example/mutation/sample_summary.csv'])],
       include_package_data=True,
       zip_safe=False,
       install_requires=[
