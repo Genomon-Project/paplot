@@ -1000,8 +1000,8 @@ def convert_tojs(input_file, output_file, positions, config):
 def load_subdata(ids, sec, config):
     import os
     import paplot.color as color
-    
-    input_file = tools.config_getpath(config, sec, "path")
+
+    input_file = tools.config_getpath(config, sec, "path", default = "../../example/sample_summary.csv")
     if os.path.exists(input_file) == False:
         print ("[ERROR] file is not exist. %s" % input_file)
         return None
@@ -1093,7 +1093,6 @@ def load_subdata(ids, sec, config):
         
         if mode == "fix":
             if cols[pos_value] in item:
-#                data_text += subdata_data_template.format(id = id_pos, item = '"' + cols[pos_value] + '"')
                 data_text += subdata_data_template.format(id = id_pos, item = item.index(cols[pos_value]))
             else:
                 print("[" + sec + "] name_set: data is undefined." + cols[pos_value] + "\n")
