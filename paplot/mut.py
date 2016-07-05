@@ -4,7 +4,7 @@ Created on Wed Mar 16 15:40:29 2016
 
 @author: okada
 
-$Id: mut.py 116 2016-06-29 01:34:43Z aokada $
+$Id: mut.py 119 2016-07-05 05:04:33Z aokada $
 """
 
 ########### js template
@@ -852,7 +852,7 @@ def convert_tojs(input_file, output_file, positions, config):
         func = df.data[f][func_pos]
         df.data[f][func_pos] = func.replace(" ", "_")
         if func == "":
-            df.data[f][func_pos] = "(blank)"
+            df.data[f][func_pos] = "_blank_"
 
     [funcs, colors_n, colors_h] = funcs_list(df.column(cols_di["func"]), config)
 
