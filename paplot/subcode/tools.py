@@ -4,7 +4,7 @@ Created on Wed Dec 02 17:43:52 2015
 
 @author: okada
 
-$Id: tools.py 109 2016-06-02 06:59:42Z aokada $
+$Id: tools.py 118 2016-07-05 02:05:54Z aokada $
 """
    
 def config_getboolean(config, section, item):
@@ -77,12 +77,15 @@ def get_inputlist(pattern):
     import glob
     
     inputs = pattern.lstrip("'").lstrip('"').rstrip("'").rstrip('"').split(",")
-
+    
     all_list = []
     for item in inputs:
         all_list.extend(glob.glob(win_to_unix(item).lstrip(" ").rstrip(" ")))
+
+    input_list = list(set(all_list))
+    input_list.sort()
     
-    return list(set(all_list))
+    return input_list
 
 def get_section(mode):
     section_in = ""

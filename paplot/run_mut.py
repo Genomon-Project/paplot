@@ -4,7 +4,7 @@ Created on Wed Dec 02 17:43:52 2015
 
 @author: okada
 
-$Id: run_mut.py 106 2016-05-25 08:54:02Z aokada $
+$Id: run_mut.py 116 2016-06-29 01:34:43Z aokada $
 """
 prog = "pa_plot mutation"
 
@@ -14,7 +14,7 @@ def main(argv):
     import paplot.mut as mut
     import paplot.prep as prep
     import argparse
-    
+
     parser = argparse.ArgumentParser(prog = prog)
     
     parser.add_argument("--version", action = "version", version = tools.version_text())

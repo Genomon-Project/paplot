@@ -4,7 +4,7 @@ Created on Wed Dec 02 17:43:52 2015
 
 @author: okada
 
-$Id: qc.py 114 2016-06-14 02:08:37Z aokada $
+$Id: qc.py 118 2016-07-05 02:05:54Z aokada $
 """
 
 def convert_tojs(input_file, output_file, positions, config):
@@ -42,13 +42,23 @@ function get_data_base() {{return base;}}
             continue
         
         data = line.split(sept)
-        
-        item_text = "{"
+
+        items = {}
+        str_list = []
         for i in range(len(data)):
             if names[header[i]] == "id":
-                item_text += names[header[i]] + ':"' + data[i] + '",'
+                str_list.append(names[header[i]])
+            
+            items[names[header[i]]] = data[i]
+        
+        keys = items.keys()
+        keys.sort()
+        item_text = "{"
+        for key in keys:
+            if key in str_list:
+                item_text += key + ':"' + items[key] + '",'
             else:
-                item_text += names[header[i]] + ':' + data[i] + ','
+                item_text += key + ':' + items[key] + ','
             
         data_text += item_text + "},\n"
 
