@@ -1,11 +1,15 @@
 # -*- coding: utf-8 -*-
 """
-$Id: setup.py 114 2016-06-14 02:08:37Z aokada $
+$Id: setup.py 118 2016-07-05 02:05:54Z aokada $
 """
 
 from setuptools import setup, find_packages
 
-version = '0.3.0'
+version = '0.3.1'
+
+import sys
+sys.path.append('./paplot')
+sys.path.append('./tests')
 
 setup(name='paplot',
       version=version,
@@ -31,5 +35,6 @@ parser result files created by genomon (SV, mutaion-call and so on)""",
       """,
       package_data = {
           'paplot': ['lib/*/*','js/*','templates/*.html', 'style/*'],
-      }
+      },
+      test_suite = 'unit_tests.suite',
 )

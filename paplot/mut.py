@@ -4,7 +4,7 @@ Created on Wed Mar 16 15:40:29 2016
 
 @author: okada
 
-$Id: mut.py 114 2016-06-14 02:08:37Z aokada $
+$Id: mut.py 116 2016-06-29 01:34:43Z aokada $
 """
 
 ########### js template
@@ -693,6 +693,7 @@ def genes_list(colmun, colmun_f, colmun_id, funcs, Ids, config):
 
         genes.append(key)
 
+    genes.sort()
     return genes
 
 def funcs_list(colmun, config):
@@ -858,14 +859,14 @@ def convert_tojs(input_file, output_file, positions, config):
     # ID list
     Ids = []
     for row in df.data:
-        iid = row[df.name_to_index("id")]
+        iid = row[df.name_to_index(cols_di["id"])]
         if iid != "": Ids.append(iid)
     Ids = list(set(Ids))
     Ids.sort()
     
     genes = genes_list(df.column(cols_di["gene"]), \
                         df.column(cols_di["func"]), \
-                        df.column(df.name_to_index("id")), \
+                        df.column(cols_di["id"]), \
                         funcs, Ids, config)    
 
     option_keys = cols_di.keys()
@@ -895,7 +896,7 @@ def convert_tojs(input_file, output_file, positions, config):
     mutations = {}
     tooltips = {}
     for row in df.data:
-        iid = row[df.name_to_index("id")]
+        iid = row[df.name_to_index(cols_di["id"])]
         if iid == "": continue
             
         if (iid in mutations) == False:

@@ -4,7 +4,7 @@ Created on Wed Dec 02 17:43:52 2015
 
 @author: okada
 
-$Id: run_conf.py 81 2016-04-07 08:31:10Z aokada $
+$Id: run_conf.py 117 2016-06-29 01:43:38Z aokada $
 """
 prog = "pa_plot conf"
 

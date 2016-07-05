@@ -4,7 +4,7 @@ Created on Wed Dec 02 17:43:52 2015
 
 @author: okada
 
-$Id: run_qc.py 84 2016-04-22 00:43:25Z aokada $
+$Id: run_qc.py 117 2016-06-29 01:43:38Z aokada $
 """
 prog = "pa_plot qc"
 
