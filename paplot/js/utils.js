@@ -289,17 +289,19 @@ var downloader = (function() {
             image.onload = function () {
                 context.drawImage(image, 0, 0);
                 
+                // for Safari
+                if (downloader.isSafari() == true) {
+                    downloader.openBlankPage(true, image.src, filename);
+                    return;
+                }
+
                 try {
                     data_url = canvas.toDataURL('image/png');
                     downloader.download_content(data_url, mode, filename + '.' + mode);
                 }
                 catch (e) {
                     // canvas.toDataURL = false (IE)
-                    var nwin = window.open("", '_blank');
-                    nwin.document.open();
-                    nwin.document.write("<HTML><HEAD><TITLE>" + filename + "</TITLE><BODY><IMG SRC=" + image.src + " /></BODY></HTML>");
-                    nwin.document.close();
-                    nwin.focus();
+                    downloader.openBlankPage(true, image.src, filename);
                 }
             }
         }
@@ -360,6 +362,27 @@ var downloader = (function() {
             // for Safari
             window.open(data_url, '_blank');
         }
+    }
+    
+    downloader.isSafari = function() {
+        var user_agent = navigator.userAgent;
+        if(user_agent.indexOf("Chrome") != -1) return false;
+        if(user_agent.indexOf("Android") != -1) return false;
+
+        return (user_agent.indexOf("Safari") != -1);
+    }
+
+    downloader.openBlankPage = function(img_flg, content, filename) {
+        if (img_flg == false) {
+            window.open(content, '_blank');
+            return;
+        }
+        
+        var nwin = window.open("", '_blank');
+        nwin.document.open();
+        nwin.document.write("<HTML><HEAD><TITLE>" + filename + "</TITLE><BODY><IMG SRC=" + content + " /></BODY></HTML>");
+        nwin.document.close();
+        nwin.focus();
     }
     
     return downloader;
