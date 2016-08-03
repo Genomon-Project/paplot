@@ -166,7 +166,7 @@ function init() {
         legend.options.title = info.title;
         legend.layout.shape_sift_left = 70;
         legend.draw_svg(true);
-        //downloader.set_event_listner (legends[i].chart_id);
+        downloader.set_event_listner (legends[i].chart_id);
     }
 }
 
