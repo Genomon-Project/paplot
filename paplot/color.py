@@ -4,7 +4,7 @@ Created on Thu May 12 12:34:57 2016
 
 @author: okada
 
-$Id: color.py 106 2016-05-25 08:54:02Z aokada $
+$Id: color.py 126 2016-07-13 08:47:49Z aokada $
 """
 
 ## colors list
@@ -130,8 +130,7 @@ def create_gradient(colors, length):
     return color_array
 
 def create_rainbow_array(length, mid_colors):
-    #RAINBOWS = ["#FE0000","#FF9C00","#F5FF00","#3CF10E","#01FFE5","#0024FF","#C500FF"]
-    
+
     if length < 1:
         return []
     elif length <= len(mid_colors):
@@ -156,39 +155,4 @@ def create_rainbow_array(length, mid_colors):
     return array
     
 if __name__ == "__main__":
-    """
-    print "<html>\r\n<head></head>\r\n<body>\r\n<table>"
-
-    for cpos in range(len(metro_colors)):
-        print "<tr><td bgcolor=" + metro_colors[cpos] + ">" + metro_colors[cpos] + "</td>"
-        print "<td bgcolor=" + metro_colors_hi[cpos] + ">" + metro_colors_hi[cpos] + "</td>"
-        hi = Saturation_down(metro_colors[cpos])
-        print "<td bgcolor=" + hi + ">" + hi + "</td></tr>\r\n"
-
-    print "</table>\r\n</body>\r\n</html>"
-    """
-    
-    #print name_to_value("blue")
-    #print create_gradient(["#FF0000","#0000FF"],3)
-
-    RAINBOWS = ["#FE0000","#FF9C00","#F5FF00","#3CF10E","#01FFE5","#0024FF","#C500FF"]
-    
-    f=open("rainbow.html", "w")
-    f.write("<html>\r\n<head></head>\r\n<body>\r\n<li>")
-
-    for l in range(32):
-        f.write("<ul> len:%02d" % l)
-        for color in create_rainbow_array(l, RAINBOWS):
-            f.write("<font color='%s'>■</font>" % color)
-        f.write("</ul>")
-
-    f.write("</li>\r\n</body>\r\n</html>")
-    f.close()
-    
-
-
-
-
-
-
-
+    pass

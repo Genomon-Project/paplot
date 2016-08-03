@@ -4,7 +4,7 @@ Created on Wed Mar 16 15:40:29 2016
 
 @author: okada
 
-$Id: mut.py 119 2016-07-05 05:04:33Z aokada $
+$Id: mut.py 145 2016-08-03 01:37:47Z aokada $
 """
 
 ########### js template
@@ -16,14 +16,11 @@ mut_data.Ids = [{Ids}];
 mut_data.genes = [{genes}];
 mut_data.funcs = [{funcs}];
 mut_data.func_colors_n = [{func_colors_n}];
-mut_data.func_colors_h = [{func_colors_h}];
 mut_data.mutation_header = [{mutation_header}];
 mut_data.tooltip_format = {{
 checker_title:{checker_title},checker_partial:{checker_partial},gene_title:{gene_title},gene_partial:{gene_partial},id_title:{id_title},id_partial:{id_partial},
 }};
 """
-tooltip_templete = "{{format:[{formats}], keys: '{keys}'}}"
-tooltip_detail_templete = "{{label:'{label}',type:'{type}',keys:[{keys}],ext:'{ext}'}},"
 
 js_mutations_1 = "mut_data.mutations = ["
 js_mutations_2 = """];
@@ -31,11 +28,9 @@ mut_data.mutations_sum = {mutations_sum};
 """
 mu_mutations_template = '[{ID},{func},{gene},{num},[{tooltip}]],'
 
-
-
 js_subdata_1 = "mut_data.subdata = ["
 js_subdata_2 = "];"
-subdata_template = '{{name:"{name}",title:"{title}", type:"{type}",item:[{item}],colors_n:[{colors_n}],colors_h:[{colors_h}],data:[{data}]}},\n'
+subdata_template = '{{name:"{name}",title:"{title}", type:"{type}",item:[{item}],label:[{label}],colors_n:[{colors_n}],data:[{data}]}},\n'
 subdata_data_template = '[{id},{item}],'
 
 js_function = """
@@ -62,7 +57,7 @@ function tooltip_title(format, pos, sum) {
     
     var tooltip = [];
     for (var t in format.format) {
-        tooltip.push(text_format(format.format[t], obj));
+        tooltip.push(utils.text_format(format.format[t], obj));
     }
     return tooltip;
 };
@@ -78,7 +73,7 @@ function tooltip_partial(format, pos, mutation, loop, value) {
                 obj[mut_data.mutation_header[p2]] = mutation[m][4][p][p2];
             }
             for (var t in format.format) {
-                var text = text_format(format.format[t], obj);
+                var text = utils.text_format(format.format[t], obj);
                 if (tooltip.indexOf(text) < 0){
                     tooltip.push(text);
                     if (loop == false) { break;}
@@ -89,36 +84,6 @@ function tooltip_partial(format, pos, mutation, loop, value) {
         if (loop == false) { break;}
     }
     return tooltip;
-};
-function text_format(format, obj) {
-
-    var text = "";
-    for (var f in format) {
-        if (format[f].type == 'fix') {
-            text += format[f].label;
-            continue;
-        }
-        var replaced = format[f].label;
-        for (var k in format[f].keys) {
-            var reg = new RegExp("{" + format[f].keys[k] + "}", 'g');
-            replaced = replaced.replace(reg, obj[format[f].keys[k]]);
-        }
-        // case numeric
-        if (format[f].type == 'numeric') {
-            try{  replaced = eval(replaced);
-            } catch(e) {}
-            if (format[f].ext != null) {
-                if (format[f].ext == ",") {
-                    replaced = String(replaced).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
-                }
-                if (format[f].ext[0] == ".") {
-                    replaced = parseFloat(replaced).toFixed(parseInt(format[f].ext.substr(1)));
-                }
-            }
-        }
-        text += replaced;
-    }
-    return text;
 };
 
 mut_data.get_dataset_id = function () {
@@ -162,21 +127,8 @@ mut_data.get_dataset_id = function () {
         }
     }
     
-    var tooltips_ex = [];
-    for (var f=0; f < keys.length; f++) {
-        tooltips_ex[f] = [];
-        
-        for (var i=0; i < keys[f].length; i++) {
-            tooltips_ex[f].push(tooltips[keys[f][i]]);
-        }
-    }
-    
-    return {data: data, keys: keys, tooltips: tooltips_ex};
+    return {data: data, keys: keys, tooltips: tooltips};
 };
-
-function debg(start, before, now, prefix) {
-    console.log(prefix + ":" + (now.getTime() - before)/1000 + ", total: " + (now.getTime() - start)/1000);
-}
 
 mut_data.get_dataset_checker = function (func_flgs, use_genes) {
     
@@ -211,14 +163,11 @@ mut_data.get_dataset_checker = function (func_flgs, use_genes) {
     var data = [];
     var keys = [];
     var keys2 = [];
-    var tooltips = [];
-    // par func
     for (var f=0; f < mut_data.funcs.length; f++) {
         
         data[f] = [];
         keys[f] = [];
         keys2[f] = [];
-        tooltips[f] = [];
         
         if (func_flgs[mut_data.funcs[f]] == false) continue;
         
@@ -232,11 +181,10 @@ mut_data.get_dataset_checker = function (func_flgs, use_genes) {
             data[f].push(1);
             keys[f].push(mut_data.Ids[data_filt[d][0]]);
             keys2[f].push(mut_data.genes[data_filt[d][2]]);
-            tooltips[f].push(tooltips_matrix[data_filt[d][0]][mut_data.genes[data_filt[d][2]]]);
         }
     }
     
-    return {data: data, keys: keys, keys2: keys2, tooltips: tooltips};
+    return {data: data, keys: keys, keys2: keys2, tooltips: tooltips_matrix};
 };
 
 function extract_gene(func_flgs, gene_th, gene_max, sort_name_y, sort_asc_y) {
@@ -351,16 +299,7 @@ mut_data.get_dataset_gene = function (func_flgs, gene_th, gene_max, sort_name_y,
             }
         }
     }
-
-    var tooltips_ex = [];
-    for (var f=0; f < genes.length; f++) {
-        tooltips_ex[f] = [];
-        for (var g=0; g < genes[f].length; g++) {
-            tooltips_ex[f][g] = tooltips[genes[f][g]];
-        }
-    }
-
-    return {data: gene_nums, keys: genes, tooltips: tooltips_ex, total_keys: ex_genes.names, total_nums: ex_genes.values, uncut_length: ex_genes.uncut_length};
+    return {data: gene_nums, keys: genes, tooltips: tooltips, total_keys: ex_genes.names, total_nums: ex_genes.values, uncut_length: ex_genes.uncut_length};
 };
     
 mut_data.get_id_nums = function (func_flgs, data, keys) {
@@ -407,7 +346,6 @@ mut_data.get_id_flg_par_gene = function (name, func_flgs) {
         for (var d=0; d < data_filt.length;d++) {
             // count only visible funcs
             if (func_flgs[mut_data.funcs[data_filt[d][1]]] == false) continue;
-            //sum = sum + data_filt[d][3];
             sum = 1;
             break;
         }
@@ -419,7 +357,6 @@ mut_data.get_id_flg_par_gene = function (name, func_flgs) {
 };
 
 mut_data.get_sub_data = function (name) {
-    var stack = [];
     
     var sub = {}
     // par sub
@@ -429,7 +366,7 @@ mut_data.get_sub_data = function (name) {
             break;
         }
     }
-    if (sub.length == 0) return stack;
+    if (sub.length == 0) return {};
 
     // par item
     var stack_length = sub.item.length;
@@ -451,18 +388,19 @@ mut_data.get_sub_data = function (name) {
         stack_length = gradient_stack_d.length;
     }
     
+    var stack = [];
+    tooltips = {};
+    
     for (var i=0; i < stack_length; i++) {
         stack[i] = {};
         stack[i].data = [];
         stack[i].keys = [];
-        stack[i].tooltips = [];
+        
         if (sub.type == "gradient") {
             stack[i].color_n = "";
-            stack[i].color_h = "";
         }
         else {
             stack[i].color_n = sub.colors_n[i];
-            stack[i].color_h = sub.colors_h[i];
         }
     }
     
@@ -494,8 +432,7 @@ mut_data.get_sub_data = function (name) {
                 }
             }
             if (stack[s].color_n == "") {
-                stack[s].color_n = sub_color_gradient(val, sub.item, sub.colors_n);
-                stack[s].color_h = sub_color_gradient(val, sub.item, sub.colors_h);
+                stack[s].color_n = utils.color_gradient(val, sub.item, sub.colors_n);
             }
         }
         else { // "fix"
@@ -510,10 +447,10 @@ mut_data.get_sub_data = function (name) {
         var p = stack[s].data.length;
         stack[s].data[p] = 1;
         stack[s].keys[p] = id;
-        stack[s].tooltips[p] = [id + ", " + val];
+        tooltips[id] = [id + ", " + val];
     }
     
-    return stack;
+    return {stack: stack, tooltips: tooltips, label: {type: sub.type, text: sub.label, color: sub.colors_n}};
 };
 mut_data.get_sub_values = function (name) {
     var values = [];
@@ -535,59 +472,15 @@ mut_data.get_sub_values = function (name) {
     return values;
 };
 
-function sub_color_gradient(value, range, colors) {
-
-    var v0 = range[0];
-    var v1 = range[1];
-    var ret = "#";
-    
-    for (var i=0; i < 3; i++) {
-        
-        var c0 = parseInt(colors[0].slice(2*i+1, 2*i+3), 16);
-        var c1 = parseInt(colors[1].slice(2*i+1, 2*i+3), 16);
-        
-        var c = c0 + ((value - v0) * (c1 - c0)) / ((v1 - v0));
-        if (c > 255) c = 255;
-        if (c < 0) c = 0;
-        
-        var c16 = Math.round(c).toString(16);
-        if (c16.length == 1) c16 = "0" + c16;
-        ret = ret + c16;
-    }
-
-    return ret;
-};
-
 })();
 
-/*
- * runstant lite
- */
-if (String.prototype.format == undefined) {
-    String.prototype.format = function(arg)
-    {
-        var rep_fn = undefined;
-        rep_fn = function(m, k) {
-            if (k.indexOf(":") < 0) { return arg[k]; }
-            var k_split = k.split(":");
-            if (k_split[1] == ",") {
-                return String(arg[k_split[0]]).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
-            }
-            if (k_split[1][0] == ".") {
-                return arg[k_split[0]].toFixed(parseInt(k_split[1].substr(1)));
-            }
-            return arg[k_split[0]];
-        }
-        return this.replace(/\{(\w+:?[A-Za-z0-9,.]+)\}/g, rep_fn);
-    }
-}
-
+Object.freeze(mut_data);
 """
 ########### html template
 subplot_template = """
 <!-- sub bar -->
 <tr>
-<td><div id="div_sub{i}_t"><b>{title}</b>
+<td><div id="div_sub{i}_t" class="subplot_title"><b>{title}</b>
       <section>
         <input type="radio" name="optSub{i}" value="0" id="xSub{i}_0" onclick="sort_sub({i}, 0)" checked /><label for="xSub{i}_0" class="radio">none</label>
         <input type="radio" name="optSub{i}" value="1" id="xSub{i}_1" onclick="sort_sub({i}, 1)" />        <label for="xSub{i}_1" class="radio">ASC </label>
@@ -595,69 +488,28 @@ subplot_template = """
       </section>
 </div></td>
 <td><div id="div_sub{i}_p"></div></td>
-<td><div style="overflow: auto;" id="div_sub{i}_l">
-    {sub_legend}    
-</div></td>
+<td><div style="overflow: auto;" id="div_sub{i}_l_svg"></div></td>
 </tr>
 """
-
-sub_legend_template = """
-    <div class="legend"><div id="sub{i}_legend{n}" class="legend legend_bar"></div><div id="sub{i}_legend{n}_text" class="legend legend_label"></div></div>"""
-
-legend_template = """
-    <div><input type="checkbox" id="v{n}" onclick="change_stack('v{n}', '{text}')" checked><div id="legend{n}" class="legend legend_bar"></div><div id="legend{n}_text" class="legend legend_label"></div></div>"""
-
-js_set_legend_template = """
-    d3.select("#legend{n}").style("background-color", "{color}");
-    d3.select("#legend{n}_text").attr("id", "text").text('{text}');"""
-    
-js_set_sub_legend = """
-    {set_text}
-    subs.push(add_subdiv("div_sub{i}", "sub{i}"));"""
-js_set_sub_legend_template = """
-    d3.select("#sub{i}_legend{n}").style("background-color", "{color}");
-    d3.select("#sub{i}_legend{n}_text").attr("id",  "text").text('{text}');"""
+js_set_sub_add = """
+    subs.push(add_subdiv("div_sub{i}", "sub{i}", {type}));"""
 js_set_sub_select = """
     subs[{i}].bar_selected = function(key, on) {{
         sub_selected(key, on);
     }}"""
     
 ########### functions
-
-import paplot.subcode.tools as tools
-
-def value_to_index(li, value, default):
-    for i in range(len(li)):
-        if li[i] == value:
-            return i
-    
-    return default
-
-def list_to_text(li):
-    text = ""
-    for item in li:
-        text += "'" + str(item) + "',"
-    return text
-
-def text_to_list(text, sep):
-    splt = []
-    if sep == "": splt.append(text)
-    else: splt = text.split(sep)
-    
-    li = []
-    for item in splt:
-        value = item.strip().rstrip()
-        if value != "":
-            li.append(value)
-    return li
-            
+           
 def genes_list(colmun, colmun_f, colmun_id, funcs, Ids, config):
-
+    
+    import paplot.subcode.tools as tools
+    import paplot.convert as convert
+    
     sept = tools.config_getstr(config, "result_format_mutation", "sept_gene")
     use_gene_rate = config.getfloat("mut", "use_gene_rate")
     
-    limited_list = text_to_list(tools.config_getstr(config, "mut", "limited_genes"), ",")
-    nouse_list = text_to_list(tools.config_getstr(config, "mut", "nouse_genes"), ",")
+    limited_list = convert.text_to_list(tools.config_getstr(config, "mut", "limited_genes"), ",")
+    nouse_list = convert.text_to_list(tools.config_getstr(config, "mut", "nouse_genes"), ",")
     
     genes_di = {}
     ids_di = {}
@@ -695,127 +547,6 @@ def genes_list(colmun, colmun_f, colmun_id, funcs, Ids, config):
 
     genes.sort()
     return genes
-
-def funcs_list(colmun, config):
-
-    import paplot.color as color
-    
-    sept = tools.config_getstr(config, "result_format_mutation", "sept_func")
-    limited_list = text_to_list(tools.config_getstr(config, "mut", "limited_funcs"), ",")
-    nouse_list = text_to_list(tools.config_getstr(config, "mut", "nouse_funcs"), ",")   
-    
-    funcs = []
-    for row in colmun:
-        splt = []
-        if sept == "": splt.append(row)
-        else: splt = row.split(sept)
-        
-        for func in splt:
-            func = func.strip()
-            
-            if func == "": continue
-            if len(limited_list) > 0:
-                if (func in limited_list) == False: continue   
-            if func in nouse_list: continue
-            funcs.append(func)
-            
-    # sort list
-    funcs = list(set(funcs))
-    funcs.sort() 
-    
-    color_n_list = {};
-    color_h_list = {};
-    for f in tools.config_getstr(config, "mut", "func_colors").split(","):
-        if len(f) == 0: continue
-        cols = text_to_list(f, ":")
-                
-        if len(cols) >= 2:
-            color_n_list[cols[0]] = color.name_to_value(cols[1])
-        if len(cols) >= 3:
-            color_h_list[cols[0]] = color.name_to_value(cols[2])
-    
-    color_n_list = color.create_color_dict(funcs, color_n_list, color.metro_colors) 
-    color_h_list2 = {}
-    for key in color_n_list:
-        if color_h_list.has_key(key): continue
-        color_h_list2[key] = color.Saturation_down(color_n_list[key])
-    
-    # dict to value
-    colors_n = []
-    colors_h = []
-    
-    for key in funcs:
-        colors_n.append(color_n_list[key])
-        colors_h.append(color_h_list2[key])
-        
-    return [funcs, colors_n, colors_h]
-
-def pyformat_to_jstooltip_text(config, section, item_startwith):
-
-    import re
-    re_compile=re.compile(r"\{[0-9a-zA-Z\+\-\*\/\#\:\,\.\_\ ]+\}")
-    re_compile2=re.compile(r"[\+\-\*\/\:]")
-    
-    keys_list = []
-    tooltip_fomat_text = ""
-
-    for option in tools.config_getoptions(config, section, item_startwith):
-        
-        formt = tools.config_getstr(config, section, option)
-        key_text_list = re_compile.findall(formt)
-        tooltip_detail_text = ""
-        
-        for key_text in key_text_list:
-            start = formt.find(key_text)
-            
-            # write fix area
-            if start > 0:
-                tooltip_detail_text += tooltip_detail_templete.format(label = formt[0:start], type="fix", keys="", ext="")
-            
-            formt = formt[start+len(key_text):]
-            #if len(formt) == 0: break
-            
-            label_text = key_text.replace(" ", "").replace("{", "").replace("}", "")
-            sub_keys = re_compile2.split(label_text)
-            
-            ttype = "numeric"
-            ext = ""
-            
-                
-            # case str
-            if len(sub_keys) == 1:
-                ttype = "str"
-
-            # case with-extention
-            if label_text.find(":") > 0:
-                ext_start = label_text.index(":")
-                ext=label_text[ext_start+1:]
-                label_text = label_text[0:ext_start]
-                sub_keys = re_compile2.split(label_text)
-            
-            for sub_key in sub_keys:
-                try:
-                    float(sub_key)
-                    sub_keys.remove(sub_key)
-                except Exception:
-                    pass
-            
-            for sub_key in list(set(sub_keys)):
-                label_text = label_text.replace(sub_key, "{" + sub_key +"}")
-                    
-            tooltip_detail_text += tooltip_detail_templete.format(label= label_text, type=ttype, keys=list_to_text(sub_keys), ext=ext)
-            keys_list.extend(sub_keys)
-        
-        if len(formt) > 0:
-            tooltip_detail_text += tooltip_detail_templete.format(label = formt, type="fix", keys="", ext="")
-            
-        tooltip_fomat_text += "[" + tooltip_detail_text + "],"
-
-    key_text = ""
-    for key in list(set(keys_list)):
-        key_text += "{" + key + "} "
-        
-    return tooltip_templete.format(formats = tooltip_fomat_text, keys = key_text)
         
 def output_html(input_file, output_js_file, output_html_dir, org_html, project_name, positions, config):
     dataset = convert_tojs(input_file, output_js_file, positions, config)
@@ -829,6 +560,8 @@ def convert_tojs(input_file, output_file, positions, config):
     
     import paplot.subcode.data_frame as data_frame
     import paplot.subcode.merge as merge
+    import paplot.subcode.tools as tools
+    import paplot.convert as convert
     
     cols_di = merge.position_to_dict(positions)
 
@@ -854,7 +587,7 @@ def convert_tojs(input_file, output_file, positions, config):
         if func == "":
             df.data[f][func_pos] = "_blank_"
 
-    [funcs, colors_n, colors_h] = funcs_list(df.column(cols_di["func"]), config)
+    [funcs, colors_n] = convert.group_list(df.column(cols_di["func"]), "mut", "func", config)
 
     # ID list
     Ids = []
@@ -876,18 +609,17 @@ def convert_tojs(input_file, output_file, positions, config):
             
     f = open(output_file, "w")
     f.write(js_header \
-        + js_dataset.format(Ids = list_to_text(Ids), \
-            genes = list_to_text(genes), \
-            funcs = list_to_text(funcs), \
-            func_colors_n = list_to_text(colors_n), \
-            func_colors_h = list_to_text(colors_h), \
-            mutation_header = list_to_text(option_keys), \
-            checker_title = pyformat_to_jstooltip_text(config, "mut", "tooltip_format_checker_title"), \
-            checker_partial = pyformat_to_jstooltip_text(config, "mut", "tooltip_format_checker_partial"), \
-            gene_title = pyformat_to_jstooltip_text(config, "mut", "tooltip_format_gene_title"), \
-            gene_partial = pyformat_to_jstooltip_text(config, "mut", "tooltip_format_gene_partial"), \
-            id_title = pyformat_to_jstooltip_text(config, "mut", "tooltip_format_id_title"), \
-            id_partial = pyformat_to_jstooltip_text(config, "mut", "tooltip_format_id_partial"), \
+        + js_dataset.format(Ids = convert.list_to_text(Ids), \
+            genes = convert.list_to_text(genes), \
+            funcs = convert.list_to_text(funcs), \
+            func_colors_n = convert.list_to_text(colors_n), \
+            mutation_header = convert.list_to_text(option_keys), \
+            checker_title = convert.pyformat_to_jstooltip_text(config, "mut", "result_format_mutation", "tooltip_format_checker_title"), \
+            checker_partial = convert.pyformat_to_jstooltip_text(config, "mut", "result_format_mutation", "tooltip_format_checker_partial"), \
+            gene_title = convert.pyformat_to_jstooltip_text(config, "mut", "result_format_mutation", "tooltip_format_gene_title"), \
+            gene_partial = convert.pyformat_to_jstooltip_text(config, "mut", "result_format_mutation", "tooltip_format_gene_partial"), \
+            id_title = convert.pyformat_to_jstooltip_text(config, "mut", "result_format_mutation", "tooltip_format_id_title"), \
+            id_partial = convert.pyformat_to_jstooltip_text(config, "mut", "result_format_mutation", "tooltip_format_id_partial"), \
             ))
             
     # mutation list
@@ -903,7 +635,7 @@ def convert_tojs(input_file, output_file, positions, config):
             mutations[iid] = {}
             tooltips[iid] = {}
                 
-        func_split = text_to_list(row[df.name_to_index(cols_di["func"])], \
+        func_split = convert.text_to_list(row[df.name_to_index(cols_di["func"])], \
                                 tools.config_getstr(config, "result_format_mutation", "sept_func"))
                                 
         tooltip_items = []
@@ -917,7 +649,7 @@ def convert_tojs(input_file, output_file, positions, config):
                 mutations[iid][func] = {}
                 tooltips[iid][func] = {}
 
-            gene_split = text_to_list(row[df.name_to_index(cols_di["gene"])], \
+            gene_split = convert.text_to_list(row[df.name_to_index(cols_di["gene"])], \
                                 tools.config_getstr(config, "result_format_mutation", "sept_gene"))
             for gene in gene_split:
                 if (gene in mutations[iid][func]) == False:
@@ -932,15 +664,15 @@ def convert_tojs(input_file, output_file, positions, config):
     for iid in mutations:
         for func in mutations[iid]:
             for gene in mutations[iid][func]:
-                idx_i = value_to_index(Ids, iid, -1)
-                idx_f = value_to_index(funcs, func, -1)
-                idx_g = value_to_index(genes, gene, -1)
+                idx_i = convert.value_to_index(Ids, iid, -1)
+                idx_f = convert.value_to_index(funcs, func, -1)
+                idx_g = convert.value_to_index(genes, gene, -1)
 
                 if idx_i >= 0 and idx_f >= 0 and idx_g >= 0:
                     
                     tooltip_items = ""
                     for tips in tooltips[iid][func][gene]: 
-                        tooltip_items += "[" + list_to_text(tips) + "],"
+                        tooltip_items += "[" + convert.list_to_text(tips) + "],"
 
                     f.write(mu_mutations_template.format(ID = idx_i, \
                         func = idx_f , \
@@ -962,19 +694,19 @@ def convert_tojs(input_file, output_file, positions, config):
         if sec.startswith("mut_subplot_type1_"):
             ret_val = load_subdata(Ids, sec, config)
             if ret_val == None: continue
-            [data_text, item, colors_n, colors_h, label, title] = ret_val
+            [data_text, item, colors_n, label, title] = ret_val
             
             name = "sub%d" % (counter)
-            pos = 0
+            pos = 1
             counter += 1
             
         elif sec.startswith("mut_subplot_type2_"):
             ret_val = load_subdata(Ids, sec, config)
             if ret_val == None: continue
-            [data_text, item, colors_n, colors_h, label, title] = ret_val
+            [data_text, item, colors_n, label, title] = ret_val
             
             name = "sub%d" % (counter)
-            pos = 1
+            pos = 2
             counter += 1
             
         else: continue
@@ -982,9 +714,9 @@ def convert_tojs(input_file, output_file, positions, config):
         f.write(subdata_template.format(name = name, \
                 title = title, \
                 type = tools.config_getstr(config, sec, "mode"), \
-                item = list_to_text(item), \
-                colors_n = list_to_text(colors_n), \
-                colors_h = list_to_text(colors_h), \
+                item = convert.list_to_text(item), \
+                label = convert.list_to_text(label), \
+                colors_n = convert.list_to_text(colors_n), \
                 data = data_text ))
 
         subdata.append({"pos":pos, "label":label, "color":colors_n, "title": title})
@@ -1000,6 +732,8 @@ def convert_tojs(input_file, output_file, positions, config):
 
 def load_subdata(ids, sec, config):
     import os
+    import paplot.subcode.tools as tools
+    import paplot.convert as convert
     import paplot.color as color
 
     input_file = tools.config_getpath(config, sec, "path", default = "../../example/sample_summary.csv")
@@ -1017,7 +751,7 @@ def load_subdata(ids, sec, config):
     colors_n_di = {}
     colors_h_di = {}
     for name_set in tools.config_getstr(config, sec, "name_set").split(","):
-        name_set_split = text_to_list(name_set, ":")
+        name_set_split = convert.text_to_list(name_set, ":")
         for i in range(len(name_set_split)):
             text = name_set_split[i]
             if i == 0:
@@ -1040,10 +774,8 @@ def load_subdata(ids, sec, config):
     
     # dict to value
     colors_n = []
-    colors_h = []
     for key in item:
         colors_n.append(colors_n_di[key])
-        colors_h.append(colors_h_di2[key])
     
     if mode == "range":
         item.remove(item[0])
@@ -1074,7 +806,7 @@ def load_subdata(ids, sec, config):
             continue
         
         if len(header) == 0:
-            header = text_to_list(line,sept)
+            header = convert.text_to_list(line,sept)
             try:
                 colname = tools.config_getstr(config, sec, "col_value")
                 pos_value = header.index(colname)
@@ -1086,7 +818,7 @@ def load_subdata(ids, sec, config):
                 
             continue
         
-        cols = text_to_list(line,sept)
+        cols = convert.text_to_list(line,sept)
         if (cols[pos_ID] in ids) == False: continue
         else: unlookup.remove(cols[pos_ID])
 
@@ -1124,38 +856,26 @@ def load_subdata(ids, sec, config):
         item[0] = min(values)
         item[1] = max(values)
         
-    return [data_text, item, colors_n, colors_h, label, title] 
+    return [data_text, item, colors_n, label, title] 
 
 def create_html(dataset, output_html_dir, org_html, project_name, config):
     import os
-
-    legend_text = ""
-    set_legend_text = ""
-    for n in range(len(dataset["func"])):
-        legend_text += legend_template.format(n = n, text = dataset["func"][n])
-        set_legend_text += js_set_legend_template.format(n = n, text = dataset["func"][n], color = dataset["color"][n])
+    import paplot.subcode.tools as tools
     
     sub1_text = ""
     sub2_text = ""
-    set_sub_legend_text = ""
+    set_sub_add_text = ""
     set_sub_select_text = ""
     for i in range(len(dataset["subdata"])):
         
-        sub_legend_text = ""
-        set_text = ""
-        for n in range(len(dataset["subdata"][i]["label"])):
-            sub_legend_text += sub_legend_template.format(i = i, n = n)
-            set_text += js_set_sub_legend_template.format(i = i, n = n, \
-                                        text = dataset["subdata"][i]["label"][n], \
-                                        color = dataset["subdata"][i]["color"][n])
-        
-        sub_text = subplot_template.format(i = i, sub_legend = sub_legend_text, title = dataset["subdata"][i]["title"])
-        if dataset["subdata"][i]["pos"] == 0:
+        sub_text = subplot_template.format(i = i, title = dataset["subdata"][i]["title"])
+        if dataset["subdata"][i]["pos"] == 1:
             sub1_text += sub_text
+            set_sub_add_text += js_set_sub_add.format(i = i, type = 1)
         else:
             sub2_text += sub_text
+            set_sub_add_text += js_set_sub_add.format(i = i, type = 2)
             
-        set_sub_legend_text += js_set_sub_legend.format(i = i, title = dataset["subdata"][i]["title"], set_text = set_text)
         set_sub_select_text += js_set_sub_select.format(i = i)
 
     f_template = open(os.path.dirname(os.path.abspath(__file__)) + "/templates/" + org_html)
@@ -1167,11 +887,9 @@ def create_html(dataset, output_html_dir, org_html, project_name, config):
         html_template.format(project = project_name, 
             version = tools.version_text(),
             date = tools.now_string(),
-            legend = legend_text,
-            set_legend = set_legend_text,
             sub1 = sub1_text,
             sub2 = sub2_text,
-            set_sub_legend = set_sub_legend_text,
+            set_sub_add = set_sub_add_text,
             set_sub_select = set_sub_select_text,
             style = "../style/%s" % os.path.basename(tools.config_getpath(config, "style", "path", "default.js")),
         ))

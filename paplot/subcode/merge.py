@@ -4,7 +4,7 @@ Created on Wed Dec 02 17:43:52 2015
 
 @author: okada
 
-$Id: merge.py 107 2016-05-26 08:24:48Z aokada $
+$Id: merge.py 127 2016-07-14 08:53:17Z aokada $
 """
 
 import tools
@@ -31,18 +31,22 @@ def load_potisions(mode, config):
     opts = {}
     for option in config.options(section_in):
         param = ""
-        if option.find("col_") == 0:
+        if option.startswith("col_"):
             param = option.replace("col_", "")
         
         if len(param) > 0:
-            if param.find("opt_") == 0:
+            value = config.get(section_in, option)
+            if value == "":
+                continue
+            
+            if param.startswith("opt_"):
                 if header == True:
-                    opts[param.replace("opt_", "")] = config.get(section_in, option)
+                    opts[param.replace("opt_", "")] = value
                 else:
                     opts[param.replace("opt_", "")] = config.getint(section_in, option)
             else:
                 if header == True:
-                    must[param] = config.get(section_in, option)
+                    must[param] = value
                 else:
                     must[param] = config.getint(section_in, option)
                 

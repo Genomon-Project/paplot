@@ -8,6 +8,7 @@ var mut_bar = (function()
         this.dataset = [];
         this.keys = [];
         this.tags = [];
+        this.tooltips = [];
         
         this.options =
         {
@@ -19,16 +20,24 @@ var mut_bar = (function()
             resizeable_h: false,
             tooltip: { enable: true, position: "parent", sift_x: 0, sift_y: 0, },
             multi_select: false,
+            brush: { enable: false, rect: 0, fill: "yellow", stroke: "yellow", opacity: 0.2, },
             direction_x: "left-right",
             direction_y: "bottom-up",
             grid_xs: [],
             grid_y: 0,
             titles: [],
             tall_limit: 0,
+            bar_min_width: 5,
+            bar_max_width: 30,
+            color_hilight: "#FFFF00",
+            zoom: { enable: false, keys_enable: [], pos_start: -1, pos_end: -1, },
+            animation: { mtime: 0, },
+            call_back: 0,
         };
 
         // don't touch
         this.svg_obj = 0;
+        this.brush_obj = 0;
         this.y_axis = 0;
         this.asc = {
             bar : true,
@@ -61,9 +70,7 @@ var mut_bar = (function()
         var dataset_template = function(name) {
             this.data = [];
             this.keys = [];
-            this.tooltips = [];
             this.color_fill = "#333";
-            this.color_fill_hilight = "#F00";
             this.name = name;
             this.enable = true;
         };
@@ -86,10 +93,11 @@ var mut_bar = (function()
             this.wide = 0;
             this.sift_x = 0;
             this.sift_y = 0;
-            this.color = "#000";
             this.font_size = "14px";
+            this.font_family = "'Helvetica Neue', Helvetica, Arial, sans-serif";
             this.text_anchor = "middle";
             this.text_rotate = 0;
+            this.text_color = "#000";
         };
         return title_template;
     })();
@@ -105,6 +113,7 @@ var mut_bar = (function()
             this.wide = 0;
             this.font_color = "#000";
             this.font_size = "14px";
+            this.font_family = "'Helvetica Neue', Helvetica, Arial, sans-serif";
             this.text_anchor = "middle";
             this.text_rotate = 0;
             
@@ -114,20 +123,423 @@ var mut_bar = (function()
             // axis X only.
             this.sift_x = 0;
             this.sift_y = 0;
+            this.text_anchor_ext = false;
         };
         return grid_template;
     })();
 
     // -----------------------------------
+    // x/y position
+    // -----------------------------------
+    p._xy_position_grid = function(asc, wide, padding1, items, d, zoom, sift) {
+
+        var pos = asc.sort_list[d];
+        if (pos < zoom.pos_start) return -100;
+        if (pos >  zoom.pos_end) return -100;
+
+        var i = pos - zoom.pos_start;
+        if (asc.bar == true) {
+            return padding1 + i*wide/items + sift;
+        }
+        return padding1 + wide - (i) * wide/items + sift;
+    }
+    p._xy_position_text = function(asc, wide, padding1, items, d, zoom, sift, ext) {
+        var pos = asc.sort_list[d];
+        if (pos < zoom.pos_start) return -100;
+        if (pos >  zoom.pos_end) return -100;
+
+        var i = pos - zoom.pos_start;
+        if (asc.bar == true) {
+            if (ext > 0) {
+                return padding1 + ext*wide/items + sift;
+            }
+            return padding1 + i*wide/items + sift;
+        }
+        if (ext > 0) {
+            return padding1 + wide - ext*wide/items + sift;
+        }
+        return padding1 + wide - (i+1) * wide/items + sift;
+    }
+    p._xy_position = function(asc, wide, padding1, items, d, zoom, sift) {
+        var pos = asc.sort_list[d];
+        if (pos < zoom.pos_start) return padding1;
+        if (pos >  zoom.pos_end) return padding1 + wide;
+
+        var i = pos - zoom.pos_start;
+        if (asc.bar == true) {
+            return padding1 + i*wide/items + sift;
+        }
+        return padding1 + wide - (i+1) * wide/items + sift;
+    }
+    p._width_position = function(asc, wide, items, d, zoom, bar_padding) {
+        var pos = asc.sort_list[d];
+        if (pos < zoom.pos_start) return 0;
+        if (pos >  zoom.pos_end) return 0;
+        return wide / items -  bar_padding;
+    }
+    
+    // -----------------------------------
+    // set D3 positions
+    // -----------------------------------
+    p._set_xw = function() {
+
+        var that = this;
+
+        // paramas
+        var x_items = this._x_items();
+        
+        var w = "width";
+        var x = "x", y = "y";
+        var padding1 = that.padding.left, padding2 = this.padding.top;
+        var plot1 = that.plot.w, plot2 = this.plot.h;
+        
+        if (this.asc.bar_yoko == true) {
+            w = "height";
+            x = "y";
+            y = "x";
+            padding1 = that.padding.top;
+            padding2 = that.padding.left;
+            plot1 = that.plot.h;
+            plot2 = that.plot.w;
+        }
+        
+        var bar_padding =  0;
+        if (plot1 / x_items > 3) {
+            bar_padding = 1;
+        }
+        
+        for (var idx=0; idx < this.dataset.length; idx++) {
+            this.svg_obj.selectAll("g." + this.dataset[idx].name).selectAll("rect")
+                .transition()
+                .duration(this.options.animation.mtime)
+                .attr(w, function(d,i) {
+                    return p._width_position(that.asc, plot1, x_items, this.className.baseVal, that.options.zoom, bar_padding);
+                })
+                .attr(x, function(d, i) {
+                    return p._xy_position(that.asc, plot1, padding1, x_items, this.className.baseVal, that.options.zoom, 0);
+                })
+        }
+
+        // transparent-bar
+        this.svg_obj.selectAll("g.transparent_bar").selectAll("rect")
+            .attr(w, function(d,i) {
+                    return p._width_position(that.asc, plot1, x_items, d, that.options.zoom, bar_padding);
+                })
+                .attr(x, function(d, i) {
+                    return p._xy_position(that.asc, plot1, padding1, x_items, d, that.options.zoom, 0);
+                })
+        
+        // x-axis
+        if (this.options.grid_xs.length > 0) {
+            
+            var next_label = [];
+            for (var i = 0; i < this.options.grid_xs.length; i++) {
+                next_label[i] = [];
+                if (this.options.grid_xs[i].wide == 0) continue;
+                if (this.options.grid_xs[i].text_anchor_ext == false) continue;
+                
+                for (var j = 0; j < this.options.grid_xs[i].labels.length; j++) {
+                    if (this.options.grid_xs[i].labels[j] == "") {
+                        next_label[i][j] = 0;
+                        continue;
+                    }
+                    for (var next = j+1; next < this.options.grid_xs[i].labels.length; next++) {
+                        if (this.options.grid_xs[i].labels[next] != "") {
+                            next_label[i][j] = next;
+                            break;
+                        }
+                        next_label[i][j] = this.options.grid_xs[i].labels.length; // last
+                    }
+                }
+            }
+            var sift = Math.floor(plot1 / x_items / 2);
+            
+            this.svg_obj.selectAll("g.label_x").selectAll("text")
+                .attr('transform', function(d, i)  {
+                    if (d == "") return;
+                    
+                    var classes = this.className.baseVal.split(" ");
+                    var idx = Number(classes[0]);
+                    var f = Number(that.options.grid_xs[idx].font_size.replace(/px/g, "").replace(/em/g, ""));
+                    if (that.options.grid_xs[idx].wide == 0) return;
+                    
+                    var tx = that.options.grid_xs[idx].sift_x;
+                    var ty = that.options.grid_xs[idx].sift_y;
+                    
+                    if (that.options.grid_xs[idx].text_anchor_ext == true) {
+                        var pos = i%x_items;
+                        var len = Math.floor((next_label[idx][pos] - pos) / 2);
+                        if (len == 0) len = 0.5;
+                        
+                        if (that.options.grid_xs[idx].orient == "bottom") {
+                            tx = tx + p._xy_position_text(that.asc, that.plot.w, that.padding.left, x_items, classes[1], that.options.zoom, 0, len + pos);
+                            ty = ty + that.padding.top + that.plot.h + f;
+                            
+                        }
+                        else if (that.options.grid_xs[idx].orient == "top") {
+                            tx = tx + p._xy_position_text(that.asc, that.plot.w, that.padding.left, x_items, classes[1], that.options.zoom, 0, len + pos);
+                            ty = ty + that.padding.top - f;
+                        }
+                        else if (that.options.grid_xs[idx].orient == "left") {
+                            tx = tx + that.padding.left - f;
+                            ty = ty + p._xy_position_text(that.asc, that.plot.h, that.padding.top, x_items, classes[1], that.options.zoom, 0, len + pos);
+                        }
+                        else if (that.options.grid_xs[idx].orient == "right") {
+                            tx = tx + that.padding.left + that.plot.w + f;
+                            ty = ty + p._xy_position_text(that.asc, that.plot.h, that.padding.top, x_items, classes[1], that.options.zoom, 0, len + pos);
+                        }
+                    }
+                    else {
+                        if (that.options.grid_xs[idx].orient == "bottom") {
+                            tx = tx + p._xy_position_text(that.asc, that.plot.w, that.padding.left, x_items, classes[1], that.options.zoom, sift, 0);
+                            ty = ty + that.padding.top + that.plot.h + f;
+                        }
+                        else if (that.options.grid_xs[idx].orient == "top") {
+                            tx = tx + p._xy_position_text(that.asc, that.plot.w, that.padding.left, x_items, classes[1], that.options.zoom, sift, 0);
+                            ty = ty + that.padding.top - f;
+                        }
+                        else if (that.options.grid_xs[idx].orient == "left") {
+                            tx = tx + that.padding.left - f;
+                            ty = ty + p._xy_position_text(that.asc, that.plot.h, that.padding.top, x_items, classes[1], that.options.zoom, sift, 0);
+                        }
+                        else if (that.options.grid_xs[idx].orient == "right") {
+                            tx = tx + that.padding.left + that.plot.w + f;
+                            ty = ty + p._xy_position_text(that.asc, that.plot.h, that.padding.top, x_items, classes[1], that.options.zoom, sift, 0);
+                        }
+                    }
+                    return 'translate(' + tx + ', ' + ty + ') rotate(' + that.options.grid_xs[idx].text_rotate + ')';
+                });
+
+            this.svg_obj.selectAll("g.grid_x").selectAll("line")
+                .attr(y + "1", function(d,i){
+                    if (String(d).length > 0) return padding2;
+                    return 0;
+                })
+                .attr(y + "2", function(d,i){
+                    if (String(d).length > 0) return padding2 + plot2;
+                    return 0;
+                })
+                .attr(x + "1", function(d,i){
+                    var key = this.className.baseVal.split(" ")[1];
+                    return p._xy_position_grid(that.asc, plot1, padding1, x_items, key, that.options.zoom, 0);
+                })
+                .attr(x + "2", function(d,i){
+                    var key = this.className.baseVal.split(" ")[1];
+                    return p._xy_position_grid(that.asc, plot1, padding1, x_items, key, that.options.zoom, 0);
+                });
+        }
+        
+    }
+
+    p._set_w_options = function() {
+        var that = this;
+        
+        var x_items = this._x_items();
+        
+        // brush
+        if (this.options.brush.enable == true) {
+            var brush_schale = d3.scale.linear().range([ this.padding.left, this.padding.left +this.plot.w ]);
+
+            if (this.brush_obj != 0) {
+                this.brush_obj.remove();
+            }
+            var brush = d3.svg.brush()
+                .x(brush_schale)
+                .on("brush", function() {
+                    var data = brush.extent();
+                    var start_index = Math.floor(data[0] * x_items);
+                    var end_index = Math.floor(data[1] * x_items);
+                    var list = that._keys_from_sort_list(that.asc.sort_list, start_index, end_index);
+                    that.brushed(list, data);
+                })
+                
+            
+            this.brush_obj = this.svg_obj.append("g")
+                .attr("class", "x brush")
+                .call(brush)
+                .selectAll("rect")
+                .attr("y", this.padding.top+1)
+                .attr("height", this.plot.h-2)
+                .style("fill", this.options.brush.fill)
+                .attr("stroke", this.options.brush.stroke)
+                .style("opacity", this.options.brush.opacity)
+            ;
+            
+            this.options.brush.rect = brush;
+        }
+        // y-axis
+        if (this.options.grid_y != 0) {
+            var trans = "";
+            var ticksize = 0;
+            if (this.options.grid_y.orient == "left") {
+                trans = "translate(" + (this.padding.left) + ", " + (this.padding.top) + ")";
+                ticksize = -this.plot.w;
+            }
+            else if (this.options.grid_y.orient == "right") {
+                trans = "translate(" + (this.padding.left + this.plot.w) + ", " + (this.padding.top) + ")";
+                ticksize = -this.plot.w;
+            }
+            else if (this.options.grid_y.orient == "top") {
+                trans = "translate(" + (this.padding.left) + ", " + (this.padding.top) + ")";
+                ticksize = this.plot.h;
+            }
+            else if (this.options.grid_y.orient == "bottom") {
+                trans = "translate(" + (this.padding.left) + ", " + (this.padding.top + this.plot.h) + ")";
+                ticksize = this.plot.h;
+            }
+            
+            this.svg_obj.selectAll("g.axis")
+                .attr("transform", trans)
+                .call(
+                    this.y_axis
+                    .tickSize(ticksize)
+                );
+        }
+        
+        // title
+        if (this.options.titles.length > 0) {
+            var trans = [];
+            for (var i = 0; i< this.options.titles.length; i++) {
+                trans.push(this._title_pos(this.options.titles[i].wide, this.options.titles[i].orient, this.options.titles[i].text_anchor, 
+                        this.options.titles[i].text_rotate, this.options.titles[i].sift_x, this.options.titles[i].sift_y, 
+                        this.svg, this.plot, this.padding,
+                        this.options.padding_top, this.options.padding_bottom, this.options.padding_right, this.options.padding_left));
+            }
+            
+            this.svg_obj.selectAll("g.title").selectAll("text")
+                .attr('transform', function(d,i){
+                    return ('translate(' + trans[i] + ') rotate(' + that.options.titles[i].text_rotate + ')');
+                });
+        }
+    }
+
+    p._set_yh = function() {
+        var that = this;
+        
+        // get max number from stack
+        var sum_array = [];
+        for (var i = this.dataset.length - 1; i >= 0; i--) {
+            if (this.dataset[i].enable == false) continue;
+            
+            for (var j = 0; j < this.keys.length ; j++) {
+                var key = this.keys[j];
+                var pos = this.dataset[i].keys.indexOf(key);
+                var value = 0;
+                if (pos >= 0) value = this.dataset[i].data[pos];
+                
+                var base = p._bar_base(this.dataset, i, key);
+                sum_array[j] = base + value;
+            }
+            break;
+        }
+        var max =  Math.max.apply(null, sum_array);
+        if (max == 0) max = 1;
+        y_size = max
+        if ((this.tall_limit > 0) && (max > this.tall_limit)) y_size = this.tall_limit;
+        
+        // bar
+        var y = "y";
+        var height = "height";
+        var plot1 = this.plot.h;
+        var padding1 = this.padding.top;
+        
+        if (this.asc.bar_yoko == true) {
+            y = "x";
+            height = "width";
+            plot1 = this.plot.w;
+            padding1 = this.padding.left
+        }
+        for (var idx=0; idx < this.dataset.length; idx++) {
+            this.svg_obj.selectAll("g." + this.dataset[idx].name).selectAll("rect")
+                .attr(y, function(d, i) {
+                    var base = p._bar_base(that.dataset, idx, that.dataset[idx].keys[i]);
+                    if (that.asc.value == true) {
+                        if (base > y_size) return padding1 + plot1;
+                        return padding1 + (base) * plot1 / y_size;
+                    }
+                    if ((d + base) > y_size) return padding1;
+                    return padding1 + plot1 - ((d + base) * plot1 / y_size);
+                })
+                .attr(height, function(d, i) {
+                    if (that.dataset[idx].enable == false) {
+                        return 0;
+                    }
+                    var base = p._bar_base(that.dataset, idx, that.dataset[idx].keys[i]);
+                    if (base > y_size) return 0;
+                    if ((d + base) > y_size) return ((y_size-base) * plot1 / y_size);
+                    return (d * plot1 / y_size);
+                });
+        }
+        
+        // transparent-bar
+        this.svg_obj.selectAll("g.transparent_bar").selectAll("rect")
+            .attr(height, plot1);
+        
+        // y-axis
+        if (this.options.grid_y != 0) {
+            var y_range;
+            var tick_size = 0;
+            
+            if (this.asc.bar_yoko == true) {
+                tick_size = -this.plot.h;
+                
+                if (this.asc.value == true) {
+                    y_range = [0, this.plot.w];
+                }
+                else {
+                    y_range = [this.plot.w, 0];
+                }
+                
+            }
+            else {
+                tick_size = -this.plot.w;
+                
+                if (this.asc.value == true) {
+                  y_range = [0, this.plot.h];
+                }
+                else {
+                  y_range = [this.plot.h, 0];
+                }
+            }
+            
+            var y_scale = d3.scale.linear()
+                .domain([0, y_size])   // original
+                .range(y_range);
+            
+            this.svg_obj.selectAll("g.axis")
+                .call(
+                    this.y_axis
+                    .scale(y_scale)
+                    .tickSize(tick_size)
+                );
+
+            this.svg_obj.selectAll("g.tick").selectAll("line")
+                .attr("stroke", this.options.grid_y.border_color)
+                .attr("shape-rendering", "crispEdges")
+                .style("stroke-opacity", this.options.grid_y.border_opacity);
+            
+            // trans value of dy ".71em" -> "7"
+            d3.selectAll("g.tick").selectAll("text")
+                .attr("dy", function(d) {
+                    var dy = d3.select(this).attr("dy");
+                    if (dy.indexOf("em") < 0) {
+                        return dy;
+                    }
+                    return Math.round(Number(dy.replace("em", "")) * 10);
+                });
+        }
+    }
+    
+    // -----------------------------------
     // sort
     // -----------------------------------
     p.sort = function(tag_name, asc)
     {
-        this.set_sort_item(tag_name, asc);
-        this.bar_sort();
+        this._set_sort_item(tag_name, asc);
+        this._set_xw();
     }
 
-    p.set_sort_item = function(tag_name, asc) {
+    p._set_sort_item = function(tag_name, asc) {
       
         var tags = [];
         for (var j = 0; j< tag_name.length; j++) {
@@ -169,223 +581,68 @@ var mut_bar = (function()
 
     }
 
-    p.pos_from_sort_list = function(sort_list, key, def) {
+    p._keys_from_sort_list = function(sort_list, start, end) {
         
-        if (sort_list.length == 0) return def;
-        if (key in sort_list == false) return def;
+        //var x_items = this._x_items();
+        var x_items = this.keys.length;
+        
+        if (start < 0) start = 0;
+        if (end < 0) end = 0;
+        if (start >= x_items) start = x_items - 1;
+        if (end >= x_items) end = x_items - 1;
 
-        return sort_list[key];
+        var sorted_key = new Array(end - start + 1);
+        for (var key in sort_list) {
+            if (sort_list[key] < start) continue;
+            if (sort_list[key] > end) continue;
+            sorted_key[sort_list[key] - start] = key;
+        }
+        
+        return sorted_key;
     }
-    
-    p.bar_sort = function() {
-        var that = this;
-
-        // bar
-        var x_items = this.x_items();
-        var x = "x", y = "y";
-        var padding1 = this.padding.left, padding2 = this.padding.top;
-        var plot1 = this.plot.w, plot2 = this.plot.h;
-
-        if (this.asc.bar_yoko == true) {
-            x = "y", y = "x";
-            padding1 = this.padding.top, padding2 = this.padding.left;
-            plot1 = this.plot.h, plot2 = this.plot.w;
-        }
-
-        for (var idx = 0; idx < this.dataset.length; idx++) {
-            this.svg_obj.selectAll("g." + this.dataset[idx].name).selectAll("rect")
-                .attr(x, function(d, i) {
-                    var item = p.pos_from_sort_list(that.asc.sort_list, that.dataset[idx].keys[i], -1);
-                    return p.xy_position (that.asc.bar, plot1, padding1, x_items, item, 0);
-                });
-        }
-
-        // x-axis
-        if (this.options.grid_xs.length > 0) {
-            this.svg_obj.selectAll("g.label_x").selectAll("text")
-                .attr('transform', function(d, i)  {
-                    var classes = this.className.baseVal.split(" ");
-                    var idx = Number(classes[0]);
-                    var f = Number(that.options.grid_xs[idx].font_size.replace(/px/g, "").replace(/em/g, ""));
-                    var tx = that.options.grid_xs[idx].sift_x;
-                    var ty = that.options.grid_xs[idx].sift_y;
-                    var item = p.pos_from_sort_list(that.asc.sort_list, classes[1], -1);
-
-                    if (that.options.grid_xs[idx].orient == "bottom") {
-                        tx = tx + p.xy_position(that.asc.bar, that.plot.w, that.padding.left, x_items, item, Math.floor(that.plot.w / x_items / 2));
-                        ty = ty + that.padding.top + that.plot.h + f;
-                    }
-                    else if (that.options.grid_xs[idx].orient == "top") {
-                        tx = tx + p.xy_position(that.asc.bar, that.plot.w, that.padding.left, x_items, item, Math.floor(that.plot.w / x_items / 2));
-                        ty = ty + that.padding.top - f;
-                    }
-                    else if (that.options.grid_xs[idx].orient == "left") {
-                        tx = tx + that.padding.left - f;
-                        ty = ty + p.xy_position(that.asc.bar, that.plot.h, that.padding.top, x_items, item, Math.floor(that.plot.h / x_items / 2));
-                    }
-                    else if (that.options.grid_xs[idx].orient == "right") {
-                        tx = tx + that.padding.left + that.plot.w + f;
-                        ty = ty + p.xy_position(that.asc.bar, that.plot.h, that.padding.top, x_items, item, Math.floor(that.plot.h / x_items / 2));
-                    }
-                    return 'translate(' + tx + ', ' + ty + ') rotate(' + that.options.grid_xs[idx].text_rotate + ')';
-                });
-
-            this.svg_obj.selectAll("g.grid_x").selectAll("line")
-                .attr(y + "1", function(d,i){
-                    if (String(d).length > 0) return padding2;
-                    return 0;
-                })
-                .attr(y + "2", function(d,i){
-                    if (String(d).length > 0) return padding2 + plot2;
-                    return 0;
-                })
-                .attr(x + "1", function(d,i){
-                    var key = this.className.baseVal.split(" ")[1];
-                    var item = p.pos_from_sort_list(that.asc.sort_list, key, -1);
-                    return p.xy_position_grid(that.asc.bar, plot1, padding1, x_items, item, 0);
-                })
-                .attr(x + "2", function(d,i){
-                    var key = this.className.baseVal.split(" ")[1];
-                    var item = p.pos_from_sort_list(that.asc.sort_list, key, -1);
-                    return p.xy_position_grid(that.asc.bar, plot1, padding1, x_items, item, 0);
-                });
-        }
-    }
-    
+        
     // -----------------------------------
     // get number of items
     // -----------------------------------
-    p.x_items = function() {
-        return this.keys.length;
+    p._x_items = function() {
+        return this.options.zoom.keys_enable.length;
     }
-    
+
     // -----------------------------------
-    // update svg size
+    // resize svg
     // -----------------------------------
-    p.update_plot_size = function() {
+    p._update_plot_size = function() {
         
         // svg
-        if (this.options.resizeable_w == true) {
+        if ((this.svg.w == 0) || (this.options.resizeable_w == true)) {
             this.svg.w = parseInt(d3.select("#" + this.id).style("width"), 10);
         }
-        if (this.options.resizeable_h == true) {
+        if ((this.svg.h == 0) || (this.options.resizeable_h == true)) {
             this.svg.h = parseInt(d3.select("#" + this.id).style("height"), 10);
         }
         
         // plot area
         this.plot.w = this.svg.w - this.padding.left - this.padding.right;
         this.plot.h = this.svg.h - this.padding.top - this.padding.bottom;
-    }
-    
-    // -----------------------------------
-    // bar padding
-    // -----------------------------------
-    p.bar_padding = function(wide, items) {
-        if (wide / items > 3) {
-            return 1;
-        }
-        return 0;
-    }
-    
-    // -----------------------------------
-    // x/y position
-    // -----------------------------------
-    p.xy_position = function(asc, wide, padding1, items, i, sift) {
-        var pos = 0;
-        if (asc == true) {
-            return padding1 + i*wide/items + sift;
-        }
-        return padding1 + wide - (i+1) * wide/items + sift;
-    }
-    p.xy_position_grid = function(asc, wide, padding1, items, i, sift) {
-        var pos = 0;
-        if (asc == true) {
-            return padding1 + i*wide/items + sift;
-        }
-        return padding1 + wide - (i) * wide/items + sift;
-    }
-
-    // -----------------------------------
-    // resize svg
-    // -----------------------------------
-    p.resize = function() {
-        var that = this;
-        
-        // ----- update size -----
-        this.update_plot_size();
         
         // svg
         this.svg_obj.style("width", this.svg.w + 'px');
         this.svg_obj.style("height", this.svg.h + 'px');
+    }
 
-        // bar
-        var x_items = this.x_items();
+    p.resize = function() {
+
+        this._update_plot_size();
         
-        for (var idx=0; idx < this.dataset.length; idx++) {
-            var obj = this.svg_obj.selectAll("g." + this.dataset[idx].name).selectAll("rect");
-
-            if (this.asc.bar_yoko == true) {
-                obj
-                    .attr("height", this.plot.h / x_items -  this.bar_padding(this.plot.h, x_items));
-            }
-            else {
-                obj
-                    .attr("width", this.plot.w / x_items -  this.bar_padding(this.plot.w, x_items));
-            }
-        }
-
-        // y-axis
-        if (this.options.grid_y != 0) {
-            var trans = "";
-            var ticksize = 0;
-            if (this.options.grid_y.orient == "left") {
-                trans = "translate(" + (this.padding.left) + ", " + (this.padding.top) + ")";
-                ticksize = -this.plot.w;
-            }
-            else if (this.options.grid_y.orient == "right") {
-                trans = "translate(" + (this.padding.left + this.plot.w) + ", " + (this.padding.top) + ")";
-                ticksize = -this.plot.w;
-            }
-            else if (this.options.grid_y.orient == "top") {
-                trans = "translate(" + (this.padding.left) + ", " + (this.padding.top) + ")";
-                ticksize = this.plot.h;
-            }
-            else if (this.options.grid_y.orient == "bottom") {
-                trans = "translate(" + (this.padding.left) + ", " + (this.padding.top + this.plot.h) + ")";
-                ticksize = this.plot.h;
-            }
-            this.svg_obj.selectAll("g.axis")
-                .attr("transform", trans)
-                .call(
-                    this.y_axis
-                    .tickSize(ticksize)
-                );
-        }
-        
-        // title
-        if (this.options.titles.length > 0) {
-            var trans = [];
-            for (var i = 0; i< this.options.titles.length; i++) {
-                trans.push(this.title_pos(this.options.titles[i].wide, this.options.titles[i].orient, this.options.titles[i].text_anchor, 
-                        this.options.titles[i].text_rotate, this.options.titles[i].sift_x, this.options.titles[i].sift_y, 
-                        this.svg, this.plot, this.padding,
-                        this.options.padding_top, this.options.padding_bottom, this.options.padding_right, this.options.padding_left));
-            }
-            
-            this.svg_obj.selectAll("g.title").selectAll("text")
-                .attr('transform', function(d,i){
-                    return ('translate(' + trans[i] + ') rotate(' + that.options.titles[i].text_rotate + ')');
-                });
-        }
-
-        this.bar_sort();
-        this.change_stack();
+        this._set_w_options();
+        this._set_xw();
+        this._set_yh();
     }
 
     // -----------------------------------
     // title's position
     // -----------------------------------
-    p.title_pos = function(wide, orient, anchor, rotate, sift_x, sift_y, svg, plot, padding, org_padding_top, org_padding_bottom, org_padding_right, org_padding_left) {
+    p._title_pos = function(wide, orient, anchor, rotate, sift_x, sift_y, svg, plot, padding, org_padding_top, org_padding_bottom, org_padding_right, org_padding_left) {
         var x = 0;
         var y = 0;
         if (orient == "left") {
@@ -472,11 +729,16 @@ var mut_bar = (function()
         }
         return (x + ", " + y);
     }
+
+    // -----------------------------------
+    // chenge menbers of stack
+    // -----------------------------------
+    p.change_stack = function() {
+        this._set_yh();
+    }
     
-    // -----------------------------------
     // get base value each stack's bar
-    // -----------------------------------
-    p.bar_base = function(dataset, stack_index, key) {
+    p._bar_base = function(dataset, stack_index, key) {
         var base = 0;
         for (var i=0; i < stack_index; i++) {
             if (dataset[i].enable == false) continue;
@@ -486,130 +748,17 @@ var mut_bar = (function()
         }
         return base;
     }
-        
-    // -----------------------------------
-    // chenge menbers of stack
-    // -----------------------------------
-    p.change_stack = function() {
-        var that = this;
-        
-        // get max number from stack
-        var sum_array = [];
-        for (var i = this.dataset.length - 1; i >= 0; i--) {
-            if (this.dataset[i].enable == false) continue;
-            
-            for (var j = 0; j < this.keys.length ; j++) {
-                var key = this.keys[j];
-                var pos = this.dataset[i].keys.indexOf(key);
-                var value = 0;
-                if (pos >= 0) value = this.dataset[i].data[pos];
-                
-                var base = p.bar_base(this.dataset, i, key);
-                sum_array[j] = base + value;
-            }
-            break;
-        }
-        var max =  Math.max.apply(null, sum_array);
-        if (max == 0) max = 1;
-        y_size = max
-        if ((this.tall_limit > 0) && (max > this.tall_limit)) y_size = this.tall_limit;
-        
-        // bar
-        var y = "y";
-        var height = "height";
-        var plot1 = this.plot.h;
-        var padding1 = this.padding.top
-        if (this.asc.bar_yoko == true) {
-            y = "x";
-            height = "width";
-            plot1 = this.plot.w;
-            padding1 = this.padding.left
-        }
-        for (var idx=0; idx < this.dataset.length; idx++) {
-            this.svg_obj.selectAll("g." + this.dataset[idx].name).selectAll("rect")
-                .attr(y, function(d, i) {
-                    var base = p.bar_base(that.dataset, idx, that.dataset[idx].keys[i]);
-                    if (that.asc.value == true) {
-                        if (base > y_size) return padding1 + plot1;
-                        return padding1 + (base) * plot1 / y_size;
-                    }
-                    if ((d + base) > y_size) return padding1;
-                    return padding1 + plot1 - ((d + base) * plot1 / y_size);
-                })
-                .attr(height, function(d, i) {
-                    if (that.dataset[idx].enable == false) {
-                        return 0;
-                    }
-                    var base = p.bar_base(that.dataset, idx, that.dataset[idx].keys[i]);
-                    if (base > y_size) return 0;
-                    if ((d + base) > y_size) return ((y_size-base) * plot1 / y_size);
-                    return (d * plot1 / y_size);
-                });
-        }
-        
-        // y-axis
-        if (this.options.grid_y != 0) {
-            var y_range;
-            var tick_size = 0;
-            
-            if (this.asc.bar_yoko == true) {
-                tick_size = -this.plot.h;
-                
-                if (this.asc.value == true) {
-                    y_range = [0, this.plot.w];
-                }
-                else {
-                    y_range = [this.plot.w, 0];
-                }
-                
-            }
-            else {
-                tick_size = -this.plot.w;
-                
-                if (this.asc.value == true) {
-                  y_range = [0, this.plot.h];
-                }
-                else {
-                  y_range = [this.plot.h, 0];
-                }
-            }
-            
-            var y_scale = d3.scale.linear()
-                .domain([0, y_size])   // original
-                .range(y_range);
-            
-            this.svg_obj.selectAll("g.axis")
-                .call(
-                    this.y_axis
-                    .scale(y_scale)
-                    .tickSize(tick_size)
-                );
-
-            this.svg_obj.selectAll("g.tick").selectAll("line")
-                .attr("stroke", this.options.grid_y.border_color)
-                .attr("shape-rendering", "crispEdges")
-                .style("stroke-opacity", this.options.grid_y.border_opacity);
-        }
-    }
-
     // -----------------------------------
     // set bar's max height
     // -----------------------------------
     p.set_bar_max = function(limit) {
         this.tall_limit = limit;
-        this.change_stack();
+        this._set_yh();
     }
     // -----------------------------------
     // update
     // -----------------------------------
-    p.update_data = function(idx, data) {
-        this.dataset[idx].data = data;
-        this.svg_obj
-            .selectAll("g." + this.dataset[idx].name)
-            .selectAll("rect")
-            .data(data);
-    }
-    p.rect_draw = function() {
+    p.update = function() {
         // call me after draw()
         
         var that = this;
@@ -619,8 +768,6 @@ var mut_bar = (function()
             
             this.svg_obj.selectAll("g." + this.dataset[idx].name)
                 .selectAll("rect")
-                //.data(this.dataset[idx].data)
-                //.exit()
                 .remove();
 
             this.svg_obj.selectAll("g." + this.dataset[idx].name)
@@ -635,70 +782,92 @@ var mut_bar = (function()
                 .style("fill", this.dataset[idx].color_fill)
                 .attr("class", function(d, i) {
                     return that.dataset[idx].keys[i];
-                })
-                .on("mouseover", function(d, i) {
-                    if (that.options.tooltip.enable == false) {
-                        return;
-                    }
-                    // remove last tooltip data
-                    d3.select("#tooltip").selectAll("p#text").remove();
-
-                    // add text to tooltip
-                    for (var k=0; k < that.dataset.length; k++) {
-                        if (that.dataset[k].name == this.parentNode.className.baseVal) {
-                            for (var p=0; p < that.dataset[k].tooltips[i].length; p++) {
-                                d3.select("#tooltip").append("p").attr("id", "text").text(that.dataset[k].tooltips[i][p]);
-                            }
-                            break;
-                        }
-                    }
-
-                    //Show the tooltip
-                    d3.select("#tooltip").classed("hidden", false);
-                    
-                    var x = that.options.tooltip.sift_x;
-                    var y = that.options.tooltip.sift_y;
-                    
-                    var rect = document.getElementById(that.id).getBoundingClientRect();
-                    var div_x = parseFloat(rect.left) + window.pageXOffset + 10;
-                    var div_y = parseFloat(rect.top) + window.pageYOffset + 10;
-                    
-                    if (that.options.tooltip.position == "parent") {
-                        x = x + div_x;
-                        y = y + div_y;
-                    }
-                    else if (that.options.tooltip.position == "bar") {
-                        x = x + parseFloat(d3.select(this).attr("x")) + div_x;
-                        y = y + parseFloat(d3.select(this).attr("y")) + div_y;
-                    }
-                    //Update the tooltip position and value
-                    d3.select("#tooltip")
-                        .style("left", x + "px")
-                        .style("top", y + "px");
-                })
-                .on("mouseout", function() {
-                    if (that.options.tooltip.enable == false) {
-                        return;
-                    }
-                    //Hide the tooltip
-                    d3.select("#tooltip").classed("hidden", true);
-                })
-                .on("click", function(d, i) {
-                    for (var k=0; k < that.dataset.length; k++) {
-                        if (that.dataset[k].name == this.parentNode.className.baseVal) {
-                            var target_class = "selected";
-                            if (that.options.multi_select == true) {
-                                target_class = "selected." + that.dataset[k].keys[i];
-                            }
-                            var on = !(d3.select(this).classed(target_class));
-                            that.bar_selected(that.dataset[k].keys[i], on);
-                            break;
-                        }
-                    }
                 });
         }
         
-        this.update_plot_size();
+        // transparent-bar
+        this.svg_obj.selectAll("g.transparent_bar")
+            .selectAll("rect")
+            .remove();
+
+        var y = "y";
+        var x = "x";
+        var padding1 = this.padding.top;
+
+        if (this.asc.bar_yoko == true) {
+            y = "x";
+            x = "y";
+            padding1 = this.padding.left
+        }
+        this.svg_obj.selectAll("g.transparent_bar")
+            .selectAll("rect")
+            .data(this.keys)
+            .enter()
+            .append("rect")
+            .attr(y, padding1)
+            .attr(x, 0)
+            .attr("width", 0)
+            .attr("height", 0)
+            .style("fill", this.options.color_hilight)
+            .style("opacity", 0)
+            .attr("class", function(d, i) {
+                return d;
+            })
+            .on("mouseover", function(d, i) {
+                if (that.options.tooltip.enable == false) {
+                    return;
+                }
+                // remove last tooltip data
+                d3.select("#tooltip").selectAll("p#text").remove();
+
+                // add text to tooltip
+                for (var p=0; p < that.tooltips[d].length; p++) {
+                    d3.select("#tooltip").append("p").attr("id", "text").text(that.tooltips[d][p]);
+                }
+                
+                //Show the tooltip
+                d3.select("#tooltip").classed("hidden", false);
+                
+                var x = that.options.tooltip.sift_x;
+                var y = that.options.tooltip.sift_y;
+                
+                var rect = document.getElementById(that.id).getBoundingClientRect();
+                var div_x = parseFloat(rect.left) + window.pageXOffset + 10;
+                var div_y = parseFloat(rect.top) + window.pageYOffset + 10;
+                
+                if (that.options.tooltip.position == "parent") {
+                    x = x + div_x;
+                    y = y + div_y;
+                }
+                else if (that.options.tooltip.position == "bar") {
+                    x = x + parseFloat(d3.select(this).attr("x")) + div_x;
+                    y = y + parseFloat(d3.select(this).attr("y")) + div_y;
+                }
+                //Update the tooltip position and value
+                d3.select("#tooltip")
+                    .style("left", x + "px")
+                    .style("top", y + "px");
+            })
+            .on("mouseout", function() {
+                if (that.options.tooltip.enable == false) {
+                    return;
+                }
+                //Hide the tooltip
+                d3.select("#tooltip").classed("hidden", true);
+            })
+            .on("click", function(d) {
+                if (that.options.brush.enable == true) return;
+                var target_class = "selected";
+                if (that.options.multi_select == true) {
+                    target_class = "selected." + d;
+                }
+                var on = !(d3.select(this).classed(target_class));
+                that.bar_selected(d, on);
+            })
+        ;
+
+        
+        this._update_plot_size();
         
         // x-axis
         if (this.options.grid_xs.length > 0) {
@@ -735,7 +904,14 @@ var mut_bar = (function()
                 })
                 .attr("font-size", function(d, i) {
                     return that.options.grid_xs[grid_idx[i][0]].font_size;
-                });
+                })
+                .attr("font-family", function(d, i) {
+                    return that.options.grid_xs[grid_idx[i][0]].font_family;
+                })
+                .attr("text-color", function(d, i) {
+                    return that.options.grid_xs[grid_idx[i][0]].text_color;
+                })
+            ;
             
             // grid
             this.svg_obj.selectAll("g.grid_x")
@@ -753,22 +929,36 @@ var mut_bar = (function()
                 .attr("stroke", function(d, i) {
                     return that.options.grid_xs[grid_idx[i][0]].border_color;
                 })
+                .attr("stroke-width", function(d, i) {
+                    return that.options.grid_xs[grid_idx[i][0]].border_width;
+                })
                 .attr("shape-rendering", "crispEdges")
                 .style("stroke-opacity", function(d, i) {
                     return that.options.grid_xs[grid_idx[i][0]].border_opacity;
                 });
         }
-        this.resize();
+
+        this._zoom_preset();
+        this._set_sort_item([this.tags[0].name], [true]);
+        
+        this._set_w_options();
+        this._set_xw();
+        this._set_yh();
     }
     
     // -----------------------------------
     // initialize
     // -----------------------------------
-    p.draw = function() {
+    p._init = function() {
         var that = this;
         
         this.svg_obj = d3.select("#" + this.id).append("svg");
-
+        
+        //this.svg_obj
+        //    //.call(downloadable().filename(this.id))
+        //    .call(this.onload(this.id))
+        //    ;
+        
         // plot asc
         switch (this.options.direction_x) {
             case "bottom-up":
@@ -806,6 +996,7 @@ var mut_bar = (function()
                 console.log("[debug] this.options.direction_y: undefined value. " + this.options.direction_y);
                 break;
         }
+        // bar
         for (var idx=0; idx < this.dataset.length; idx++) {
             this.svg_obj.append("g")
                 .attr("class", this.dataset[idx].name)
@@ -814,6 +1005,15 @@ var mut_bar = (function()
                 .enter()
                 ;
         }
+        
+        // transparent-bar
+        this.svg_obj.append("g")
+            .attr("class", "transparent_bar")
+            .selectAll("rect")
+            .data([])
+            .enter()
+            ;
+        
         // paddings
         this.padding.left = this.options.padding_left;
         this.padding.right = this.options.padding_right;
@@ -904,17 +1104,6 @@ var mut_bar = (function()
             this.padding.bottom = this.padding.bottom + Math.max.apply(null, wide_bottom);
         }
 
-        // y-axis
-        if (this.options.grid_y != 0) {
-            this.y_axis = d3.svg.axis();
-            this.svg_obj.append("g")
-                .attr("class", "axis")
-                .call(
-                    this.y_axis
-                    .orient(this.options.grid_y.orient)
-                    .ticks(this.options.grid_y.ticks)
-                );
-        }
         // x-axis
         if (this.options.grid_xs.length > 0) {
             
@@ -931,6 +1120,23 @@ var mut_bar = (function()
                 .enter();
         }
         
+        // y-axis
+        if (this.options.grid_y != 0) {
+            this.y_axis = d3.svg.axis();
+            this.svg_obj.append("g")
+                .attr("class", "axis")
+                .style("fill", "none")
+                .attr("stroke", "#000")
+                .attr("shape-rendering", "crispEdges")
+                .attr("font-size", "10px")
+                .attr("font-family", this.options.grid_y.font_family)
+                .call(
+                    this.y_axis
+                    .orient(this.options.grid_y.orient)
+                    .ticks(this.options.grid_y.ticks)
+                );
+        }
+        
         // title
         if (this.options.titles.length > 0) {
             var titles = this.svg_obj.append("g").attr("class", "title");
@@ -941,88 +1147,123 @@ var mut_bar = (function()
                     .text(this.options.titles[i].title)
                     .attr("text-color", this.options.titles[i].text_color)
                     .attr("text-anchor", this.options.titles[i].text_anchor)
-                    .attr("font-size", this.options.titles[i].font_size);
+                    .attr("font-size", this.options.titles[i].font_size)
+                    .attr("font-family", this.options.titles[i].font_family)
+                    .attr("text-color", this.options.titles[i].text_color)
+                ;
             }
         }
         
-        this.rect_draw();
-        this.set_sort_item([this.tags[0].name], [true]);
-        //this.resize();
+    }
+        
+    p.draw = function() {
+        this._init();
+        this.update();
     }
     
     // -----------------------------------
-    // bar select
+    // selection
     // -----------------------------------
     p.bar_select = function(key, on) {
-        var that = this;
+        var multi_select = this.options.multi_select;
 
-        for (var idx = 0; idx < this.dataset.length; idx++) {
-
-            this.svg_obj.selectAll("g." + this.dataset[idx].name).selectAll("rect")
-                .style("fill", function(d, i) {
-                    
-                    var target = "selected";
-                    if (that.options.multi_select == true) {
-                        target = target + "." + key;
-                    }
-                    
-                    // target rect
-                    var classes = this.className.baseVal.split(" ");
-                    var me = false;
-                    for (var k = 0; k< classes.length; k++) {
-                        if (classes[k] == key) {
-                            me = true;
-                            break;
-                        }
-                    }
-                    if (me == true) {
-                        d3.select(this).classed(target, on);
-                    }
-                    else {
-                        if (that.options.multi_select == false) {
-                            d3.select(this).classed(target, false);
-                        }
-                    }
-                    classes = this.className.baseVal.split(" ");
-                    var selected = false;
-                    for (var k = 1; k < classes.length; k++) {
-                        if (classes[k].indexOf("selected") == 0) {
-                            selected = true;
-                            break;
-                        }
-                    }
-                    if (selected == true) {
-                        return that.dataset[idx].color_fill_hilight;
-                    }
-                    return that.dataset[idx].color_fill;
-                });
+        var target = "selected";
+        if (multi_select == true) {
+            target = target + "." + key;
         }
+        
+        this.svg_obj.selectAll("g.transparent_bar").selectAll("rect")
+            .style("opacity", function(d) {
+                
+                // target rect
+                if (d == key) {
+                    d3.select(this).classed(target, on);
+                }
+                else {
+                    if (multi_select == false) {
+                        d3.select(this).classed(target, false);
+                    }
+                }
+                
+                classes = this.className.baseVal.split(" ");
+                var selected = false;
+                for (var k = 1; k < classes.length; k++) {
+                    if (classes[k].indexOf("selected") == 0) {
+                        selected = true;
+                        break;
+                    }
+                }
+                if (selected == true) {
+                    return 0.3;
+                }
+                return 0;
+            });
         
     }
 
     p.reset_select = function() {
-        var that = this;
+        this.svg_obj.selectAll("g.transparent_bar").selectAll("rect")
+            .style("opacity", 0);
+    }
 
-        for (var idx = 0; idx < this.dataset.length; idx++) {
-            this.svg_obj.selectAll("g." + this.dataset[idx].name).selectAll("rect")
-                .style("fill", function(d, i) {
-                    
-                    var classes = this.className.baseVal.split(" ");
-                    for (var k = 0; k< classes.length; k++) {
-                        if (classes[k].indexOf("selected") == 0) {
-                            d3.select(this).classed(classes[k], false);
-                        }
-                    }
-                    return that.dataset[idx].color_fill;
-                });
+    // -----------------------------------
+    // brush
+    // -----------------------------------
+    p.brush_reset = function() {
+        if (this.options.brush.rect == 0) {
+            return;
         }
+        this.options.brush.rect
+            .clear()
+            .event(d3.select(".brush"))
+        ;
+        this.svg_obj.selectAll("rect.extent")
+            .attr("width", "0")
+            .attr("x", "0")
+        ;
+    }
+
+    // -----------------------------------
+    // zoom -in/-out
+    // -----------------------------------
+    p._zoom_preset = function() {
+        // set params
+        this.options.zoom.keys_enable = [];
+        for (var k = 0; k < this.keys.length; k++) {
+            this.options.zoom.keys_enable.push(this.keys[k]);
+        }
+        this.options.zoom.pos_start = 0;
+        this.options.zoom.pos_end = this.keys.length -1;
+    }
+    p.zoom = function(keys) {
+        
+        if (this.options.zoom.enable == false) return;
+
+        // set params
+        this.options.zoom.keys_enable = [];
+        for (var k = 0; k < keys.length; k++) {
+            this.options.zoom.keys_enable.push(keys[k]);
+        }
+        this.options.zoom.pos_start = this.asc.sort_list[keys[0]];
+        this.options.zoom.pos_end = this.asc.sort_list[keys[keys.length-1]];
+        
+        this._set_xw();
+    }
+    p.zoom_reset = function() {
+        
+        if (this.options.zoom.enable == false) return;
+        
+        this._zoom_preset();
+        this._set_xw();
     }
     // -----------------------------------
     // over-ride
     // -----------------------------------
     p.bar_selected = function(key, on) { 
-        console.log("base function, please over-ride.");
+        console.log("mut_bar.bar_selected(): called base-function, please over-ride.");
     }
-
+    p.brushed = function(data, range) { 
+        console.log("mut_bar.brushed(): called base-function, please over-ride.");
+    }
     return mut_bar;
 })();

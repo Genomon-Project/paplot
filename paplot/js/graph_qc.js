@@ -1,477 +1,274 @@
-//##### load data
-var chart_brush = dc.barChart('#chart_brush'); 
-var chart_coverage = dc.barChart('#chart_coverage'); 
-var chart_average = dc.barChart('#chart_average'); 
-var chart_mapped = dc.barChart('#chart_mapped'); 
-var chart_insert = dc.barChart('#chart_insert'); 
-var chart_duplicate = dc.barChart('#chart_duplicate'); 
-var chart_length = dc.barChart('#chart_length'); 
+// *********************************************
+// initialize
+// *********************************************
+// div-dataset
+var divs = [];
+var legends = [];
 
-var data = get_data_base();
-render(sort_by(data, "id"));
-
-d3.selectAll('#select input').on('click', function() {
-	if (this.value == "name"){
-		reset();
-		render(sort_by(data, "id"));
-	}
-	else if (this.value == "val"){
-		reset();
-		render(sort_by(data, "average_depth"));
-	}
-})
-
-function sort_by(data, typ) {
-	return data.sort(
-		function(a,b){
-			var aName = a[typ];
-			var bName = b[typ];
-			if( aName < bName ) return -1;
-			if( aName > bName ) return 1;
-			return 0;
-		}
-	);
+function add_div(chart_id) {
+    divs.push({
+        obj: new mut_bar(chart_id),
+        chart_id: chart_id,
+    });
+    legends.push({
+        obj: new legend("legend_" + chart_id),
+        chart_id: "legend_" + chart_id + "_svg",
+    });
 }
 
-function reset() {
-	chart_brush.filterAll();
-	chart_average.filterAll();
-	chart_coverage.filterAll();
-	chart_mapped.filterAll();
-	chart_insert.filterAll();
-	chart_duplicate.filterAll();
-	chart_length.filterAll();
-	dc.redrawAll();
+// resize timer
+var timer = false;
+window.addEventListener('resize', function() {
+    if (timer !== false) {
+        clearTimeout(timer);
+    }
+    timer = setTimeout(function() {
+        brush_reset();
+        update_div();
+        for (var i = 0; i < divs.length; i++) {
+            divs[i].obj.resize();
+        }
+    }, 200);
+});
+
+function update_div() {
+    var margin_left = 100, margin_right = 100;
+    var w_min = qc_data.Ids.length*6;
+    var w_max = qc_data.Ids.length*50;
+
+    // width
+    var w = window.innerWidth - margin_left - margin_right;
+    if (w < w_min) w = w_min;
+    if (w > w_max) w = w_max;
+    
+    // height
+    for (var i = 0; i < divs.length; i++) {
+        d3.select("#" + divs[i].chart_id).style("width", Math.floor(w) + "px");
+        if (divs[i].chart_id == "chart_brush") {
+            d3.select("#" + divs[i].chart_id).style("height", "120px");
+        }
+        else {
+            d3.select("#" + divs[i].chart_id).style("height", "240px");
+        }
+    }
 }
 
-function getxLabel(v, IDs, idx_start) {
-	var m = v.getUTCMonth();
-	if ((m >= 11) & (m <= 12)){
-		return IDs[v.getFullYear()-idx_start];
-	}
-	else {
-		return ""
-	}
+function init() {
+
+    update_div();
+    
+    var brush_dataset = qc_data.get_dataset("chart_brush");
+    var brush_data = [];
+    for (var s = 0; s < brush_dataset.data.length; s++) {
+        
+        for (var d = 0; d < brush_dataset.data[s].length; d++) {
+            if (s == 0) brush_data[d] = brush_dataset.data[s][d];
+            else brush_data[d] += brush_dataset.data[s][d];
+        }
+    }
+    
+    for (var i = 0; i < divs.length; i++) {
+        var bar = divs[i].obj;
+        var info = qc_data.get_plot_config(divs[i].chart_id);
+        var dataset = qc_data.get_dataset(info.chart_id);
+        
+        for (var s = 0; s < dataset.data.length; s++) {
+            bar.dataset[s] = new bar.dataset_template(info.stack_id[s]);
+            bar.dataset[s].data = dataset.data[s];
+            bar.dataset[s].keys = dataset.key;
+            bar.dataset[s].color_fill = info.color[s];
+            bar.dataset[s].enable = true;
+        };
+        
+        bar.keys = qc_data.Ids;
+        bar.tags[0] = new bar.tag_template("sample_ID");
+        bar.tags[0].values = qc_data.Ids;
+        bar.tags[0].note = "fix";
+        bar.tags[1] = new bar.tag_template("value_of_brush");
+        bar.tags[1].values = brush_data;
+        bar.tags[1].note = "brush";
+        
+        bar.options.resizeable_w = true;
+        bar.options.resizeable_h = false;
+        bar.options.multi_select = false;
+        bar.options.padding_left = 0;
+        bar.options.padding_right = 0;
+        bar.options.padding_top = 10;
+        bar.options.padding_bottom = 40;
+        bar.options.direction_x = "left-right";
+        bar.options.direction_y = "bottom-up";
+        
+        bar.options.animation.mtime = 0;
+        
+        if (dataset.tooltip == 0) {
+            bar.options.tooltip.enable = false;
+        }
+        else {
+            bar.tooltips = dataset.tooltip;
+            bar.options.tooltip.position = "bar";
+        }
+        
+        if (divs[i].chart_id == "chart_brush") {
+            bar.options.brush.enable = true;
+            bar.options.brush.fill = "blue";
+            bar.options.brush.stroke = "blue";
+            
+            bar.options.grid_y = new bar.grid_template();
+            bar.options.grid_y.ticks = 1;
+            bar.options.grid_y.wide = 80;
+            bar.options.grid_y.border_color = "#DDC";
+            bar.options.grid_y.border_opacity = 0.5;
+            bar.options.grid_y.orient = "left";
+            
+            bar.options.grid_xs[0] = new bar.grid_template();
+            bar.options.grid_xs[0].keys = qc_data.Ids
+            //bar.options.grid_xs[0].labels = qc_data.Ids;
+            bar.options.grid_xs[0].labels = new Array(qc_data.Ids.length);
+            //bar.options.grid_xs[0].wide = 120;
+            bar.options.grid_xs[0].wide = 0;
+            bar.options.grid_xs[0].font_size = "10px";
+            bar.options.grid_xs[0].sift_x = 0;
+            bar.options.grid_xs[0].border_color = "#CCE";
+            bar.options.grid_xs[0].border_width = "2px";
+            bar.options.grid_xs[0].border_opacity = 0.5;
+            bar.options.grid_xs[0].orient = "bottom";
+            bar.options.grid_xs[0].text_anchor = "end";
+            bar.options.grid_xs[0].text_rotate = "-90";
+        }
+        else {
+            bar.options.zoom.enable = true;
+            
+            bar.options.grid_y = new bar.grid_template();
+            bar.options.grid_y.ticks = 10;
+            bar.options.grid_y.wide = 80;
+            bar.options.grid_y.border_color = "#DDC";
+            bar.options.grid_y.border_opacity = 0.5;
+            bar.options.grid_y.orient = "left";
+
+            bar.options.titles[0] = new bar.title_template(info.title_y);
+            bar.options.titles[0].orient = "left";
+            bar.options.titles[0].wide = 0;
+            bar.options.titles[0].text_anchor = "middle";
+            bar.options.titles[0].text_rotate = -90;
+            bar.options.titles[0].font_size = "12px";
+            bar.options.titles[0].sift_x = 8;
+        }
+        bar.draw();
+        downloader.set_event_listner (divs[i].chart_id);
+        
+        if (d3.select("#x_sort_0").property("checked")) bar.sort(["sample_ID"], [true]);
+        else if (d3.select("#x_sort_1").property("checked")) bar.sort(["value_of_brush"], [true]);
+        
+        // legend
+        var legend = legends[i].obj;
+        legend.items =  info.label;
+        legend.colors = info.color;
+        legend.options.title = info.title;
+        legend.layout.shape_sift_left = 70;
+        legend.draw_svg(true);
+        //downloader.set_event_listner (legends[i].chart_id);
+    }
 }
 
-function render(data) {
-	
-	var idx_start = 1900;
-	var idx_end = idx_start + data.length;
-	
-	var cf = crossfilter(data);
-	var dateFormat = d3.time.format('%Y');
-	var numberFormat = d3.format('.3f');
-	
-	var IDs = [];
-	
-	for(var i=0; i<data.length; i++){
-		var dd = dateFormat.parse(String(i+idx_start));
-		var year = d3.time.year(dd);
-		data[i].year = year;
-		IDs.push(data[i].id);
-	}
-	
-	// ##### Dimension by index (year)
-	var dimIndex = cf.dimension(function (d) {
-		return d.year;
-	});
-	
-	var gpIndex = dimIndex.group().reduce(
-		function(p, v) {
-			p.ratio_30x += v.ratio_30x;
-			p.ratio_20x += v.ratio_20x - v.ratio_30x;
-			p.ratio_10x += v.ratio_10x - v.ratio_20x;
-			p.ratio_2x += v.ratio_2x - v.ratio_10x;
-			
-			p.average_depth += v.average_depth;
-			p.count += 1;
-			p.id += v.id;
-			
-			p.read_length_r1 += v.read_length_r1;
-			p.read_length_r2 += v.read_length_r2;
-			p.mapped += v.mapped_reads/v.total_reads;
-			p.mean_insert_size += v.mean_insert_size;
-			p.duplicate_reads += v.duplicate_reads/v.total_reads;
+// *********************************************
+// selection events
+// *********************************************
+function chart_selected(key, on) {
+    for (var i = 1; i< divs.length; i++) {
+        divs[i].obj.bar_select(key, on);
+    }
+}
 
-			return p;
-		},
-		function (p, v) {
-			p.ratio_30x -= v.ratio_30x;
-			p.ratio_20x -= v.ratio_20x - v.ratio_30x;
-			p.ratio_10x -= v.ratio_10x - v.ratio_20x;
-			p.ratio_2x -= v.ratio_2x - v.ratio_10x;
-			
-			p.average_depth -= v.average_depth;
-			p.count -= 1;
-			p.id -= v.id;
-			
-			p.read_length_r1 -= v.read_length_r1;
-			p.read_length_r2 -= v.read_length_r2;
-			p.mapped -= v.mapped_reads/v.total_reads;
-			p.mean_insert_size -= v.mean_insert_size;
-			p.duplicate_reads -= v.duplicate_reads/v.total_reads;
-			
-			return p;
-		},
-		function (p, v) {
-			return {
-				ratio_2x: 0,
-				ratio_10x: 0,
-				ratio_20x: 0,
-				ratio_30x: 0,
-				
-				average_depth: 0,
-				count: 0,
-				id: "",
-				
-				read_length_r1: 0,
-				read_length_r2: 0,
-				mapped: 0,
-				mean_insert_size: 0,
-				duplicate_reads: 0,
-			};
-		}
-	)
-	//.order(function(d) { return d.average_depth; })
-	;
-	
-	gpIndex.all = function() {
-		return gpIndex.top(Infinity);
-	}
-	
-	//# params of chart
-	//var width = 960;
-	var width = 1200;
-	var margin_top = 30;
-	var margin_bottom = 20;
-	var margin_right = 50;
-	var margin_left = 50;
+function selection_reset() {
+    for (var i = 1; i< divs.length; i++) {
+        divs[i].obj.reset_select();
+    }
+}
 
-	var height2 = 200;
-	//var width2 = 960;
-	var width2 = 1200;
-	var margin2_top = 30;
-	var margin2_bottom = 20;
-	var margin2_right = 50;
-	var margin2_left = 50;
-	
-	//##### draw chart of brush
-	
-	chart_brush
-		.width(width)
-		.height(80)
-		.margins({
-			top: margin_top, 
-			right: margin_right, 
-			bottom: margin_bottom, 
-			left: margin_left + 10
-		})
-		.dimension(dimIndex)
-		.group(gpIndex, 'average_depth', function(d) {
-		   	return d.value.average_depth;
-		 })
-		.gap(0)
-		.x(d3.time.scale().domain([new Date(idx_start-1, 1, 1), new Date(idx_end, 12, 31)]))
-		.xUnits(d3.time.years)
-		//.rangeChart(chart_coverage)
-		.ordinalColors([style_qc.bar_select_color])
-		;
-		
-	chart_brush
-		.xAxis()
-		//.tickFormat("")
-		.tickValues(0)
-		;
-	
-	chart_brush
-		.yAxis()
-		.tickValues(0)
-		;
-	
-	//##### draw chart of coverage 
-	
-	chart_coverage
-		.width(width)
-		.height(300)
-		.margins({top: 
-			margin_top, 
-			right: margin_right, 
-			bottom: margin_bottom, 
-			left: margin_left
-		})
-		.dimension(dimIndex)
-		.group(gpIndex, 'ratio_30x', function(d) {
-			return d.value.ratio_30x;
-		})
-		.stack(gpIndex, 'ratio_20x', function(d) {
-			return d.value.ratio_20x;
-		})
-		.stack(gpIndex, 'ratio_10x', function(d) {
-			return d.value.ratio_10x;
-		})
-		.stack(gpIndex, 'ratio_2x', function(d) {
-			return d.value.ratio_2x;
-		})
-		.yAxisLabel(style_qc.bar_coverage_ylabel_text)
-		.x(d3.time.scale().domain([new Date(idx_start-1, 1, 1), new Date(idx_end, 12, 31)]))
-		.xUnits(d3.time.years)
-		.centerBar(true)
-		.gap(0)
-		.rangeChart(chart_brush)
-		.brushOn(false)
-		.legend(dc.legend()
-			.x(100)
-			.y(10)
-			.itemHeight(13)
-			.gap(0)
-			.horizontal(1)
-			.autoItemWidth(true)
-		)
-		.title(function(d) {
-	    	return "ID: " + d.value.id + "\n" +
-	    	"ratio_2x: " + numberFormat(d.value.ratio_2x + d.value.ratio_10x + d.value.ratio_20x + d.value.ratio_30x) + "\n" +
-	    	"ratio_10x: " + numberFormat(d.value.ratio_10x + d.value.ratio_20x + d.value.ratio_30x) + "\n" +
-	    	"ratio_20x: " + numberFormat(d.value.ratio_20x + d.value.ratio_30x) + "\n" +
-	    	"ratio_30x: " + numberFormat(d.value.ratio_30x);
-	    })
-		.ordinalColors(style_qc.bar_coverage_color)
-		;
-	
-	chart_coverage
-		.xAxis()
-		//.tickFormat(function(v) { return getxLabel(v, IDs, idx_start); })
-		.tickValues(0)
-		;
+// *********************************************
+// sort functions
+// *********************************************
+function sort(name) {
+    // call plot's sort function
+    for (var i = 0; i< divs.length; i++) {
+        divs[i].obj.brush_reset();
+        divs[i].obj.zoom_reset();
+        divs[i].obj.sort([name], [true]);
+    }
+}
 
-	//##### draw chart of depth 
-	
-	chart_average
-		.width(width)
-		.height(300)
-		.margins({
-			top: margin_top, 
-			right: margin_right, 
-			bottom: margin_bottom, 
-			left: margin_left
-		})
-		.dimension(dimIndex)
-		.group(gpIndex, 'average_depth', function(d) {
-			return d.value.average_depth;
-		})
-	    .yAxisLabel(style_qc.bar_average_ylabel_text)
-	 	.x(d3.time.scale().domain([new Date(idx_start-1, 1, 1), new Date(idx_end, 12, 31)]))
-		.xUnits(d3.time.years)   
-		.centerBar(true)
-		.gap(0)
-		.rangeChart(chart_coverage)
-		.brushOn(false)
-		.renderHorizontalGridLines(true)
-		.renderVerticalGridLines(true)
-		.legend(dc.legend()
-			.x(100)
-			.y(10)
-			.itemHeight(13)
-			.gap(10)
-			.horizontal(1)
-			.autoItemWidth(true)
-		)
-	    .title(function(d) {
-	    	return "ID: " + d.value.id + "\n" +
-	    	"depth average: " + numberFormat(d.value.average_depth);
-	    })
-		.ordinalColors([style_qc.bar_average_color])
-		;
-		
-	chart_average
-		.xAxis()
-		//.tickFormat(function(v) { return getxLabel(v, IDs, idx_start); })
-		.tickValues(0)
-		;
+// *********************************************
+// brush events
+// *********************************************
 
-	//##### draw chart of mapped
-	
-	chart_mapped
-		.width(width2)
-		.height(height2)
-		.margins({
-			top: margin2_top, 
-			right: margin2_right, 
-			bottom: margin2_bottom, 
-			left: margin2_left
-		})
-		.dimension(dimIndex)
-		.group(gpIndex, 'mapped_reads rate', function(d) {
-			return d.value.mapped;
-		})
-	    .yAxisLabel(style_qc.bar_mapped_ylabel_text)
-	 	.x(d3.time.scale().domain([new Date(idx_start-1, 1, 1), new Date(idx_end, 12, 31)]))
-		.xUnits(d3.time.years)   
-		.centerBar(true)
-		.gap(0)
-		.rangeChart(chart_average)
-		.brushOn(false)
-		.renderHorizontalGridLines(true)
-		.renderVerticalGridLines(true)
-		.legend(dc.legend()
-			.x(100)
-			.y(10)
-			.itemHeight(13)
-			.gap(10)
-			.horizontal(1)
-			.autoItemWidth(true)
-		)
-	    .title(function(d) {
-	    	return "ID: " + d.value.id + "\n" +
-	    	"mapped_reads rate: " + numberFormat(d.value.mapped);
-	    })
-		.ordinalColors([style_qc.bar_mapped_color])
-		;
-		
-	chart_mapped
-		.xAxis()
-		//.tickFormat(function(v) { return getxLabel(v, IDs, idx_start); })
-		.tickValues(0)
-		;
-	
-	//##### draw chart of insert 
-	
-	chart_insert
-		.width(width2)
-		.height(height2)
-		.margins({
-			top: margin2_top, 
-			right: margin2_right, 
-			bottom: margin2_bottom, 
-			left: margin2_left
-		})
-		.dimension(dimIndex)
-		.group(gpIndex, 'mean_insert_size', function(d) {
-			return d.value.mean_insert_size;
-		})
-	    .yAxisLabel(style_qc.bar_insert_ylabel_text)
-	 	.x(d3.time.scale().domain([new Date(idx_start-1, 1, 1), new Date(idx_end, 12, 31)]))
-		.xUnits(d3.time.years)   
-		.centerBar(true)
-		.gap(0)
-		.rangeChart(chart_mapped)
-		.brushOn(false)
-		.renderHorizontalGridLines(true)
-		.renderVerticalGridLines(true)
-		.legend(dc.legend()
-			.x(100)
-			.y(10)
-			.itemHeight(13)
-			.gap(10)
-			.horizontal(1)
-			.autoItemWidth(true)
-		)
-	    .title(function(d) {
-	    	return "ID: " + d.value.id + "\n" +
-	    	"mean_insert_size: " + numberFormat(d.value.mean_insert_size);
-	    })
-		.ordinalColors([style_qc.bar_insert_color])
-		;
-		
-	chart_insert
-		.xAxis()
-		//.tickFormat(function(v) { return getxLabel(v, IDs, idx_start); })
-		.tickValues(0)
-		;
-	
-	//##### draw chart of duplicate 
-	
-	chart_duplicate
-		.width(width2)
-		.height(height2)
-		.margins({
-			top: margin2_top, 
-			right: margin2_right, 
-			bottom: margin2_bottom, 
-			left: margin2_left
-		})
-		.dimension(dimIndex)
-		.group(gpIndex, 'duplicate_reads rate', function(d) {
-			return d.value.duplicate_reads;
-		})
-	    .yAxisLabel(style_qc.bar_duplicate_ylabel_text)
-	 	.x(d3.time.scale().domain([new Date(idx_start-1, 1, 1), new Date(idx_end, 12, 31)]))
-		.xUnits(d3.time.years)   
-		.centerBar(true)
-		.gap(0)
-		.rangeChart(chart_insert)
-		.brushOn(false)
-		.renderHorizontalGridLines(true)
-		.renderVerticalGridLines(true)
-		.legend(dc.legend()
-			.x(100)
-			.y(10)
-			.itemHeight(13)
-			.gap(10)
-			.horizontal(1)
-			.autoItemWidth(true)
-		)
-	    .title(function(d) {
-	    	return "ID: " + d.value.id + "\n" +
-	    	"duplicate_reads rate: " + numberFormat(d.value.duplicate_reads);
-	    })
-		.ordinalColors([style_qc.bar_duplicate_color])
-		;
-		
-	chart_duplicate
-		.xAxis()
-		//.tickFormat(function(v) { return getxLabel(v, IDs, idx_start); })
-		.tickValues(0)
-		;
-	
-	//##### draw chart of length 
-	
-	chart_length
-		.width(width2)
-		.height(height2)
-		.margins({
-			top: margin2_top, 
-			right: margin2_right, 
-			bottom: margin2_bottom, 
-			left: margin2_left
-		})
-		.dimension(dimIndex)
-		.group(gpIndex, 'read_length_r1', function(d) {
-			return d.value.read_length_r1;
-		})
-		.stack(gpIndex, 'read_length_r2', function(d) {
-			return d.value.read_length_r2;
-		})
-	    .yAxisLabel(style_qc.bar_length_ylabel_text)
-	 	.x(d3.time.scale().domain([new Date(idx_start-1, 1, 1), new Date(idx_end, 12, 31)]))
-		.xUnits(d3.time.years)
-		.centerBar(true)
-		.gap(0)
-		.rangeChart(chart_duplicate)
-		.brushOn(false)
-		.renderHorizontalGridLines(true)
-		.renderVerticalGridLines(true)
-		.legend(dc.legend()
-			.x(100)
-			.y(10)
-			.itemHeight(13)
-			.gap(10)
-			.horizontal(1)
-			.autoItemWidth(true)
-		)
-	    .title(function(d) {
-	    	return "ID: " + d.value.id + "\n" +
-	    	"read_length_r1: " + numberFormat(d.value.read_length_r1) + "\n" +
-	    	"read_length_r2: " + numberFormat(d.value.read_length_r2);
-	    })
-		.ordinalColors(style_qc.bar_length_color)
-		;
-		
-	chart_length
-		.xAxis()
-		//.tickFormat(function(v) { return getxLabel(v, IDs, idx_start); })
-		.tickValues(0)
-		;
-	
-	dc.renderAll();
+var last_brush_selection = [];
+
+function chart_brushed(data, range) {
+    
+    if (data.length < 2) return;
+    
+    var updated = false;
+    if (data.length != last_brush_selection.length) {
+        updated = true;
+    }
+    else {
+        for (var d in data) {
+            if (last_brush_selection.indexOf(data[d]) >= 0) {
+                updated = true;
+                break;
+            }
+        }
+    }
+    if (updated == false) return;
+    
+    for (var i = 1; i< divs.length; i++) {
+        divs[i].obj.reset_select();
+        divs[i].obj.zoom(data);
+    }
+}
+
+function brush_reset() {
+    for (var i = 0; i< divs.length; i++) {
+        divs[i].obj.brush_reset();
+        divs[i].obj.zoom_reset();
+    }
+}
+
+
+// *********************************************
+// save image
+// *********************************************
+function push_export() {
+    
+    var svgText = ""
+    
+    var max_width = 0;
+    var sift_y = 0;
+    
+    // each plot
+    for (var i = 0; i < divs.length; i++) {
+
+        // legend
+        svgText += downloader.svg_text(legends[i].chart_id, 0, sift_y);
+        sift_y += Number(d3.select("#" + legends[i].chart_id).select("svg").style("height").replace("px", ""));
+        
+        var width = Number(d3.select("#" + legends[i].chart_id).select("svg").style("width").replace("px", ""));
+        if (max_width < width) {
+            max_width = width;
+        }
+        
+        // chart
+        svgText += downloader.svg_text(divs[i].chart_id, 0, sift_y);
+        sift_y += Number(d3.select("#" + divs[i].chart_id).select("svg").style("height").replace("px", ""));
+        
+        width = Number(d3.select("#" + divs[i].chart_id).select("svg").style("width").replace("px", ""));
+        if (max_width < width) {
+            max_width = width;
+        }
+    }
+    
+    svgText = downloader.add_svgtag(svgText, sift_y, max_width)
+
+    rect = utils.absolute_position("dw_btn");
+    downloader.createMenu ([rect.x + rect.width, rect.y], "btn", "paplot_qc", max_width, sift_y, svgText);
 }

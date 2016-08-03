@@ -4,7 +4,7 @@ Created on Wed Dec 02 17:43:52 2015
 
 @author: okada
 
-$Id: prep.py 113 2016-06-10 08:41:34Z aokada $
+$Id: prep.py 144 2016-08-02 09:07:38Z aokada $
 """
 
 def copy_dir_lib(dst):
@@ -50,12 +50,12 @@ def copy_dir_style(dst, config):
     if len(option) > 0:
         shutil.copy(option, dst)
 
-def copy_dir_img(dst):
+def copy_dir_layout(dst):
     import shutil
     import os
     import glob
 
-    pattern = os.path.dirname(os.path.abspath(__file__)) + "/img/*"
+    pattern = os.path.dirname(os.path.abspath(__file__)) + "/layout/*"
     li_files = glob.glob(pattern)
     
     for f in li_files:
@@ -84,14 +84,14 @@ def create_dirs(args_output_dir, project_name, config):
     if (os.path.exists(output_style_dir) == False):
         os.makedirs(output_style_dir)
 
-    output_img_dir = output_dir + "/img"
-    if (os.path.exists(output_img_dir) == False):
-        os.makedirs(output_img_dir)
+    output_layout_dir = output_dir + "/layout"
+    if (os.path.exists(output_layout_dir) == False):
+        os.makedirs(output_layout_dir)
 
     copy_dir_lib(output_lib_dir)
     copy_dir_js(output_js_dir)
     copy_dir_style(output_style_dir, config)
-    copy_dir_img(output_img_dir)
+    copy_dir_layout(output_layout_dir)
     
     return output_html_dir
 

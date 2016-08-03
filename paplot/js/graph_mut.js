@@ -3,12 +3,13 @@
 var div_mut_bar_top = new mut_bar("div_bar_top");
 var div_mut_bar_left = new mut_bar("div_bar_left");
 var div_mut_checker = new mut_checker("div_checker");
-
-var divs_main = [div_mut_bar_top, div_mut_bar_left, div_mut_checker];
 var divs = [div_mut_bar_top, div_mut_bar_left, div_mut_checker];
+var div_legend = new legend("legend");
 
 // sub-plot
 var divs_sub = [];
+
+var plot_layout = {};
 
 // resize timer
 var timer = false;
@@ -36,11 +37,13 @@ var SPIN_WAIT = 200;
 var dataset_id = null;
 var dataset_gene = null;
 
-function add_subdiv(id, name) {
+function add_subdiv(id, name, type, pos) {
     divs_sub.push({
         obj: new mut_bar(id + "_p"),
         id: id,
-        name: name
+        name: name,
+        type: type,
+        pos: pos,
     });
     divs.push(divs_sub[divs_sub.length-1].obj);
     return divs_sub[divs_sub.length-1].obj;
@@ -65,42 +68,144 @@ function update_div() {
     var margin_left = 100, margin_right = 100;
     
     // width
-    var w = (window.innerWidth - margin_left - margin_right)/(4+16+4);
-    var w_center = w*16;
+    var w = (window.innerWidth - margin_left - margin_right - plot_layout.w_right)/(1+4);
+
+    // width-center
+    var w_center = w*4;
     var w_center_min = mut_data.Ids.length*6;
-    if (w_center_min > w_center) w_center = w_center_min;
+    var w_center_max = mut_data.Ids.length*50;
     
+    if (w_center < w_center_min) w_center = w_center_min;
+    if (w_center > w_center_max) w_center = w_center_max;
+    
+    // width-left
+    var w_left = w;
+    var w_left_min = 200;
+    var w_left_max = 600;
+    
+    if (w_left < w_left_min) w_left = w_left_min;
+    if (w_left > w_left_max) w_left = w_left_max;
+
     // height
-    var cell = 12;
-    var h = cell * genes_length + BAR_LEFT_AXIS_Y;
-    var w_side = w*4;
-    var w_side_min = 200;
-    if (w_side_min > w_side) w_side = w_side_min;
+    var h = genes_length * 12 + BAR_LEFT_AXIS_Y;
     
-    d3.select("#div_mut1").style("width", Math.floor(w_side) + "px");
-    d3.select("#div_mut1").style("height", Math.floor(w_side) + "px");
-    d3.select("#div_bar_top").style("width", Math.floor(w_center) + "px");
-    d3.select("#div_bar_top").style("height", Math.floor(w_side) + "px");
-    d3.select("#div_mut2").style("width", Math.floor(w_side) + "px");
-    d3.select("#div_mut2").style("height", Math.floor(w_side) + "px");
+    w_left = Math.floor(w_left);
+    w_center = Math.floor(w_center);
+    h = Math.floor(h);
     
-    d3.select("#div_bar_left").style("width", Math.floor(w_side) + "px");
-    d3.select("#div_bar_left").style("height", Math.floor(h) + "px");
-    d3.select("#div_checker").style("width", Math.floor(w_center) + "px");
-    d3.select("#div_checker").style("height", Math.floor(h) + "px");
-    d3.select("#div_mut3").style("width", Math.floor(w_side) + "px");
-    d3.select("#div_mut3").style("height", Math.floor(h) + "px");
+    d3.select("#div_mut1").style("width", w_left + "px");
+    d3.select("#div_mut1").style("height", w_left + "px");
+    d3.select("#div_bar_top").style("width", w_center + "px");
+    d3.select("#div_bar_top").style("height", w_left + "px");
+    
+    d3.select("#div_bar_left").style("width", w_left + "px");
+    d3.select("#div_bar_left").style("height", h + "px");
+    d3.select("#div_checker").style("width", w_center + "px");
+    d3.select("#div_checker").style("height", h + "px");
 
     var sub_h = 50;
     
     for (var i = 0; i < divs_sub.length; i++) {
-        d3.select("#" + divs_sub[i].id + "_t").style("width", Math.floor(w_side) + "px");
+        d3.select("#" + divs_sub[i].id + "_t").style("width", w_left + "px");
         d3.select("#" + divs_sub[i].id + "_t").style("height", sub_h + "px");
-        d3.select("#" + divs_sub[i].id + "_p").style("width", Math.floor(w_center) + "px");
+        d3.select("#" + divs_sub[i].id + "_p").style("width", w_center + "px");
         d3.select("#" + divs_sub[i].id + "_p").style("height", sub_h + "px");
-        d3.select("#" + divs_sub[i].id + "_l").style("width", Math.floor(w_side) + "px");
-        d3.select("#" + divs_sub[i].id + "_l").style("height", sub_h + "px");
     }
+    
+    // save layout
+    plot_layout.w_left = w_left;
+    plot_layout.w_center = w_center;
+    
+    if (h < plot_layout.legend_h) {
+        h = plot_layout.legend_h;
+    }
+    plot_layout.h = h;
+    plot_layout.sub_h = sub_h;
+    
+    plot_layout.top_bar_x = w_left;
+    plot_layout.top_bar_y = 0;
+    plot_layout.left_bar_x = 0;
+    plot_layout.left_bar_y = w_left + 10 + sub_h * plot_layout.sub_type1_N;
+    plot_layout.checker_x = w_left;
+    plot_layout.checker_y = w_left + 10 + sub_h * plot_layout.sub_type1_N;
+    plot_layout.legend_x = w_left + w_center;
+    plot_layout.legend_y = w_left + 10 + sub_h * plot_layout.sub_type1_N;
+    
+    plot_layout.sub_type1_x = w_left;
+    plot_layout.sub_type1_y = w_left;
+    plot_layout.sub_type1_legend_x = w_left + w_center;
+    plot_layout.sub_type1_legend_y = w_left;
+    
+    plot_layout.sub_type2_x = w_left;
+    plot_layout.sub_type2_y = w_left + 10 + sub_h * plot_layout.sub_type1_N + h;
+    plot_layout.sub_type2_legend_x = w_left + w_center;
+    plot_layout.sub_type2_legend_y = w_left + 10 + sub_h * plot_layout.sub_type1_N + h;
+    
+}
+
+// *********************************************
+// save image
+// *********************************************
+function push_export() {
+    
+    var svgText = ""
+
+    // bar-top
+    svgText += downloader.svg_text("div_bar_top", plot_layout.top_bar_x, plot_layout.top_bar_y);
+    
+    // bar-left
+    svgText += downloader.svg_text("div_bar_left", plot_layout.left_bar_x, plot_layout.left_bar_y);
+    
+    // checker
+    svgText += downloader.svg_text("div_checker", plot_layout.checker_x, plot_layout.checker_y);
+    
+    // legend
+    div_legend.draw_svg(false);
+    svgText += downloader.svg_text("legend_svg", plot_layout.legend_x, plot_layout.legend_y);
+    
+    // subplot
+    for (var i = 0; i < divs_sub.length; i++) {
+        
+        var x_t = 0, y_t = 0;
+        var x_p = 0, y_p = 0;
+        var x_l = 0, y_l = 0;
+        
+        if (divs_sub[i].type == 1) {
+            x_t = 0;
+            y_t = plot_layout.sub_type1_legend_y + plot_layout.sub_h * i;
+            x_p = plot_layout.sub_type1_x;
+            y_p = plot_layout.sub_type1_y + plot_layout.sub_h * i;
+            x_l = plot_layout.sub_type1_legend_x;
+            y_l = plot_layout.sub_type1_legend_y + plot_layout.sub_h * i;
+        }
+        else if (divs_sub[i].type == 2) {
+            x_t = 0;
+            y_t = plot_layout.sub_type2_legend_y + plot_layout.sub_h * (i - plot_layout.sub_type1_N);
+            x_p = plot_layout.sub_type2_x;
+            y_p = plot_layout.sub_type2_y + plot_layout.sub_h * (i - plot_layout.sub_type1_N);
+            x_l = plot_layout.sub_type2_legend_x;
+            y_l = plot_layout.sub_type2_legend_y + plot_layout.sub_h * (i - plot_layout.sub_type1_N);
+        }
+        else {
+            continue;
+        }
+        
+        // plot
+        svgText += downloader.svg_text(divs_sub[i].id + "_p", x_p, y_p);
+        
+        // legend
+        svgText += downloader.svg_text(divs_sub[i].id + "_l_svg", x_l, y_l);
+        
+        // title
+        svgText += downloader.virtual_svg_text(mut_data.subdata[i].title, plot_layout.sub_h, plot_layout.w_left, x_t, y_t, 14, true, "end", "center");
+    }
+    
+    var width = plot_layout.w_left + plot_layout.w_center + plot_layout.w_right;
+    var height = plot_layout.w_left + plot_layout.h + plot_layout.sub_h * divs_sub.length + 10;
+    svgText = downloader.add_svgtag(svgText, height, width)
+    
+    rect = utils.absolute_position("dw_btn");
+    downloader.createMenu ([rect.x + rect.width, rect.y], "btn", "paplot_mut", width, height, svgText);
 }
 
 // *********************************************
@@ -157,7 +262,6 @@ div_mut_checker.bar_selected = function(key1, key2, on) {
     for (var i = 0; i< divs_sub.length; i++) {
         divs_sub[i].obj.bar_select(key1, on);
     }
-    console.log(JSON.stringify(select_state));
 }
 
 function sub_selected(key, on) {
@@ -198,7 +302,6 @@ function selection_retry() {
         div_mut_checker.bar_select(null, select_state.y.keys[k], select_state.y.flags[k]);
         div_mut_bar_left.bar_select(select_state.y.keys[k], select_state.y.flags[k]);
     }
-    //console.log(JSON.stringify(select_state));
 }
 
 // *********************************************
@@ -250,17 +353,16 @@ function filter_gene_exec() {
             var data_index = dataset_gene.keys.length - i - 1;
             div_mut_bar_left.dataset[i].data = dataset_gene.data[data_index];
             div_mut_bar_left.dataset[i].keys = dataset_gene.keys[data_index];
-            div_mut_bar_left.dataset[i].tooltips = dataset_gene.tooltips[data_index];
-            
         };
-
+        
+        div_mut_bar_left.tooltips = dataset_gene.tooltips;
         div_mut_bar_left.keys = dataset_gene.total_keys;
         div_mut_bar_left.tags[0].values = dataset_gene.total_keys;
         div_mut_bar_left.tags[1].values = dataset_gene.total_nums;
         div_mut_bar_left.options.grid_xs[0].labels = dataset_gene.total_keys;
         div_mut_bar_left.options.grid_xs[0].keys = dataset_gene.total_keys;
 
-        div_mut_bar_left.rect_draw();
+        div_mut_bar_left.update();
     }
     
     // checker update
@@ -270,17 +372,17 @@ function filter_gene_exec() {
             div_mut_checker.dataset[i].data = dataset_checker.data[data_index];
             div_mut_checker.dataset[i].keys = dataset_checker.keys[data_index];
             div_mut_checker.dataset[i].keys2 = dataset_checker.keys2[data_index];
-            div_mut_checker.dataset[i].tooltips = dataset_checker.tooltips[data_index];
+            
             
         };
-
+        div_mut_checker.tooltips = dataset_checker.tooltips;
         div_mut_checker.keys2 = dataset_gene.total_keys;
         div_mut_checker.tags2[0].values = dataset_gene.total_keys;
         div_mut_checker.tags2[1].values = dataset_gene.total_nums;
         div_mut_checker.options.grids[1].labels = new Array(dataset_gene.total_keys.length);
         div_mut_checker.options.grids[1].keys = dataset_gene.total_keys;
         
-        div_mut_checker.rect_draw();
+        div_mut_checker.update();
     }
     
     // sort
@@ -299,22 +401,23 @@ function filter_gene_exec() {
 // change stack function
 // *********************************************
 
-function change_stack(id, name) {
+div_legend.stack_change = function(d, i, on) {
+//function change_stack(id, i, on) {
 
     d3.select("#spin").classed("hidden", false);
 
     timer = setTimeout(function() {
-        change_stack_exec(id, name);
+        change_stack_exec(d, on);
         d3.select("#spin").classed("hidden", true);
         clearTimeout(timer);
     }, SPIN_WAIT);
 }
 
-function change_stack_exec(id, name) {
+function change_stack_exec(name, on) {
 
     d3.select("#spin").classed("hidden", false);
     
-    func_flgs[name] = d3.select("#" + id).property("checked");
+    func_flgs[name] = on;
     var gene_th = parseInt(d3.select("#viewgene_rate").property("value"));
     var gene_max = parseInt(d3.select("#viewgene_number").property("value"));
     if (sort_state.y.name_list.length == 0) {
@@ -336,19 +439,18 @@ function change_stack_exec(id, name) {
             var data_index = dataset_gene.keys.length - i - 1;
             div_mut_bar_left.dataset[i].data = dataset_gene.data[data_index];
             div_mut_bar_left.dataset[i].keys = dataset_gene.keys[data_index];
-            div_mut_bar_left.dataset[i].tooltips = dataset_gene.tooltips[data_index];
             
-            div_mut_bar_left.dataset[i].enable = d3.select("#v" + data_index).property("checked");
+            div_mut_bar_left.dataset[i].enable = func_flgs[mut_data.funcs[data_index]];
         };
-
+        
+        div_mut_bar_left.tooltips = dataset_gene.tooltips;
         div_mut_bar_left.keys = dataset_gene.total_keys;
         div_mut_bar_left.tags[0].values = dataset_gene.total_keys;
         div_mut_bar_left.tags[1].values = dataset_gene.total_nums;
         div_mut_bar_left.options.grid_xs[0].labels = dataset_gene.total_keys;
         div_mut_bar_left.options.grid_xs[0].keys = dataset_gene.total_keys;
 
-        div_mut_bar_left.rect_draw();
-        div_mut_bar_left.resize();
+        div_mut_bar_left.update();
     }
     // bar-top update
     {
@@ -364,19 +466,18 @@ function change_stack_exec(id, name) {
             div_mut_checker.dataset[i].data = dataset_checker.data[data_index];
             div_mut_checker.dataset[i].keys = dataset_checker.keys[data_index];
             div_mut_checker.dataset[i].keys2 = dataset_checker.keys2[data_index];
-            div_mut_checker.dataset[i].tooltips = dataset_checker.tooltips[data_index];
             
-            div_mut_checker.dataset[i].enable = d3.select("#v" + data_index).property("checked");
+            div_mut_checker.dataset[i].enable = func_flgs[mut_data.funcs[data_index]];
         };
-
+        
+        div_mut_checker.tooltips = dataset_checker.tooltips;
         div_mut_checker.keys2 = dataset_gene.total_keys;
         div_mut_checker.tags2[0].values = dataset_gene.total_keys;
         div_mut_checker.tags2[1].values = dataset_gene.total_nums;
         div_mut_checker.options.grids[1].labels = new Array(dataset_gene.total_keys.length);
         div_mut_checker.options.grids[1].keys = dataset_gene.total_keys;
         
-        div_mut_checker.rect_draw();
-        div_mut_checker.resize();
+        div_mut_checker.update();
     }
     // update sort-tag
     {
@@ -725,7 +826,7 @@ function init() {
     
     // radio button's status of func
     for (var i=0; i < mut_data.funcs.length; i++) {
-        func_flgs[mut_data.funcs[i]] = d3.select("#v" + i).property("checked");
+        func_flgs[mut_data.funcs[i]] = true;
     }
     
     dataset_id = mut_data.get_dataset_id();
@@ -742,12 +843,24 @@ function init() {
     d3.select("#filter_text").text("{num:,}".format({num: dataset_gene.uncut_length}));
     
     var dataset_checker = mut_data.get_dataset_checker(func_flgs, dataset_gene.total_keys);
-    
-    genes_length = dataset_gene.total_keys.length;
-    
-    update_div();
-    update_gene_listbox(dataset_gene.total_keys);
 
+    genes_length = dataset_gene.total_keys.length;
+    update_gene_listbox(dataset_gene.total_keys);
+    
+    // ---------------------------------------------
+    // legend
+    // ---------------------------------------------
+    div_legend.items   = mut_data.funcs;
+    div_legend.colors  = mut_data.func_colors_n;
+    
+    div_legend.options.title = style_mut.func_title;
+    div_legend.layout.shape_sift_left = 10;
+    
+    div_legend.draw_html();
+    div_legend.draw_svg(false);
+    downloader.set_event_listner (div_legend.area_svg);
+    
+    
     // ---------------------------------------------
     // bar-sample 
     // ---------------------------------------------
@@ -757,14 +870,12 @@ function init() {
         div_mut_bar_top.dataset[i] = new div_mut_bar_top.dataset_template(mut_data.funcs[data_index]);
         div_mut_bar_top.dataset[i].data = dataset_id.data[data_index];
         div_mut_bar_top.dataset[i].keys = dataset_id.keys[data_index];
-        div_mut_bar_top.dataset[i].tooltips = dataset_id.tooltips[data_index];
-        
         div_mut_bar_top.dataset[i].color_fill = mut_data.func_colors_n[data_index];
-        div_mut_bar_top.dataset[i].color_fill_hilight = mut_data.func_colors_h[data_index];
-        
-        div_mut_bar_top.dataset[i].enable = d3.select("#v" + data_index).property("checked");
+        div_mut_bar_top.dataset[i].enable = true;
     };
-
+    
+    div_mut_bar_top.tooltips = dataset_id.tooltips;
+    
     div_mut_bar_top.keys = mut_data.Ids;
     div_mut_bar_top.tags[0] = new div_mut_bar_top.tag_template("sample_ID");
     div_mut_bar_top.tags[0].values = mut_data.Ids;
@@ -800,17 +911,17 @@ function init() {
     div_mut_bar_top.options.grid_xs[0].font_size = "9px";
     div_mut_bar_top.options.grid_xs[0].sift_x = 4;
     div_mut_bar_top.options.grid_xs[0].border_color = "#CCE";
-    div_mut_bar_top.options.grid_xs[0].border_width = "2px";
+    div_mut_bar_top.options.grid_xs[0].border_width = "1px";
     div_mut_bar_top.options.grid_xs[0].orient = "bottom";
     div_mut_bar_top.options.grid_xs[0].text_anchor = "end";
     div_mut_bar_top.options.grid_xs[0].text_rotate = "-90";
 
-    div_mut_bar_top.options.titles[0] = new div_mut_bar_top.title_template("Sample");
+    div_mut_bar_top.options.titles[0] = new div_mut_bar_top.title_template(style_mut.title_sample);
     div_mut_bar_top.options.titles[0].orient = "top";
     div_mut_bar_top.options.titles[0].wide = 30;
     div_mut_bar_top.options.titles[0].text_anchor = "middle";
     div_mut_bar_top.options.titles[0].text_rotate = 0;
-    div_mut_bar_top.options.titles[1] = new div_mut_bar_top.title_template("Number of mutation");
+    div_mut_bar_top.options.titles[1] = new div_mut_bar_top.title_template(style_mut.title_sample_y);
     div_mut_bar_top.options.titles[1].orient = "left";
     div_mut_bar_top.options.titles[1].wide = 0;
     div_mut_bar_top.options.titles[1].text_anchor = "middle";
@@ -818,8 +929,8 @@ function init() {
     div_mut_bar_top.options.titles[1].font_size = "12px";
     div_mut_bar_top.options.titles[1].sift_x = 8;
     
-    div_mut_bar_top.draw();
-
+    //div_mut_bar_top.draw();
+    
     // ---------------------------------------------
     // bar-gene 
     // ---------------------------------------------
@@ -829,14 +940,11 @@ function init() {
         div_mut_bar_left.dataset[i] = new div_mut_bar_left.dataset_template(mut_data.funcs[data_index]);
         div_mut_bar_left.dataset[i].data = dataset_gene.data[data_index];
         div_mut_bar_left.dataset[i].keys = dataset_gene.keys[data_index];
-        div_mut_bar_left.dataset[i].tooltips = dataset_gene.tooltips[data_index];
-
         div_mut_bar_left.dataset[i].color_fill = mut_data.func_colors_n[data_index];
-        div_mut_bar_left.dataset[i].color_fill_hilight = mut_data.func_colors_h[data_index];
-
-        div_mut_bar_left.dataset[i].enable = d3.select("#v" + data_index).property("checked");
+        div_mut_bar_left.dataset[i].enable = true;
     };
-
+    
+    div_mut_bar_left.tooltips = dataset_gene.tooltips;
     div_mut_bar_left.keys = dataset_gene.total_keys;
     div_mut_bar_left.tags[0] = new div_mut_bar_left.tag_template("name");
     div_mut_bar_left.tags[0].values = dataset_gene.total_keys;
@@ -870,24 +978,24 @@ function init() {
     div_mut_bar_left.options.grid_xs[0].font_size = "9px";
     div_mut_bar_left.options.grid_xs[0].sift_y = 4;
     div_mut_bar_left.options.grid_xs[0].border_color = "#CCE";
-    div_mut_bar_left.options.grid_xs[0].border_width = "2px";
+    div_mut_bar_left.options.grid_xs[0].border_width = "1px";
     div_mut_bar_left.options.grid_xs[0].orient = "right";
     div_mut_bar_left.options.grid_xs[0].text_anchor = "start";
     div_mut_bar_left.options.grid_xs[0].text_rotate = "0";
 
-    div_mut_bar_left.options.titles[0] = new div_mut_bar_left.title_template("Genes");
+    div_mut_bar_left.options.titles[0] = new div_mut_bar_left.title_template(style_mut.title_gene);
     div_mut_bar_left.options.titles[0].orient = "left";
     div_mut_bar_left.options.titles[0].wide = 30;
     div_mut_bar_left.options.titles[0].text_anchor = "middle";
     div_mut_bar_left.options.titles[0].text_rotate = -90;
-    div_mut_bar_left.options.titles[1] = new div_mut_bar_left.title_template("% Samples");
+    div_mut_bar_left.options.titles[1] = new div_mut_bar_left.title_template(style_mut.title_gene_y1);
     div_mut_bar_left.options.titles[1].orient = "bottom";
     div_mut_bar_left.options.titles[1].wide = 0;
     div_mut_bar_left.options.titles[1].text_anchor = "middle";
     div_mut_bar_left.options.titles[1].text_rotate = 0;
     div_mut_bar_left.options.titles[1].font_size = "12px";
     div_mut_bar_left.options.titles[1].sift_y = -20;
-    div_mut_bar_left.options.titles[2] = new div_mut_bar_left.title_template("with mutation");
+    div_mut_bar_left.options.titles[2] = new div_mut_bar_left.title_template(style_mut.title_gene_y2);
     div_mut_bar_left.options.titles[2].orient = "bottom";
     div_mut_bar_left.options.titles[2].wide = 0;
     div_mut_bar_left.options.titles[2].text_anchor = "middle";
@@ -895,8 +1003,8 @@ function init() {
     div_mut_bar_left.options.titles[2].font_size = "12px";
     div_mut_bar_left.options.titles[2].sift_y = -8;
     
-    div_mut_bar_left.draw();
-
+    //div_mut_bar_left.draw();
+    
     // ---------------------------------------------
     // checker 
     // ---------------------------------------------
@@ -907,14 +1015,12 @@ function init() {
         div_mut_checker.dataset[i].data = dataset_checker.data[data_index];
         div_mut_checker.dataset[i].keys = dataset_checker.keys[data_index];
         div_mut_checker.dataset[i].keys2 = dataset_checker.keys2[data_index];
-        div_mut_checker.dataset[i].tooltips = dataset_checker.tooltips[data_index];
-
         div_mut_checker.dataset[i].color_fill = mut_data.func_colors_n[data_index];
-        div_mut_checker.dataset[i].color_fill_hilight = mut_data.func_colors_h[data_index];
         
-        div_mut_checker.dataset[i].enable = d3.select("#v" + data_index).property("checked");
+        div_mut_checker.dataset[i].enable = true;
     };
 
+    div_mut_checker.tooltips = dataset_checker.tooltips;
     div_mut_checker.keys = mut_data.Ids;
     div_mut_checker.keys2 = dataset_gene.total_keys;
 
@@ -952,7 +1058,7 @@ function init() {
     div_mut_checker.options.grids[0].wide = 0;
     div_mut_checker.options.grids[0].font_size = "10px";
     div_mut_checker.options.grids[0].border_color = "#CCE";
-    div_mut_checker.options.grids[0].border_width = "2px";
+    div_mut_checker.options.grids[0].border_width = "1px";
     div_mut_checker.options.grids[0].orient = "bottom";
     div_mut_checker.options.grids[0].text_anchor = "end";
     div_mut_checker.options.grids[0].text_rotate = "-90";
@@ -966,15 +1072,56 @@ function init() {
     div_mut_checker.options.grids[1].font_size = "10px";
     div_mut_checker.options.grids[1].border_color = "#DDC";
     div_mut_checker.options.grids[1].border_width = "2px";
-   
-    div_mut_checker.draw();
 
+    //div_mut_checker.draw();
+    
     // ---------------------------------------------
     // sub-plots
     // ---------------------------------------------
-
     for (var i = 0; i < divs_sub.length; i++) {
         sub_plot(divs_sub[i]);
+    }
+    
+    // ---------------------------------------------
+    // draw
+    // ---------------------------------------------
+    
+    plot_layout.legend_h = Number(d3.select("#legend_html").style("height").replace("px", ""));
+    
+    // width-right
+    var legend_w = Number(d3.select("#legend_html").style("width").replace("px", ""));
+    //var save_w = Number(d3.select("#save_image").style("width").replace("px", ""));
+    var w_right_max = legend_w;
+    //if (legend_w < save_w) w_right_max = save_w;
+    
+    // subplot
+    var sub1_counter = 0;
+    var sub2_counter = 0;
+    for (var i = 0; i < divs_sub.length; i++) {
+        
+        var sub_legend_w = Number(d3.select("#" + divs_sub[i].id + "_l_svg").style("width").replace("px", ""));
+        if (w_right_max < sub_legend_w) w_right_max = sub_legend_w;
+        
+        // number of sub-plot
+        if (divs_sub[i].type == 1) sub1_counter += 1
+        else if (divs_sub[i].type == 2) sub2_counter += 1
+    }
+    plot_layout.w_right = w_right_max;
+    plot_layout.sub_type1_N = sub1_counter;
+    plot_layout.sub_type2_N = sub2_counter;
+    
+    update_div();
+    div_mut_bar_top.draw();
+    div_mut_bar_left.draw();
+    div_mut_checker.draw();
+    
+    downloader.set_event_listner ("div_bar_top");
+    downloader.set_event_listner ("div_bar_left");
+    downloader.set_event_listner ("div_checker");
+    
+    for (var i = 0; i < divs_sub.length; i++) {
+        divs_sub[i].obj.draw();
+        downloader.set_event_listner (divs_sub[i].id + "_p");
     }
     
     // ---------------------------------------------
@@ -1000,18 +1147,15 @@ function sub_plot(sub) {
     
     var sub_dataset = mut_data.get_sub_data(sub.name);
     
-    for (var i=0; i < sub_dataset.length; i++) {
+    for (var i=0; i < sub_dataset.stack.length; i++) {
         sub.obj.dataset[i] = new sub.obj.dataset_template("sub_" + sub.name + "_" + i);
-        sub.obj.dataset[i].data = sub_dataset[i].data;
-        sub.obj.dataset[i].keys = sub_dataset[i].keys;
-        sub.obj.dataset[i].tooltips = sub_dataset[i].tooltips;
-    
-        sub.obj.dataset[i].color_fill = sub_dataset[i].color_n;
-        sub.obj.dataset[i].color_fill_hilight = sub_dataset[i].color_h;
-        
+        sub.obj.dataset[i].data = sub_dataset.stack[i].data;
+        sub.obj.dataset[i].keys = sub_dataset.stack[i].keys;
+        sub.obj.dataset[i].color_fill = sub_dataset.stack[i].color_n;
         sub.obj.dataset[i].enable = true;
     };
     
+    sub.obj.tooltips = sub_dataset.tooltips;
     sub.obj.keys = mut_data.Ids;
     sub.obj.tags[0] = new sub.obj.tag_template("sample_ID");
     sub.obj.tags[0].values = mut_data.Ids;
@@ -1037,6 +1181,40 @@ function sub_plot(sub) {
     sub.obj.options.direction_x = "left-right";
     sub.obj.options.direction_y = "bottom-up";
     
-    sub.obj.draw();
+    //sub.obj.draw();
+    
+    // legend
+    //var options = new utils.legend_options_template();
+    //options.id = "div_" + sub.name + "_l";
+    //options.items = sub_dataset.label.text;
+    //options.colors = sub_dataset.label.color;
+    //options.svg_size = [0, 50];
+    //options.margin = [30, 10];
+    //options.horizon = true;
+    //utils.legend(options);
+    
+    var div_legend = new legend("div_" + sub.name + "_l");
+    div_legend.items   = sub_dataset.label.text;
+    div_legend.colors  = sub_dataset.label.color;
+    
+    div_legend.options.svg_size = [0, 50];
+    div_legend.layout.padding_left = 30;
+    div_legend.layout.padding_top = 10;
+        
+    div_legend.options.horizon = true;
+    div_legend.draw_svg(true);
+    downloader.set_event_listner ("div_" + sub.name + "_l_svg");
+    
+    //// title
+    //var title = d3.select("#div_" + sub.name + "_t").selectAll("b").text();
+    //
+    //d3.select("#div_" + sub.name + "_t")
+    //    .append("svg")
+    //    .attr("class", "hidden")
+    //    .append("text")
+    //    .text(title)
+    //    .attr("font-size", "14px")
+    //    .attr("font-family", "'Helvetica Neue', Helvetica, Arial, sans-serif")
+    //    .attr("text-anchor", "end")
+    //;
 }
-

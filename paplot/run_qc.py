@@ -4,7 +4,7 @@ Created on Wed Dec 02 17:43:52 2015
 
 @author: okada
 
-$Id: run_qc.py 117 2016-06-29 01:43:38Z aokada $
+$Id: run_qc.py 130 2016-07-20 09:16:12Z aokada $
 """
 prog = "pa_plot qc"
 
@@ -49,11 +49,7 @@ def main(argv):
     if positions == {}:
         print ("merge.merge_result: input file is invalid.")
         return
-    if qc.convert_tojs(output_html_dir + "/data_qc.csv", output_html_dir + "/data_qc.js", positions, config) == False:
-        print ("qc.convert_tojs: input file is invalid.")
-        return
-        
-    qc.create_html(output_html_dir, "graph_qc.html", args.project_name, config)
+    qc.output_html(output_html_dir + "/data_qc.csv", output_html_dir + "/data_qc.js", \
+                   output_html_dir, "graph_qc.html", args.project_name, positions, config)
 
     prep.create_index(args.output_dir,  args.project_name, config)
-        
