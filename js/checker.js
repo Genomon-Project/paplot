@@ -22,6 +22,7 @@ var mut_checker = (function() {
             direction_x: "left-right",
             direction_y: "top-down",
             grids: [],
+            color_hilight: "#FF0",
         };
 
         // don't touch
@@ -61,7 +62,6 @@ var mut_checker = (function() {
             this.data = [];
             this.tooltips = [];
             this.color_fill = "#333";
-            this.color_fill_hilight = "#F00";
             this.name = name;
             this.enable = true;
             
@@ -92,6 +92,7 @@ var mut_checker = (function() {
             this.wide = 0;
             this.font_color = "#000";
             this.font_size = "14px";
+            this.font_family = "'Helvetica Neue', Helvetica, Arial, sans-serif";
             this.text_anchor = "middle";
             this.text_rotate = 0;
             this.sift_x = 0;
@@ -99,6 +100,24 @@ var mut_checker = (function() {
         };
         return grid_template;
     })();
+
+    // -----------------------------------
+    // x/y position
+    // -----------------------------------
+    p.xy_position = function(asc, wide, padding1, items, i, sift) {
+        var pos = 0;
+        if (asc == true) {
+            return padding1 + i*wide/items + sift;
+        }
+        return padding1 + wide - (i+1) * wide/items + sift;
+    }
+    p.xy_position_grid = function(asc, wide, padding1, items, i, sift) {
+        var pos = 0;
+        if (asc == true) {
+            return padding1 + i*wide/items + sift;
+        }
+        return padding1 + wide - (i) * wide/items + sift;
+    }
 
     // -----------------------------------
     // sort
@@ -228,6 +247,34 @@ var mut_checker = (function() {
                 });
         }
 
+        // transparent-bar
+        this.svg_obj.selectAll("g.transparent_bar1").selectAll("rect")
+            .attr("x", function(d, i) {
+                var item = p.pos_from_sort_list(that.axis.x.sort_list, d, -1);
+                return p.xy_position (that.axis.x.asc, that.plot.w, that.padding.left, x_items, item, 0);
+            })
+            .attr("y", this.padding.top)
+        ;
+        
+        this.svg_obj.selectAll("g.transparent_bar2").selectAll("rect")
+                .attr("x", this.padding.left)
+                .attr("y", function(d, i) {
+                    var item = p.pos_from_sort_list(that.axis.y.sort_list, d, -1);
+                    return p.xy_position (that.axis.y.asc, that.plot.h, that.padding.top, y_items, item, 0);
+                });
+        
+        // transparent-rect
+        this.svg_obj.selectAll("g.transparent_rect").selectAll("rect")
+            .attr("x", function(d, i) {
+                var item = p.pos_from_sort_list(that.axis.x.sort_list, d[0], -1);
+                return p.xy_position (that.axis.x.asc, that.plot.w, that.padding.left, x_items, item, 0);
+            })
+            .attr("y", function(d, i) {
+                var item = p.pos_from_sort_list(that.axis.y.sort_list, d[1], -1);
+                return p.xy_position (that.axis.y.asc, that.plot.h, that.padding.top, y_items, item, 0);
+            })
+        ;
+        
         // axis
         this.svg_obj.selectAll("g.label").selectAll("text")
             .attr('transform', function(d, i)  {
@@ -317,24 +364,6 @@ var mut_checker = (function() {
     }
     
     // -----------------------------------
-    // x/y position
-    // -----------------------------------
-    p.xy_position = function(asc, wide, padding1, items, i, sift) {
-        var pos = 0;
-        if (asc == true) {
-            return padding1 + i*wide/items + sift;
-        }
-        return padding1 + wide - (i+1) * wide/items + sift;
-    }
-    p.xy_position_grid = function(asc, wide, padding1, items, i, sift) {
-        var pos = 0;
-        if (asc == true) {
-            return padding1 + i*wide/items + sift;
-        }
-        return padding1 + wide - (i) * wide/items + sift;
-    }
-
-    // -----------------------------------
     // resize svg
     // -----------------------------------
     p.resize = function() {
@@ -347,44 +376,50 @@ var mut_checker = (function() {
         this.svg_obj.style("width", this.svg.w + 'px');
         this.svg_obj.style("height", this.svg.h + 'px');
 
+        // transparent-bar
+        var width = this.plot.w / this.x_items() -  this.bar_padding(this.plot.w, this.x_items());
+        
+        this.svg_obj.selectAll("g.transparent_bar1").selectAll("rect")
+            .attr("height", this.plot.h)
+            .attr("width", width)
+        ;
+
+        var height = this.plot.h / this.y_items() -  this.bar_padding(this.plot.h, this.y_items());
+        
+        this.svg_obj.selectAll("g.transparent_bar2").selectAll("rect")
+            .attr("height", height)
+            .attr("width", this.plot.w)
+        ;
+        
+        // transparent-rect
+        this.svg_obj.selectAll("g.transparent_rect").selectAll("rect")
+            .attr("height", height)
+            .attr("width", width)
+        ;
+        
         this.bar_sort();
         this.change_stack();
     }
-
-    // -----------------------------------
-    // get base value each stack's bar
-    // -----------------------------------
-    p.bar_base = function(dataset, stack_index, key) {
         
-        var base = 0;
-        for (var i=0; i < stack_index; i++) {
-            if (dataset[i].enable == false) continue;
-            var pos = dataset[i].keys.indexOf(key);
-            if (pos < 0)  continue;
-            base = base + dataset[i].data[pos];
-        }
-        return base;
-    }
-
     // -----------------------------------
     // chenge menbers of stack
     // -----------------------------------
     p.change_stack = function() {
         var that = this;
         
-        // rect
-        var x_items = this.x_items();
-        var y_items = this.y_items();
+        // rect-size
+        var height = this.plot.h / this.y_items() -  this.bar_padding(this.plot.h, this.y_items());
+        var width = this.plot.w / this.x_items() -  this.bar_padding(this.plot.w, this.x_items());
         
         for (var idx=0; idx < this.dataset.length; idx++) {
             this.svg_obj.selectAll("g." + this.dataset[idx].name).selectAll("rect")
                 .attr("height", function() {
                     if (that.dataset[idx].enable == false) return 0;
-                    return that.plot.h / y_items -  that.bar_padding(that.plot.h, y_items);
+                    return height;
                 })
                 .attr("width", function() {
                     if (that.dataset[idx].enable == false) return 0;
-                    return that.plot.w / x_items -  that.bar_padding(that.plot.w, x_items);
+                    return width;
                 });
         }
     }
@@ -392,7 +427,7 @@ var mut_checker = (function() {
     // -----------------------------------
     // update
     // -----------------------------------
-    p.rect_draw = function() {
+    p.update = function() {
         // call me after draw()
         
         var that = this;
@@ -402,8 +437,6 @@ var mut_checker = (function() {
             
             this.svg_obj.selectAll("g." + this.dataset[idx].name)
                 .selectAll("rect")
-                //.data(this.dataset[idx].data)
-                //.exit()
                 .remove();
 
             this.svg_obj.selectAll("g." + this.dataset[idx].name)
@@ -418,70 +451,140 @@ var mut_checker = (function() {
                 .style("fill", this.dataset[idx].color_fill)
                 .attr("class", function(d, i) {
                     return that.dataset[idx].keys[i] + " " + that.dataset[idx].keys2[i];
-                })
-                .on("mouseover", function(d, i) {
-                    if (that.options.tooltip.enable == false) {
-                        return;
-                    }
-                    // remove last tooltip data
-                    d3.select("#tooltip").selectAll("p#text").remove();
-
-                    // add text to tooltip
-                    for (var k=0; k < that.dataset.length; k++) {
-                        if (that.dataset[k].name == this.parentNode.className.baseVal) {
-                            for (var p=0; p < that.dataset[k].tooltips[i].length; p++) {
-                                d3.select("#tooltip").append("p").attr("id", "text").text(that.dataset[k].tooltips[i][p]);
-                            }
-                            break;
-                        }
-                    }
-
-                    //Show the tooltip
-                    d3.select("#tooltip").classed("hidden", false);
-                    
-                    var x = that.options.tooltip.sift_x;
-                    var y = that.options.tooltip.sift_y;
-                    
-                    var rect = document.getElementById(that.id).getBoundingClientRect();
-                    var div_x = parseFloat(rect.left) + window.pageXOffset + 10;
-                    var div_y = parseFloat(rect.top) + window.pageYOffset + 10;
-                    
-                    if (that.options.tooltip.position == "parent") {
-                        x = x + div_x;
-                        y = y + div_y;
-                    }
-                    else if (that.options.tooltip.position == "bar") {
-                        x = x + parseFloat(d3.select(this).attr("x")) + div_x;
-                        y = y + parseFloat(d3.select(this).attr("y")) + div_y;
-                    }
-                    //Update the tooltip position and value
-                    d3.select("#tooltip")
-                        .style("left", x + "px")
-                        .style("top", y + "px");
-                })
-                .on("mouseout", function() {
-                    if (that.options.tooltip.enable == false) {
-                        return;
-                    }
-                    //Hide the tooltip
-                    d3.select("#tooltip").classed("hidden", true);
-                })
-                .on("click", function(d, i) {
-                    var classes = this.className.baseVal.split(" ");
-                    
-                    var key1 = "selected1";
-                    var key2 = "selected2";
-                    
-                    if (that.options.multi_select == true) {
-                        key1 = key1 + "." + classes[0];
-                        key2 = key2 + "." + classes[1]
-                    }
-                    var on = !(d3.select(this).classed(key1) && d3.select(this).classed(key2));
-                    that.bar_selected(classes[0], classes[1], on);
                 });
         }
         
-        this.update_plot_size();
+        // transparent-bar
+        var keys = [this.keys, this.keys2];
+        var target = ["selected1", "selected2"];
+        
+        for (var idx=0; idx < 2; idx++) {
+            this.svg_obj.selectAll("g.transparent_bar" + (idx+1))
+                .selectAll("rect")
+                .remove();
+
+            this.svg_obj.selectAll("g.transparent_bar" + (idx+1))
+                .selectAll("rect")
+                .data(keys[idx])
+                .enter()
+                .append("rect")
+                .attr("y", 0)
+                .attr("x", 0)
+                .attr("width", 0)
+                .attr("height", 0)
+                .style("fill", this.options.color_hilight)
+                .style("opacity", 0)
+                .attr("class", function(d) {
+                    return d;
+                });
+        }
+        
+        // transparent-rect
+        var keys = [];
+        for (var idx=0; idx < this.dataset.length; idx++) {
+            for (var i=0; i < this.dataset[idx].data.length; i++) {
+                var item = [this.dataset[idx].keys[i], this.dataset[idx].keys2[i]];
+                keys.push(item);
+            }
+        }
+        keys.sort(function(a,b){
+            if( a[0] < b[0] ) return -1;
+            if( a[0] > b[0] ) return 1;
+            if( a[1] < b[1] ) return -1;
+            if( a[1] > b[1] ) return 1;
+            return 0;
+        });
+        var keys_filt = [];
+        for (var i = 0; i < keys.length; i++) {
+            // delete duplication
+            if (i == 0) keys_filt.push(keys[i]);
+            var last = keys_filt[keys_filt.length-1];
+            if ((last[0] != keys[i][0]) || (last[1] != keys[i][1])) keys_filt.push(keys[i]);
+        };
+
+        
+        this.svg_obj.selectAll("g.transparent_rect")
+            .selectAll("rect")
+            .remove();
+
+        this.svg_obj.selectAll("g.transparent_rect")
+            .selectAll("rect")
+            .data(keys_filt)
+            .enter()
+            .append("rect")
+            .attr("y", 0)
+            .attr("x", 0)
+            .attr("width", 0)
+            .attr("height", 0)
+            .style("fill", "white")
+            .style("opacity", 0)
+            .attr("class", function(d) {
+                return d[0] + " " + d[1];
+            })
+            .on("mouseover", function(d) {
+                if (that.options.tooltip.enable == false) {
+                    return;
+                }
+                
+                var tooltips = that.tooltips[that.keys.indexOf(d[0])][d[1]];
+                if (tooltips == undefined) return;
+                
+                // remove last tooltip data
+                d3.select("#tooltip").selectAll("p#text").remove();
+
+                // add text to tooltip
+                
+                for (var p=0; p < tooltips.length; p++) {
+                    d3.select("#tooltip").append("p").attr("id", "text").text(tooltips[p]);
+                }
+
+                //Show the tooltip
+                d3.select("#tooltip").classed("hidden", false);
+                
+                var x = that.options.tooltip.sift_x;
+                var y = that.options.tooltip.sift_y;
+                
+                var rect = document.getElementById(that.id).getBoundingClientRect();
+                var div_x = parseFloat(rect.left) + window.pageXOffset + 10;
+                var div_y = parseFloat(rect.top) + window.pageYOffset + 10;
+                
+                if (that.options.tooltip.position == "parent") {
+                    x = x + div_x;
+                    y = y + div_y;
+                }
+                else if (that.options.tooltip.position == "bar") {
+                    x = x + parseFloat(d3.select(this).attr("x")) + div_x;
+                    y = y + parseFloat(d3.select(this).attr("y")) + div_y;
+                }
+                //Update the tooltip position and value
+                d3.select("#tooltip")
+                    .style("left", x + "px")
+                    .style("top", y + "px");
+                        
+            })
+            .on("mouseout", function(d) {
+                if (that.options.tooltip.enable == false) {
+                    return;
+                }
+                //Hide the tooltip
+                d3.select("#tooltip").classed("hidden", true);
+            })
+            .on("click", function(d, i) {
+                var key1 = "selected1";
+                var key2 = "selected2";
+                
+                if (that.options.multi_select == true) {
+                    key1 = key1 + "." + d[0];
+                    key2 = key2 + "." + d[1]
+                }
+                var on1 = that.svg_obj.selectAll("g.transparent_bar1").select("rect." + d[0]).classed(key1);
+                var on2 = that.svg_obj.selectAll("g.transparent_bar2").select("rect." + d[1]).classed(key2);
+                
+                var on = !(on1 && on2);
+                that.bar_selected(d[0], d[1], on);
+            });
+
+        //this.update_plot_size();
         
         // axis
         grid_data = [];
@@ -507,7 +610,7 @@ var mut_checker = (function() {
             })
             .text(function(d, i) {
                 if (that.options.grids[grid_idx[i][0]].wide == 0) {
-                return "";
+                    return "";
                 }
                 return d;
             })
@@ -516,7 +619,14 @@ var mut_checker = (function() {
             })
             .attr("font-size", function(d, i) {
                 return that.options.grids[grid_idx[i][0]].font_size;
-            });
+            })
+            .attr("font-family", function(d, i) {
+                return that.options.grids[grid_idx[i][0]].font_family;
+            })
+            .attr("text-color", function(d, i) {
+                return that.options.grids[grid_idx[i][0]].text_color;
+            })
+        ;
         
         this.svg_obj.selectAll("g.grid")
             .selectAll("line")
@@ -538,17 +648,19 @@ var mut_checker = (function() {
                 return that.options.grids[grid_idx[i][0]].border_opacity;
             });
         
-         this.resize();
+        this.set_sort_item([this.tags[0].name], [true], "x");
+        this.set_sort_item([this.tags2[0].name], [true], "y");
+        this.resize();
     }
-        
+
     // -----------------------------------
     // initialize
     // -----------------------------------
-    p.draw = function() {
+    p.init = function() {
         var that = this;
         
         this.svg_obj = d3.select("#" + this.id).append("svg");
-
+        
         // plot asc
         switch (this.options.direction_x) {
             case "left-right":
@@ -581,6 +693,26 @@ var mut_checker = (function() {
                 .data([])
                 .enter();
         }
+        
+        // transparent-bar
+        this.svg_obj.append("g")
+            .attr("class", "transparent_bar1")
+            .selectAll("rect")
+            .data([])
+            .enter();
+        
+        this.svg_obj.append("g")
+            .attr("class", "transparent_bar2")
+            .selectAll("rect")
+            .data([])
+            .enter();
+        
+        // transparent-rect
+        this.svg_obj.append("g")
+            .attr("class", "transparent_rect")
+            .selectAll("rect")
+            .data([])
+            .enter();
         
         // paddings
         this.padding.left = this.options.padding_left;
@@ -622,11 +754,10 @@ var mut_checker = (function() {
             .selectAll("line")
             .data([])
             .enter();
-
-        this.rect_draw();
-        this.set_sort_item([this.tags[0].name], [true], "x");
-        this.set_sort_item([this.tags2[0].name], [true], "y");
-        //this.resize();
+    }
+    p.draw = function() {
+        this.init();
+        this.update();
     }
     
     
@@ -634,49 +765,35 @@ var mut_checker = (function() {
     // selection
     // -----------------------------------
     p.bar_select = function(key1, key2, on) {
-        var that = this;
 
-        for (var idx = 0; idx < this.dataset.length; idx++) {
+        var multi_select = this.options.multi_select;
+        
+        for (var idx = 0; idx < 2; idx++) {
 
-            this.svg_obj.selectAll("g." + this.dataset[idx].name).selectAll("rect")
-                .style("fill", function(d, i) {
+            var key;
+            if (idx == 0) key = key1;
+            else if (idx == 1) key = key2;
+            
+            if (key == null) continue;
+            
+            var target = "selected" + (idx+1);
+            if (multi_select == true) {
+                target = target + "." + key;
+            }
+                
+            this.svg_obj.selectAll("g.transparent_bar" + (idx+1)).selectAll("rect")
+                .style("opacity", function(d, i) {
                     
                     // target rect
-                    var classes = this.className.baseVal.split(" ");
-                    
-                    var target1 = "selected1";
-                    var target2 = "selected2";
-                    
-                    if (that.options.multi_select == true) {
-                        target1 = target1 + "." + key1;
-                        target2 = target2 + "." + key2;
+                    if (d == key) {
+                        d3.select(this).classed(target, on);
                     }
-                    
-                    var find_key1 = false;
-                    var find_key2 = false;
-                    
-                    for (var k = 0; k < classes.length; k++) {
-                        if (classes[k] == key1) {
-                            find_key1 = true;
-                        }
-                        if (classes[k] == key2) {
-                            find_key2 = true;
+                    else {
+                        if (multi_select == false) {
+                            d3.select(this).classed(target, false);
                         }
                     }
                     
-                    if (find_key1 == true) {
-                         d3.select(this).classed(target1, on);
-                    }
-                    else if ((key1 != null) && (that.options.multi_select == false)) {
-                         d3.select(this).classed(target1, false);
-                    }
-                    if (find_key2 == true) {
-                         d3.select(this).classed(target2, on);
-                    }
-                    else if ((key2 != null) && (that.options.multi_select == false)) {
-                         d3.select(this).classed(target2, false);
-                    }
-                    // hilight
                     classes = this.className.baseVal.split(" ");
                     var selected = false;
                     for (var k = 1; k < classes.length; k++) {
@@ -686,29 +803,18 @@ var mut_checker = (function() {
                         }
                     }
                     if (selected == true) {
-                        return that.dataset[idx].color_fill_hilight;
+                        return 0.3;
                     }
-                    return that.dataset[idx].color_fill;
+                    return 0;
                 });
         }
     }
 
     p.reset_select = function() {
-        var that = this;
-
-        for (var idx = 0; idx < this.dataset.length; idx++) {
-            this.svg_obj.selectAll("g." + this.dataset[idx].name).selectAll("rect")
-                .style("fill", function(d, i) {
-                    
-                    var classes = this.className.baseVal.split(" ");
-                    for (var k = 0; k< classes.length; k++) {
-                        if (classes[k].indexOf("selected") == 0) {
-                            d3.select(this).classed(classes[k], false);
-                        }
-                    }
-                    return that.dataset[idx].color_fill;
-                });
-        }
+        this.svg_obj.selectAll("g.transparent_bar1").selectAll("rect")
+            .style("opacity", 0);
+        this.svg_obj.selectAll("g.transparent_bar2").selectAll("rect")
+            .style("opacity", 0);
     }
     // -----------------------------------
     // over-ride

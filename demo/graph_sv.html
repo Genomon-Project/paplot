@@ -3,12 +3,12 @@
   <title>SV - demo</title>
   <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
   
-  <link rel="stylesheet" type="text/css" href="../js/paplot.css"/>
+  <link rel="stylesheet" type="text/css" href="../layout/paplot.css"/>
 </head>
 <body>
 
 <div class="version">
-Generated on 2016-06-22 17:21:04 for demo by paplot-0.3.0release-py2.7.
+Generated on 2016-08-03 15:05:20 for demo by paplot-0.4.0release-py2.7.
 </div>
 
 <div class="container">
@@ -20,31 +20,28 @@ Generated on 2016-06-22 17:21:04 for demo by paplot-0.3.0release-py2.7.
   </p>
   <p><input type="button" value="reset" onclick="thumb_reset()"></p>
 
-  <h3><div id="select_title">Genome-wide SVs identify</div></h3>
-  <div style="margin-left: 50px; margin-top: 20px;">
-  <div class="legend"><input type="checkbox" id="v1" onclick="change_stack()" checked><div id="legend0" class="legend legend_bar"></div><div id="legend0_text" class="legend legend_label"></div></div>
-  <div class="legend"><input type="checkbox" id="v2" onclick="change_stack()" checked><div id="legend1" class="legend legend_bar"></div><div id="legend1_text" class="legend legend_label"></div></div>
-  <div class="legend" style="visibility:hidden;"><input type="checkbox" id="v3" onclick="change_stack()"><div id="legend2" class="legend legend_bar"></div><div id="legend2_text" class="legend legend_label"></div></div>
-</div>
-  <div id="selector"></div>
-</div>
+<!-- save image --><button type="button" onclick="push_export()" id="dw_btn" style="margin-bottom: 20px;"><img src="../layout/download.png" style="margin-right: 5px;">export</button><div id="btn"></div>
+<!-- legend --> <div id='legend_html'></div><div id='legend_svg'></div>
 
+<div id="selector"></div>
 
 <!-- ### tumbnails ### -->
 <div>
 <ul>
-<li class="thumb" id="thumb0_li"><div id="thumb0" onclick="show_float('0','SAMPLE0')"><strong>SAMPLE0<br></strong></div></li>
-<li class="thumb" id="thumb1_li"><div id="thumb1" onclick="show_float('1','SAMPLE1')"><strong>SAMPLE1<br></strong></div></li>
-<li class="thumb" id="thumb2_li"><div id="thumb2" onclick="show_float('2','SAMPLE2')"><strong>SAMPLE2<br></strong></div></li>
-<li class="thumb" id="thumb3_li"><div id="thumb3" onclick="show_float('3','SAMPLE3')"><strong>SAMPLE3<br></strong></div></li>
-<li class="thumb" id="thumb4_li"><div id="thumb4" onclick="show_float('4','SAMPLE4')"><strong>SAMPLE4<br></strong></div></li>
-<li class="thumb" id="thumb5_li"><div id="thumb5" onclick="show_float('5','SAMPLE5')"><strong>SAMPLE5<br></strong></div></li>
-<li class="thumb" id="thumb6_li"><div id="thumb6" onclick="show_float('6','SAMPLE6')"><strong>SAMPLE6<br></strong></div></li>
-<li class="thumb" id="thumb7_li"><div id="thumb7" onclick="show_float('7','SAMPLE7')"><strong>SAMPLE7<br></strong></div></li>
-<li class="thumb" id="thumb8_li"><div id="thumb8" onclick="show_float('8','SAMPLE8')"><strong>SAMPLE8<br></strong></div></li>
-<li class="thumb" id="thumb9_li"><div id="thumb9" onclick="show_float('9','SAMPLE9')"><strong>SAMPLE9<br></strong></div></li>
+<li class="thumb" id="thumb0_li"><strong>SAMPLE0<br></strong><div id="thumb0" onclick="show_float(event,'0','SAMPLE0')"></div></li>
+<li class="thumb" id="thumb1_li"><strong>SAMPLE1<br></strong><div id="thumb1" onclick="show_float(event,'1','SAMPLE1')"></div></li>
+<li class="thumb" id="thumb2_li"><strong>SAMPLE2<br></strong><div id="thumb2" onclick="show_float(event,'2','SAMPLE2')"></div></li>
+<li class="thumb" id="thumb3_li"><strong>SAMPLE3<br></strong><div id="thumb3" onclick="show_float(event,'3','SAMPLE3')"></div></li>
+<li class="thumb" id="thumb4_li"><strong>SAMPLE4<br></strong><div id="thumb4" onclick="show_float(event,'4','SAMPLE4')"></div></li>
+<li class="thumb" id="thumb5_li"><strong>SAMPLE5<br></strong><div id="thumb5" onclick="show_float(event,'5','SAMPLE5')"></div></li>
+<li class="thumb" id="thumb6_li"><strong>SAMPLE6<br></strong><div id="thumb6" onclick="show_float(event,'6','SAMPLE6')"></div></li>
+<li class="thumb" id="thumb7_li"><strong>SAMPLE7<br></strong><div id="thumb7" onclick="show_float(event,'7','SAMPLE7')"></div></li>
+<li class="thumb" id="thumb8_li"><strong>SAMPLE8<br></strong><div id="thumb8" onclick="show_float(event,'8','SAMPLE8')"></div></li>
+<li class="thumb" id="thumb9_li"><strong>SAMPLE9<br></strong><div id="thumb9" onclick="show_float(event,'9','SAMPLE9')"></div></li>
 
 </ul>
+</div>
+
 </div>
 
 <!-- ### details ### -->
@@ -61,11 +58,16 @@ Generated on 2016-06-22 17:21:04 for demo by paplot-0.3.0release-py2.7.
 
 
 <!-- ### tooltip ### -->
-<div id="tooltip" class="hidden">
-</div>
+<div id="tooltip" class="hidden"></div>
+<!-- canvas for save image -->
+<canvas id="dw_canvas" class="hidden"></canvas>
 
 <script type="text/javascript" src="../lib/d3_v3.5.13/d3.min.js"></script>
+<script type="text/javascript" src="../lib/d3-legend_v1.10.0/d3-legend.min.js"></script>
 <script type="text/javascript" src="../style/default.js"></script>
+<script type="text/javascript" src="../js/utils.js"></script>
+<script type="text/javascript" src="../js/bundle.js"></script>
+<script type="text/javascript" src="../js/bar.js"></script>
 <script type="text/javascript" src="data_sv.js"></script>
 <script type="text/javascript" src="../js/graph_sv.js"></script>
 <script>
@@ -81,8 +83,6 @@ draw_bandle_thumb("7", "SAMPLE7");
 draw_bandle_thumb("8", "SAMPLE8");
 draw_bandle_thumb("9", "SAMPLE9");
 
-bundle_update();
-draw_legend();
 </script>
 </body>
 </html>

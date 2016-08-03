@@ -1,82 +1,12 @@
-(function() {
-    packages = {
-
-        // Lazily construct the package hierarchy from class starts.
-        root : function(classes) {
-            var map = {};
-
-            function find(start, data) {
-                var node = map[start], i;
-                if (!node) {
-                    node = map[start] = data || {
-                        start : start,
-                        children : []
-                    };
-                    if (start.length) {
-                        node.parent = find(start.substring(0, i = start.lastIndexOf(".")));
-                        node.parent.children.push(node);
-                        node.key = start.substring(i + 1);
-                    }
-                }
-                return node;
-            }
-
-            classes.forEach(function(d) {
-                find(d.start, d);
-            });
-
-            return map[""];
-        },
-
-        // Return a list of ends for the given array of nodes.
-        ends : function(nodes) {
-            var map = {}, ends = [];
-
-            // Compute a map from start to node.
-            nodes.forEach(function(d) {
-                map[d.start] = d;
-            });
-
-            // For each import, construct a link from the source to target node.
-            nodes.forEach(function(d) {
-                if (d.ends)
-                    d.ends.forEach(function(i) {
-                        ends.push({
-                            source : map[d.start],
-                            target : map[i]
-                        });
-                    });
-            });
-
-            return ends;
-        }
-
-    };
-})();
-
 // -----------------------------------------------------------------------------
 // selection bar plot
 // -----------------------------------------------------------------------------
 
 // select items
 var bar_dataset = [];
-var bar_dataset_items = [[],[],[]];
-var bar_dataset_chromos = [];
-
-var brush = 0;
-var brush_obj = 0;
-var svg;
-var y_axis;
-
-// select params
-var svg_h = 150;
-var svg_padding_left = 50;   // y-axis
-var svg_padding_right = 10;
-var svg_padding_top = 10;
-var svg_padding_bottom = 50; // x-axis
-var bar_padding = 0;
-var plot_h = svg_h - svg_padding_top - svg_padding_bottom;
-var plot_w = 0;
+var group_enable = [];
+var div_select_bar = new mut_bar("selector");
+var div_legend = new legend("legend");
 
 // resize timer
 var timer = false;
@@ -85,883 +15,450 @@ window.addEventListener('resize', function() {
         clearTimeout(timer);
     }
     timer = setTimeout(function() {
-        draw_select_resize();
+        update_div();
+        div_select_bar.resize();
+        thumb_reset();
     }, 200);
 });
 
-function x_items() {
-    return bar_dataset.key.length + 2;
+function update_div() {
+    d3.select("#selector").style("width", window.innerWidth - 200 + "px");
+    d3.select("#selector").style("height", "180px");
 }
 
-function draw_select_resize() {
-    thumb_reset();
-    
-    // update width
-    var svg_w = parseInt(d3.select("body").style("width"), 10) - 200;
-    plot_w = svg_w - svg_padding_left - svg_padding_right;
+// *********************************************
+// save image
+// *********************************************
+function push_export() {
+    var svgText = "";
 
-    svg.style("width", svg_w + 'px');
-
+    // thumb's size
+    var thumb_margin_top, thumb_margin_bottom, thumb_margin_left, thumb_margin_right, thumb_width, thumb_height, thumb_title_height, thumb_title_fontsize;
     
-    if (plot_w / x_items() > 3) {
-        bar_padding = 1;
-    }
-    else {
-        bar_padding = 0;
-    }
-    
-    // bar
-    svg.selectAll("g.outer").selectAll("rect")
-        .attr("x", function(d, i) {
-            return svg_padding_left + i * plot_w / x_items();
-        })
-        .attr("width", function(d, i) {
-            return plot_w / x_items() - bar_padding;
-        })
-    ;
-    svg.selectAll("g.inner").selectAll("rect")
-        .attr("x", function(d, i) {
-            return svg_padding_left + i * plot_w / x_items();
-        })
-        .attr("width", function(d, i) {
-            return plot_w / x_items() - bar_padding;
-        })
-    ;
-    svg.selectAll("g.snippet").selectAll("rect")
-        .attr("x", function(d, i) {
-            return svg_padding_left + i * plot_w / x_items();
-        })
-        .attr("width", function(d, i) {
-            return plot_w / x_items() - bar_padding;
-        })
-    ;
-    
-    // brush
-    var brush_schale = d3.scale.linear().range([ svg_padding_left, svg_padding_left + plot_w ]);
-
-    if (brush_obj != 0) {
-        brush_obj.remove();
-    }
-    brush = d3.svg.brush()
-        .x(brush_schale)
-        .on("brush", function() {
-            brushed(brush.extent());
-        })
-    ;
-    
-    brush_obj=svg.append("g")
-        .attr("class", "x brush")
-        .call(brush)
-        .selectAll("rect")
-        .attr("y", svg_padding_top+1)
-        .attr("height", plot_h-2)
-    ;
-
-    // y-axis
-    svg.selectAll("g.axis")
-    .call(
-        y_axis
-        .tickSize(-plot_w)
-    )
-    ;
-    
-    // x-axis
-    svg.selectAll("g.grid_x").selectAll("text")
-        .attr('transform', function(d, i)  {
-            var dx = 0;
-            for (var j = 0; j < i; j++){
-                dx = dx + bar_dataset_chromos[j];
-            }
-            dx = dx +  Math.floor(bar_dataset_chromos[j]/2);
-            var x = svg_padding_left + (dx * plot_w) / x_items();
-            var y = svg_padding_top + plot_h + 14;
-            return 'translate(' + x + ', ' + y + ') rotate(0)';
-        })
-    ;
-    svg.selectAll("g.grid_x").selectAll("line")
-        .attr("y1", function(d,i){
-            if (bar_dataset.key[i].substr(-1) == "0") {
-                return svg_padding_top;
-            }
-            return 0;
-        })
-        .attr("y2", function(d,i){
-            if (bar_dataset.key[i].substr(-1) == "0") {
-                return svg_padding_top + plot_h;
-            }
-            return 0;
-        })
-        .attr("x1", function(d,i){
-            return svg_padding_left + (i * plot_w) / x_items();
-        })
-        .attr("x2", function(d,i){
-            return svg_padding_left + (i * plot_w) / x_items();
-        })
-    ;
-}
-
-function max_multi_array(multi_array) {
-    if (multi_array.length == 0) {
-        return 1;
-    }
-    
-    var sum_array = [];
-    for (var i = 0; i< multi_array[0].length; i++) {
-        var sum = 0;
-        for (var j = 0; j< multi_array.length; j++) {
-            sum = sum + multi_array[j][i];
+    for (var i in bundle_data_sv.index_ID) {
+        
+        if (d3.select("#thumb" + i + "_li").classed("hidden") == true) {
+            continue;
         }
-        sum_array[i] = sum;
+        thumb_margin_top = Number(d3.select("#thumb" + i + "_li").style("margin-top").replace("px", ""));
+        thumb_margin_bottom = Number(d3.select("#thumb" + i + "_li").style("margin-bottom").replace("px", ""));
+        thumb_margin_left = Number(d3.select("#thumb" + i + "_li").style("margin-left").replace("px", ""));
+        thumb_margin_right = Number(d3.select("#thumb" + i + "_li").style("margin-right").replace("px", ""));
+        thumb_width = Number(d3.select("#thumb" + i + "_li").style("width").replace("px", ""));
+        thumb_height = Number(d3.select("#thumb" + i + "_li").style("height").replace("px", ""));
+        thumb_title_height = thumb_height - thumb_width;
+        thumb_title_fontsize = Number(d3.select("#thumb" + i + "_li").style("font-size").replace("px", ""));
+        break;
     }
-    return Math.max.apply(null, sum_array);
+    
+    // legend
+    div_legend.draw_svg(false);
+    svgText += downloader.svg_text("legend_svg", 0, 0);
+    
+    var legend_width = Number(d3.select("#legend_svg").select("svg").style("width").replace("px", ""));
+    var legend_height = Number(d3.select("#legend_svg").select("svg").style("height").replace("px", ""));
+    
+    // selector
+    svgText += downloader.svg_text("selector", 0, legend_height);
+    
+    var selector_width = Number(d3.select("#selector").select("svg").style("width").replace("px", ""));
+    selector_width += 50;
+    
+    var selector_height = Number(d3.select("#selector").select("svg").style("height").replace("px", ""));
+    selector_height += 10;
+    
+    // width
+    var width = selector_width;
+    if (width < legend_width) {
+        width = legend_width;
+    }
+    
+    // thumbs
+    var sift_x = 40 + thumb_margin_left;
+    var sift_y = legend_height + selector_height + thumb_margin_top;
+    
+    var thumbs_counter = 0;
+    
+    for (var i in bundle_data_sv.index_ID) {
+        
+        if (d3.select("#thumb" + i + "_li").classed("hidden") == true) {
+            continue;
+        }
+        thumbs_counter += 1;
+        
+        // bg-color
+        var bg = d3.select("#thumb" + i).style("background-color");
+        if (bg != "rgb(255, 255, 255)") {
+            svgText += downloader.virtual_svg_rect(bg, "1.0", thumb_height, thumb_width, sift_x, sift_y);
+        }
+        
+        //title
+        svgText += downloader.virtual_svg_text(bundle_data_sv.index_ID[i], thumb_title_height, thumb_width, sift_x, sift_y, thumb_title_fontsize, true);
+        
+        // bundle
+        svgText += downloader.svg_text("thumb" + i, sift_x, sift_y + thumb_title_height);
+        
+        sift_x += thumb_width + thumb_margin_right;
+        
+        if ((sift_x + thumb_margin_left + thumb_width + thumb_margin_right) > width) {
+            sift_x = 40 + thumb_margin_left;
+            sift_y += thumb_height + thumb_margin_bottom + thumb_margin_top;
+        }
+        else {
+            sift_x += thumb_margin_left;
+        }
+    }
+    
+    // height
+    var thumb_cols_num = Math.floor(width/(thumb_width + thumb_margin_left + thumb_margin_right));
+    var thumb_rows_num = Math.ceil(thumbs_counter/thumb_cols_num);
+    var height = legend_height + selector_height + (thumb_margin_top + thumb_height + thumb_margin_bottom) * thumb_rows_num;
+    
+    svgText = downloader.add_svgtag(svgText, height, width)
+    
+    //utils.download_image(filename, mode, width, height, svgText, "dw_hide");
+    rect = utils.absolute_position("dw_btn");
+    downloader.createMenu ([rect.x + rect.width, rect.y], "btn", "paplot_sv", width, height, svgText);
 }
 
-function change_stack()
+div_legend.stack_change = function(d, i, on)
 {
+    group_enable[i] = on;
+    for (var i = 0; i < group_enable.length; i++) {
+        div_select_bar.dataset[i].enable = group_enable[i];
+    };
+    div_select_bar.change_stack();
+    
     thumb_reset();
-    
     bundle_update();
-    
-    var sum_array = [];
-    if (stack_mode(STACK_OUTER) == true) {
-        sum_array.push(bar_dataset.value[0]);
-    }
-    if (stack_mode(STACK_INNER) == true) {
-        sum_array.push(bar_dataset.value[1]);
-    }
-    if (stack_mode(STACK_SNIPPET) == true) {
-        sum_array.push(bar_dataset.value[2]);
-    }
-    var max = max_multi_array(sum_array);
-    
-    // bar
-    svg.selectAll("g.outer").selectAll("rect")
-        .attr("y", function(d) {
-            return svg_padding_top + plot_h - (d * plot_h / max);
-        })
-        .attr("height", function(d) {
-            if (stack_mode(STACK_OUTER) == false) {
-                return 0;
-            }
-            return (d * plot_h / max);
-        })
-    ;
-    
-    svg.selectAll("g.inner").selectAll("rect")
-        .attr("y", function(d, i) {
-            var dy = 0;
-            if (stack_mode(STACK_OUTER) == true) {
-                dy = dy + bar_dataset.value[0][i];
-            }
-            return svg_padding_top + plot_h - ((d + dy) * plot_h / max);
-        })
-        .attr("height", function(d) {
-            if (stack_mode(STACK_INNER) == false) {
-                return 0;
-            }
-            return (d * plot_h / max);
-        })
-    ;
-
-    svg.selectAll("g.snippet").selectAll("rect")
-        .attr("y", function(d, i) {
-            var dy = 0;
-            if (stack_mode(STACK_OUTER) == true) {
-                dy = dy + bar_dataset.value[0][i];
-            }
-            if (stack_mode(STACK_INNER) == true) {
-                dy = dy + bar_dataset.value[1][i];
-            }
-            return svg_padding_top + plot_h - ((d + dy) * plot_h / max);
-        })
-        .attr("height", function(d) {
-            if (stack_mode(STACK_SNIPPET) == false) {
-                return 0;
-            }
-            return (d * plot_h / max);
-        })
-    ;
-    
-    // y-axis
-    var y_scale = d3.scale.linear()
-        .domain([0, max])   // original
-        .range([plot_h, 0]) // target
-    ;
-    
-    svg.selectAll("g.axis")
-        .call(
-            y_axis
-            .scale(y_scale)
-            .tickSize(-plot_w)
-        )
-    ;
-
-    svg.selectAll("g.axis").selectAll("line")
-        .attr("stroke", "lightgray")
-        .attr("shape-rendering", "crispEdges")
-        .style("stroke-opacity", 0.7)
-    ;
 }
 
 function draw_select()
 {
+    update_div();
     bar_dataset = bundle_data_sv.get_select();
 
-    bar_dataset_chromos = [];
+    var chromos = [];
+    var chromos_grid = [];
+    for (var i = 0; i < bar_dataset.all_key.length; i++) {
+        
+        var split = bar_dataset.all_key[i].split("_");
+        var pos = Number(split[1]);
+        
+        if (pos == 0) {
+            chromos[i] = style_sv_bar.axis_x_label[Number(split[0].split(".")[1])];
+        }
+        else {
+            chromos[i] = "";
+        }
+        
+        if ((pos != 0) && (pos % Math.floor(bar_dataset.all_key.length/60) == 0)) {
+            chromos_grid[i] = style_sv_bar.axis_x_label[Number(split[0].split(".")[1])];
+        }
+        else {
+            chromos_grid[i] = "";
+        }
+    }
 
+    for (var i = 0; i < bar_dataset.value.length; i++) {
+
+        div_select_bar.dataset[i] = new div_select_bar.dataset_template(bundle_data_sv.group[i].name);
+        div_select_bar.dataset[i].data = bar_dataset.value[i];
+        div_select_bar.dataset[i].keys = bar_dataset.key[i];
+        div_select_bar.dataset[i].color_fill = bundle_data_sv.group[i].color;
+        div_select_bar.dataset[i].enable = true;
+        group_enable[i] = true;
+    };
+    
+    div_select_bar.keys = bar_dataset.all_key;
+    div_select_bar.tags[0] = new div_select_bar.tag_template("pos");
+    div_select_bar.tags[0].values = bar_dataset.all_key;
+    div_select_bar.tags[0].note = "fix";
+    
+    div_select_bar.options.resizeable_w = true;
+    div_select_bar.options.resizeable_h = false;
+    div_select_bar.options.tooltip.enable = false;
+    div_select_bar.options.multi_select = false;
+    div_select_bar.options.padding_left = 1;
+    div_select_bar.options.padding_right = 1;
+    div_select_bar.options.padding_top = 10;
+    div_select_bar.options.padding_bottom = 1;
+    div_select_bar.options.direction_x = "left-right";
+    div_select_bar.options.direction_y = "bottom-up";
+    div_select_bar.options.brush.enable = true;
+    
+    div_select_bar.options.grid_y = new div_select_bar.grid_template();
+    div_select_bar.options.grid_y.ticks = 2;
+    div_select_bar.options.grid_y.wide = 0;//BAR_TOP_AXIS_Y;
+    div_select_bar.options.grid_y.border_color = "#DDC";
+    div_select_bar.options.grid_y.orient = "left";
+    
+    div_select_bar.options.grid_xs[0] = new div_select_bar.grid_template();
+    div_select_bar.options.grid_xs[0].keys = bar_dataset.all_key;
+    div_select_bar.options.grid_xs[0].labels = chromos_grid;
+    div_select_bar.options.grid_xs[0].wide = 0;
+    div_select_bar.options.grid_xs[0].border_color = "#E0E0E0";
+    div_select_bar.options.grid_xs[0].border_width = "1px";
+
+    div_select_bar.options.grid_xs[1] = new div_select_bar.grid_template();
+    div_select_bar.options.grid_xs[1].keys = bar_dataset.all_key;
+    div_select_bar.options.grid_xs[1].labels = chromos;
+    div_select_bar.options.grid_xs[1].wide = 40;
+    div_select_bar.options.grid_xs[1].font_size = "9px";
+    div_select_bar.options.grid_xs[1].sift_y = 10;
+    div_select_bar.options.grid_xs[1].border_color = "#A6A6A6";
+    div_select_bar.options.grid_xs[1].border_width = "1px";
+    div_select_bar.options.grid_xs[1].orient = "bottom";
+    div_select_bar.options.grid_xs[1].text_anchor_ext = true;
+    div_select_bar.options.grid_xs[1].text_anchor = "middle";
+    div_select_bar.options.grid_xs[1].text_rotate = "0";
+    
+    div_select_bar.options.titles[0] = new div_select_bar.title_template(style_sv_bar.title_y);
+    div_select_bar.options.titles[0].orient = "left";
+    div_select_bar.options.titles[0].wide = 40;
+    div_select_bar.options.titles[0].text_anchor = "middle";
+    div_select_bar.options.titles[0].text_rotate = -90;
+    div_select_bar.options.titles[0].font_size = "12px";
+    
+    div_select_bar.options.titles[1] = new div_select_bar.title_template(style_sv_bar.title_x + " (" + bundle_data_sv.node_size_select.toLocaleString() + " [bps])");
+    div_select_bar.options.titles[1].orient = "bottom";
+    div_select_bar.options.titles[1].wide = 10;
+    div_select_bar.options.titles[1].text_anchor = "left";
+    div_select_bar.options.titles[1].text_rotate = 0;
+    div_select_bar.options.titles[1].font_size = "14px";
+    
+    div_select_bar.draw();
+    div_select_bar.sort(["pos"], [true]);
+    
+    downloader.set_event_listner ("selector");
+    
+    // legend
+    scale_domain = [];
+    scale_color = [];
+    var max_length = 0;
+    for (var i = 0; i < bundle_data_sv.group.length; i++) {
+        scale_domain.push(bundle_data_sv.group[i].label);
+        scale_color.push(bundle_data_sv.group[i].color);
+        if (bundle_data_sv.group[i].label.length > max_length) max_length = bundle_data_sv.group[i].label.length;
+    };
+    
+    // legend
+    div_legend.items   = scale_domain;
+    div_legend.colors  = scale_color;
+    
+    div_legend.options.title = style_sv_bar.title_top;
+    div_legend.layout.shape_sift_left = 30;
+    
+    div_legend.draw_html();
+    div_legend.draw_svg(false);
+    downloader.set_event_listner (div_legend.area_svg);
+}
+
+div_select_bar.brushed = function(data) {
+
+    var target = [];
     for (var i = 0; i < bar_dataset.key.length; i++) {
-        var index = Number(bar_dataset.key[i].substr(5,2));
-        if (bar_dataset_chromos.length <= index) {
-            bar_dataset_chromos.push(0);
-        }
-        bar_dataset_chromos[index] = bar_dataset_chromos[index] + 1;
+        if (group_enable[i] == false) continue;
         
-        for (var j = 0; j < 3; j++) {
-            if (bar_dataset.value[j][i] > 0) {
-                // start, end, items
-                var start = i * 1 / x_items();
-                var end = start + 1 / x_items();
-                bar_dataset_items[j].push([start, end, bar_dataset.item[j][i]]);
+        for (var j = 0; j < data.length; j++) {
+            var index = bar_dataset.key[i].indexOf(data[j]);
+            if (index < 0) continue;
+            for (var k = 0; k < bar_dataset.item[i][index].length; k++) {
+                if (target.indexOf(bar_dataset.item[i][index][k]) < 0) {
+                    target.push(bar_dataset.item[i][index][k])
+                }
             }
         }
     }
-
-    svg = d3.select("#selector")
-        .append("svg")
-        .attr("height", svg_h)
-    ;
-
-    // bar
-    svg.append("g")
-        .attr("class", "outer")
-        .selectAll("rect")
-        .data(bar_dataset.value[0])
-        .enter()
-        .append("rect")
-        .attr("y", 0)
-        .attr("x", 0)
-        .attr("width", 0)
-        .attr("height", 0)
-        .style("fill", style_sv_bar.bar_color_outer)
-    ;
-
-    svg.append("g")
-        .attr("class", "inner")
-        .selectAll("rect")
-        .data(bar_dataset.value[1])
-        .enter()
-        .append("rect")
-        .attr("x", 0)
-        .attr("y", 0)
-        .attr("width", 0)
-        .attr("height", 0)
-        .style("fill", style_sv_bar.bar_color_inner)
-    ;
-
-    svg.append("g")
-        .attr("class", "snippet")
-        .selectAll("rect")
-        .data(bar_dataset.value[2])
-        .enter()
-        .append("rect")
-        .attr("x", 0)
-        .attr("y", 0)
-        .attr("width", 0)
-        .attr("height", 0)
-        .style("fill", style_sv_bar.bar_color_snippet)
-    ;
-    
-    // y-axis
-    y_axis = d3.svg.axis();
-    svg.append("g")
-        .attr("class", "axis")
-        .attr("transform", "translate(" + (svg_padding_left-3) + ", " + (svg_padding_top) + ")")
-        .call(
-            y_axis
-            .orient("left")
-            .ticks(2)
-        )
-    ;
-    
-    // x-axis
-    svg.append("g")
-        .attr("class", "grid_x")
-        .selectAll("line")
-        .data(bar_dataset_chromos)
-        .enter()
-        .append("text")
-        .text(function(d, i) {
-            var dx = 0;
-            for (var j = 0; j < i; j++){
-                dx = dx + bar_dataset_chromos[j];
-            }
-            var chrs = key_to_values(style_sv_bar.axis_x_label, bar_dataset.key[dx].substr(5, 2));
-            return chrs;
-        })
-        .attr("text-anchor", "end")
-        .attr("font-size", "10px")
-    ;
-    
-    svg.append("g")
-        .attr("class", "grid_x")
-        .selectAll("line")
-        .data(bar_dataset.key)
-        .enter()
-        .append("line")
-        .attr("stroke", function(d,i){
-            if (bar_dataset.key[i].substr(-4) == "0000") {
-                return "gray";
-            }
-            return "lightgray";
-        })
-        .attr("shape-rendering", "crispEdges")
-        .style("stroke-opacity", 0.7)
-    ;
-
-    // x-title
-    svg.append("text")
-        .attr('transform', function(d, i)  {
-            var x = svg_padding_left + 8;
-            var y = svg_h - 10;
-            return 'translate(' + x + ', ' + y + ') rotate(0)';
-        })
-        .text(style_sv_bar.title_x + " (" + bundle_data_sv.node_size_select.toLocaleString() + " [bps])")
-        .attr("font-size", "14px")
-    ;
-    
-    // y-title
-    svg.append("text")
-        .attr('transform', function(d, i)  {
-            var x = 10;
-            var y = svg_h/2;
-            return 'translate(' + x + ', ' + y + ') rotate(-90)';
-        })
-        .text(style_sv_bar.title_y)
-        .attr("text-anchor", "middle")
-        .attr("font-size", "12px")
-    ;
-    
-    
-    draw_select_resize();
-    change_stack();
-}
-
-var STACK_OUTER = 0;
-var STACK_INNER = 1;
-var STACK_SNIPPET = 2;
-
-function stack_mode(label) {
-
-    if (label == STACK_OUTER) {
-        return d3.select("#v1").property("checked");
-    }
-    if (label == STACK_INNER) {
-        return d3.select("#v2").property("checked");
-    }
-    if (label == STACK_SNIPPET) {
-        return d3.select("#v3").property("checked");
-    }
-}
-
-function brushed(data) {
-    
-    var hide = false;
-    if (d3.select('input[name="q2"]:checked')[0][0].value == "hide") {
-        hide = true;
-    }
-    // data is range [0,1]
-    // to item
-    
-    // search selected item
-    var bar_items = [];
-    if (stack_mode(STACK_INNER) == true) {
-        bar_items = bar_items.concat(bar_dataset_items[STACK_INNER]);
-    }
-    if (stack_mode(STACK_OUTER) == true) {
-        bar_items = bar_items.concat(bar_dataset_items[STACK_OUTER]);
-    }
-    if (stack_mode(STACK_SNIPPET) == true) {
-        bar_items = bar_items.concat(bar_dataset_items[STACK_SNIPPET]);
-    }
-    
-    var match = []
-    for (var i=0 ; i < bar_items.length; i++) {
-        if (bar_items[i][1] < data[0]) {continue;}
-        if (bar_items[i][0] > data[1]) {continue;}
-        for (var j=0; j < bar_items[i][2].length; j++) {
-            match.push(bar_items[i][2][j]);
-        }
-    }
-    // remove duplicate
-    var sort = match.filter(function (x, i, self) {
-              return self.indexOf(x) === i;
-        });
-
-    // ID to index
-    for (var j=0; j<bundle_data_sv.index_ID.length; j++) {
-        var find = false;
-        for (var i=0 ; i < sort.length; i++) {
-            if (bundle_data_sv.index_ID[j] == sort[i]) {
-                find = true;
-                break;
-            }
-        }
+    // hilight
+    for (var i in bundle_data_sv.index_ID) {
         
-        // view
-        if (find == true) {
-            if (hide == false) {
-                d3.select("#thumb" + j).style("background-color", "#FFFFCC");
+        var find = target.indexOf(bundle_data_sv.index_ID[i]);
+            
+        if (find < 0) {
+            if (selection_mode() == "hilight") {
+                d3.select("#thumb" + i).style("background-color", "#FFFFFF");
             }
             else {
-                d3.select("#thumb" + j + "_li").classed("hidden", false);
+                d3.select("#thumb" + i + "_li").classed("hidden", true);
             }
         }
         else {
-            if (hide == false) {
-                d3.select("#thumb" + j).style("background-color", "#FFFFFF");
+            if (selection_mode() == "hilight") {
+                d3.select("#thumb" + i).style("background-color", "#FFFFCC");
             }
             else {
-                d3.select("#thumb" + j + "_li").classed("hidden", true);
+                d3.select("#thumb" + i + "_li").classed("hidden", false);
             }
         }
     }
 }
 
-
 function thumb_reset() {
     
-    if (brush == 0) {
-        return;
-    }
-    brush
-        .clear()
-        .event(d3.select(".brush"))
-    ;
-    for (var j=0; j<bundle_data_sv.index_ID.length; j++) {
-        d3.select("#thumb" + j + "_li").classed("hidden", false);
-        d3.select("#thumb" + j).style("background-color", "#FFFFFF");
-    }
+    div_select_bar.brush_reset();
 
-    svg.selectAll("rect.extent")
-        .attr("width", "0")
-        .attr("x", "0")
-    ;
+    for (var i = 0; i < bundle_data_sv.index_ID.length; i++) {
+        d3.select("#thumb" + i + "_li").classed("hidden", false);
+        d3.select("#thumb" + i).style("background-color", "#FFFFFF");
+    }
+}
+
+function selection_mode() {
+    if (d3.select('input[name="q2"]:checked')[0][0].value == "hide") {
+        return "hide";
+    }
+    return "hilight";
 }
 
 // -----------------------------------------------------------------------------
-// circos
+// bundle
 // -----------------------------------------------------------------------------
 
-var maps = [];
+// style
+{
+    var arc_style_detail = {
+        fill : style_sv_detail.arc_fill_color,
+        fill_opacity : style_sv_detail.arc_fill_opacity,
+        stroke : style_sv_detail.arc_stroke_color,
+        stroke_opacity : style_sv_detail.arc_stroke_opacity,
+        font_family: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+        text_color: style_sv_detail.arc_label_color,
+        font_size: style_sv_detail.arc_label_fontsize,
+        label: style_sv_detail.arc_label_text,
+    };
+
+    var link_style_detail = [];
+    for (var i = 0; i < bundle_data_sv.group.length; i++) {
+        link_style_detail.push({
+    
+            stroke : bundle_data_sv.group[i].color,
+            stroke_width : style_sv_detail.link_width,
+            stroke_opacity : style_sv_detail.link_opacity,
+
+            active_stroke : style_sv_detail.link_select_color,
+            active_stroke_width : style_sv_detail.link_select_width,
+            active_stroke_opacity : style_sv_detail.link_select_opacity,
+
+            name : bundle_data_sv.group[i].name,
+            enable : group_enable[i],
+        })
+    }
+    
+    var arc_style_thumb = {
+        fill : style_sv_thumb.arc_fill_color,
+        fill_opacity : style_sv_thumb.arc_fill_opacity,
+        stroke : style_sv_thumb.arc_stroke_color,
+        stroke_opacity : style_sv_thumb.arc_stroke_opacity,
+        //font_family: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+        //text_color: style_sv_thumb.arc_label_color,
+        //font_size: style_sv_thumb.arc_label_fontsize,
+        //label: [],
+    };
+
+    var link_style_thumb = [];
+    for (var i = 0; i < bundle_data_sv.group.length; i++) {
+        link_style_thumb.push({
+    
+            stroke : bundle_data_sv.group[i].color,
+            stroke_width : style_sv_thumb.link_width,
+            stroke_opacity : style_sv_thumb.link_opacity,
+
+            //active_stroke : style_sv_thumb.link_select_color,
+            //active_stroke_width : style_sv_thumb.link_select_width,
+            //active_stroke_opacity : style_sv_thumb.link_select_opacity,
+
+            name : bundle_data_sv.group[i].name,
+            enable : group_enable[i],
+        })
+    }
+}
+
+function copy_obj(src, dst) {
+    for (var key in src){
+        dst[key] = src[key];
+    }
+}
+
+var bundles = {};
 
 function draw_bandle (obj, ID)
 {
-    if (maps.indexOf(ID) >= 0) { return; }
+    if (bundles[ID] != undefined) return;
     
-    var w = 400;
-    var h = 400;
-    var rx = w / 2;
-    var ry = h / 2;
-    var rotate = 0;
+    var wide = 400;
+    var options = {
+        w : wide,
+        h : wide,
+        rx : wide/2,
+        ry : wide/2,
+        rotate : 0,
 
-    var ir = ry-50;
-    var or = ry-30;
-    var label_t = 50;
-    var cluster_size = 50;
+        ir : wide/2-50,
+        or : wide/2-30,
+        label_t : 50,
+        cluster_size : 50,
+    };
 
-    var bundle = d3.layout.bundle();
-
-    var div = d3.select("#" + obj)
-        .style("width", w + "px")
-        .style("height", w + "px")
-        .style("position", "absolute");
-
-    var svg = div.append("svg:svg")
-        .attr("width", w)
-        .attr("height", w)
-        .append("svg:g")
-        .attr("transform", "translate(" + rx + "," + ry + ")");
-    
-    var cluster = d3.layout.cluster()
-        .size([360, ry - cluster_size])
-        .sort(function(a, b) { return d3.ascending(a.key, b.key); });
-
-    var nodes = cluster.nodes(packages.root(bundle_data_sv.get_arc_data_detail()));
-    
-    var groupData = svg.selectAll("g.group")
-        .data(nodes.filter(function(d) { 
-            var ret = (d.depth == 2) && d.children;
-            return ret;
-        }))
-        .enter().append("group")
-        .attr("class", "group");
-
-    var groupArc = d3.svg.arc()
-        .innerRadius(ir)
-        .outerRadius(or)
-        .startAngle(function(d) { 
-            return (findStartAngle(d.__data__.children)-0.5) * Math.PI / 180;
-        })
-        .endAngle(function(d) { 
-            return (findEndAngle(d.__data__.children)+0) * Math.PI / 180
-        });
-
-    svg.selectAll("g.arc")
-        .data(groupData[0])
-        .enter().append("svg:path")
-        .attr("d", groupArc)
-        .attr("class", "groupArc")
-        .style("fill", function(d) { return key_to_values(style_sv_detail.arc_fill_color, d.__data__.key); })
-        .style("fill-opacity", style_sv_detail.arc_fill_opacity)
-        .style("stroke", function(d) { return key_to_values(style_sv_detail.arc_stroke_color, d.__data__.key); })
-        .style("stroke-opacity", style_sv_detail.arc_stroke_opacity)
-    ;
-    
-    svg.selectAll("g.arc")
-        .data(groupData[0])
-        .enter().append("svg:g")
-        .attr("class", "groupArcLabel")
-        .attr("id", function(d) { return "arc-label-" + d.__data__.key; })
-        .attr("transform", function(d) { 
-            var ret = "rotate(" + (d.__data__.x - 90) + ")translate(" + (d.__data__.y + label_t) + ")"; 
-            return ret;
-        })
-        
-        .append("svg:text")
-        .attr("dx", function(d) {
-            var ret = d.__data__.x < 180 ? 25 : -25;
-            return ret;
-        })
-        .attr("dy", function(d) { 
-            return ".31em"; 
-        })
-        .attr("text-anchor", function(d) { 
-            return d.__data__.x < 180 ? "start" : "end";
-        })
-        .attr("transform", function(d) { 
-            return d.__data__.x < 180 ? null : "rotate(180)"; 
-        })
-        .style("font-size", style_sv_detail.arc_label_fontsize)
-        .style("fill", style_sv_detail.arc_label_color)
-        .text(function(d) { return key_to_values(style_sv_detail.arc_label_text, d.__data__.key); })
-    ;
-    
-    // links
-    var line_outer = d3.svg.line.radial()
-        .interpolate("bundle")
-        .tension(style_sv_detail.link_tension)
-        .radius(function(d) { return d.y; })
-        .angle(function(d) { return d.x / 180 * Math.PI; });
-    
-    var line_inner = d3.svg.line.radial()
-        .interpolate("bundle")
-        .tension(0.2)
-        .radius(function(d) { return d.y; })
-        .angle(function(d) { return d.x / 180 * Math.PI; })
-    
-    var names = ["link_outer", "link_inner", "link_snippet"];
-    var colors = [style_sv_detail.link_color_outer, style_sv_detail.link_color_inner, style_sv_detail.link_color_snippet];
-    var link_data = [];
-    
-    var classes = bundle_data_sv.get_data_detail(ID);
-    
-    for (var idx=0; idx<3; idx++) {
-        link_data[idx] = setLinkData(classes[idx]);
-        var links = packages.ends(cluster.nodes(packages.root(classes[idx])));
-        var splines = bundle(links);
-        
-        svg.append("g")
-            .attr("class", names[idx])
-            .selectAll("path")
-            .data(links)
-            .enter()
-            .append("path")
-            .attr("class", names[idx])
-            .attr("d", function(d, i) { 
-                if (idx == 0) { return line_outer(splines[i]); }
-                return line_inner(splines[i]); 
-            })
-            .style("stroke", colors[idx])
-            .style("stroke-width", style_sv_detail.link_width)
-            .style("stroke-opacity", style_sv_detail.link_opacity)
-            .style("fill", "none")
-        
-            .on("mouseover", function(d, i) {
-                // link style
-                d3.select(this)
-                    .style("stroke", style_sv_detail.link_select_color)
-                    .style("stroke-width", style_sv_detail.link_select_width)
-                    .style("stroke-opacity", style_sv_detail.link_select_opacity)
-                    ;
-                
-                // remove last tooltip data
-                d3.select("#tooltip").selectAll("p#text").remove();
-                
-                // add text to tooltip
-                var texts = link_data[2];
-                   if (d3.select(this).classed("link_outer") == true) {
-                       texts = link_data[0]
-                   }
-                   if (d3.select(this).classed("link_inner") == true) {
-                       texts = link_data[1]
-                   }
-                var result = getLinkData_values(texts, d.source.start, d.target.start);
-                d3.select("#tooltip").append("p").attr("id",  "text").text("link detail");
-                for (var i = 0; i<result.length; i++) {
-                    d3.select("#tooltip")
-                        .append("p")
-                        .attr("id",  "text").text(result[i]);
-                }
-                //Show the tooltip
-                d3.select("#tooltip").classed("hidden", false);
-                
-                //Get this bar's x/y values, then argument for the tooltip
-                var rect = document.getElementById(obj).getBoundingClientRect();
-                var xPosition = parseFloat(rect.left) + window.pageXOffset + 10;
-                var yPosition = parseFloat(rect.top) + window.pageYOffset + 10;
-
-                //Update the tooltip position and value
-                d3.select("#tooltip")
-                    .style("left", xPosition + "px")
-                    .style("top", yPosition + "px")
-                ;
-            })
-            .on("mouseout", function() {
-                   var color = style_sv_detail.link_color_snippet;
-                   if (d3.select(this).classed("link_outer") == true) {
-                       color = style_sv_detail.link_color_outer;
-                   }
-                   if (d3.select(this).classed("link_inner") == true) {
-                       color = style_sv_detail.link_color_inner;
-                   }
-                // link style
-                d3.select(this)
-                    .style("stroke", color)
-                    .style("stroke-width", style_sv_detail.link_width)
-                    .style("stroke-opacity", style_sv_detail.link_opacity)
-                    ;
-
-                //Hide the tooltip
-                d3.select("#tooltip").classed("hidden", true);
-            })
-        ;
+    bundles[ID] = new bundle(ID);
+    copy_obj(arc_style_detail, bundles[ID].arc_style);
+    for (var i = 0; i < link_style_detail.length; i++) {
+        bundles[ID].link_style.push(new bundles[ID].link_style_template());
+        copy_obj(link_style_detail[i], bundles[ID].link_style[i]);
     }
-    maps.push(ID);
-    bundle_update_one(svg, style_sv_detail.link_width);
+    bundles[ID].enable_tooltip = true;
+    bundles[ID].draw_bundle(obj, bundle_data_sv.get_arc_data_detail(), bundle_data_sv.get_data_detail(ID), options);
+    downloader.set_event_listner (obj, true);
 }
+
+var thumbs = {};
 
 function draw_bandle_thumb (iid, ID)
 {
-    var w = 140;
-    var h = 140;
-    var rx = w / 2;
-    var ry = h / 2;
+    var wide = 140;
+    var options = {
+        w : wide,
+        h : wide,
+        rx : wide/2,
+        ry : wide/2,
 
-    var ir = ry-14;
-    var or = ry-10;
-    var label_t = 8;
-    var cluster_size = 14;
+        ir : wide/2-14,
+        or : wide/2-10,
+        label_t : 8,
+        cluster_size : 14,
+    };
     
-    var bundle = d3.layout.bundle();
-
-    var div = d3.select("#thumb" + iid)
-        .style("width", w + 0 + "px")
-        .style("height", h + 20 + "px")
-        .style("position", "absolute");
-
-    var svg = div.append("svg:svg")
-        .attr("width", w)
-        .attr("height", h)
-        .append("svg:g")
-        .attr("transform", "translate(" + rx + "," + ry + ")")
-        ;
-
-    var cluster = d3.layout.cluster()
-        .size([360, ry - cluster_size])
-        .sort(function(a, b) { return d3.ascending(a.key, b.key); });
-    
-    var nodes = cluster.nodes(packages.root(bundle_data_sv.get_arc_data_thumb()));
-
-    var groupData = svg.selectAll("g.group")
-        .data(nodes.filter(function(d) { 
-            var ret = (d.depth == 2) && d.children;
-            return ret;
-        }))
-        .enter().append("group")
-        .attr("class", "group");
-
-    var groupArc = d3.svg.arc()
-        .innerRadius(ir)
-        .outerRadius(or)
-        .startAngle(function(d) { 
-            return (findStartAngle(d.__data__.children)-1) * Math.PI / 180;
-        })
-        .endAngle(function(d) {
-            return (findEndAngle(d.__data__.children)+0) * Math.PI / 180
-        });
-
-    svg.selectAll("g.arc")
-        .data(groupData[0])
-        .enter().append("svg:path")
-        .attr("d", groupArc)
-        .attr("class", "groupArc")
-            .style("fill", function(d) { return key_to_values(style_sv_thumb.arc_fill_color, d.__data__.key); })
-        .style("fill-opacity", style_sv_thumb.arc_fill_opacity)
-        .style("stroke", function(d) { return key_to_values(style_sv_thumb.arc_stroke_color, d.__data__.key); })
-        .style("stroke-width", "1px")
-        .style("stroke-opacity", style_sv_thumb.arc_stroke_opacity)
-    ;
-
-    // links
-    var line_outer = d3.svg.line.radial()
-        .interpolate("bundle")
-        .tension(style_sv_thumb.link_tension)
-        .radius(function(d) { return d.y; })
-        .angle(function(d) { return d.x / 180 * Math.PI; })
-    ;
-    
-    var line_inner = d3.svg.line.radial()
-        .interpolate("bundle")
-        .tension(0.2)
-        .radius(function(d) { return d.y; })
-        .angle(function(d) { return d.x / 180 * Math.PI; })
-    ;
-    
-    var names = ["link_outer", "link_inner", "link_snippet"];
-    var colors = [style_sv_thumb.link_color_outer, style_sv_thumb.link_color_inner, style_sv_thumb.link_color_snippet];
-    
-    var classes = bundle_data_sv.get_data_thumb(ID);
-    
-    for (var idx=0; idx<3; idx++) {
-        var links = packages.ends(cluster.nodes(packages.root(classes[idx])));
-        var splines = bundle(links);
-
-        svg.append("g")
-            .attr("class", names[idx])
-            .selectAll("path")
-            .data(links)
-            .enter()
-            .append("path")
-            .attr("d", function(d, i) {
-                if (idx == 0) { return line_outer(splines[i]); }
-                return line_inner(splines[i]); 
-            })
-            .style("stroke", colors[idx])
-            .style("stroke-width", style_sv_thumb.link_width)
-            .style("stroke-opacity", style_sv_thumb.link_opacity)
-            .style("fill", "none")
-        ;
+    thumbs[ID] = new bundle(ID);
+    copy_obj(arc_style_thumb, thumbs[ID].arc_style);
+    for (var i = 0; i < link_style_thumb.length; i++) {
+        thumbs[ID].link_style.push(new thumbs[ID].link_style_template());
+        copy_obj(link_style_thumb[i], thumbs[ID].link_style[i]);
     }
-}
+    thumbs[ID].draw_bundle("thumb" + iid, bundle_data_sv.get_arc_data_thumb(), bundle_data_sv.get_data_thumb(ID), options);
+    downloader.set_event_listner ("thumb" + iid, true);
 
-function bundle_update_one(svg, width) {
-
-    if (stack_mode(STACK_OUTER) == true) {
-        svg.selectAll("g.link_outer").selectAll("path").style("stroke-width", width);
-    }
-    else {
-        svg.selectAll("g.link_outer").selectAll("path").style("stroke-width", "0px");
-    }
-    
-    if (stack_mode(STACK_INNER) == true) {
-        svg.selectAll("g.link_inner").selectAll("path").style("stroke-width", width);
-    }
-    else {
-        svg.selectAll("g.link_inner").selectAll("path").style("stroke-width", "0px");
-    }
-    
-    if (stack_mode(STACK_SNIPPET) == true) {
-        svg.selectAll("g.link_snippet").selectAll("path").style("stroke-width", width);
-    }
-    else {
-        svg.selectAll("g.link_snippet").selectAll("path").style("stroke-width", "0px");
-    }
 }
 
 function bundle_update() {
     
-    var ids = ["#thumb", "#map"];
-    var widths = [style_sv_thumb.link_width, style_sv_detail.link_width];
-    
-    for (var i = 0; i<bundle_data_sv.index_ID.length; i++) {
-        // 0: thumb, 1: detail
-        for (var j = 0; j<2; j++) {
-            var svg = d3.select(ids[j] + i).select("svg");
-            bundle_update_one(svg, widths[j]);
-            // detail
-            if (maps.indexOf(bundle_data_sv.index_ID[i]) < 0) {
-                break;
-            }
+    for (var id in thumbs) {
+        for (var i = 0; i < link_style_thumb.length; i++) {
+            thumbs[id].link_style[i].enable = group_enable[i];
+            thumbs[id].bundle_update();
+        }
+    }
+    for (var id in bundles) {
+        for (var i = 0; i < link_style_detail.length; i++) {
+            bundles[id].link_style[i].enable = group_enable[i];
+            bundles[id].bundle_update();
         }
     }
 }
 
-function findStartAngle(children) {
-    var min = children[0].x;
-    children.forEach(function(d) {
-        if (d.x < min)
-            min = d.x;
-    });
-    return min;
-}
-
-function findEndAngle(children) {
-    var max = children[0].x;
-    children.forEach(function(d) {
-        if (d.x > max)
-        max = d.x;
-    });
-    return max;
-}
-
-function key_to_values(list, key) {
-    return list[Number(key)];
-}
-
-function list_to_string(list) {
-    var text = "";
-    for (var i = 0; i < list.length; i++) {
-        if (text != "") {
-            text = text + ",";
-        }
-        text = text + list[i];
-    }
-    return text;
-}
-
-function getLinkData_values(data, source_start, target_start) {
+function show_float(e, idx, ID) {
     
-    var ret = [];
+    if (e.target.tagName != "svg") return;
     
-    for (var i = 0; i<data.length; i++) {
-        if (data[i].start == source_start) {
-            for (var j = 0; j<data[i].ends.length; j++) {
-                if (data[i].ends[j] == target_start) {
-                    ret.push(data[i].tooltip[j]);
-                }
-            }
-            break;
-        }
-    }
-
-    return ret
-}
-
-function setLinkData(classes) {
-    var data = [];
-
-    for(var i=0; i<classes.length; i++){
-        if ((classes[i].tooltip.length) == 0) {
-            continue;
-        }
-        data.push(classes[i]);
-    }
-    
-    return  data;
-}
-
-function show_float(idx, ID) {
-
     draw_bandle("map" + idx, ID);
 
     pos = get_pos("thumb" + idx);
@@ -1036,16 +533,4 @@ function get_pos(id) {
     var scrollY = dElm.scrollTop || dBody.scrollTop ;
 
     return [rect.left + scrollX, rect.top + scrollY];
-}
-
-function draw_legend(){
-    d3.select("#legend0").style("background-color", style_sv_bar.bar_color_outer);
-    d3.select("#legend1").style("background-color", style_sv_bar.bar_color_inner);
-    d3.select("#legend2").style("background-color", style_sv_bar.bar_color_snippet);
-    
-    d3.select("#legend0_text").attr("id",  "text").text(style_sv_bar.bar_label_outer);
-    d3.select("#legend1_text").attr("id",  "text").text(style_sv_bar.bar_label_inner);
-    d3.select("#legend2_text").attr("id",  "text").text(style_sv_bar.bar_label_snippet);
-
-    d3.select("#select_title").attr("id",  "text").text(style_sv_bar.title_top);
 }

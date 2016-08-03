@@ -3,11 +3,11 @@
   <title>Matrix of Mutation - demo</title>
   <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 
-  <link rel="stylesheet" type="text/css" href="../js/paplot.css"/>
+  <link rel="stylesheet" type="text/css" href="../layout/paplot.css"/>
 </head>
 <body>
 <div class="version">
-Generated on 2016-06-23 15:21:41 for demo by paplot-0.3.0release-py2.7.
+Generated on 2016-08-03 15:05:37 for demo by paplot-0.4.0release-py2.7.
 </div>
 
 <div class="container">
@@ -93,13 +93,13 @@ Generated on 2016-06-23 15:21:41 for demo by paplot-0.3.0release-py2.7.
 <tr>
 <td><div  id="div_mut1"></div></td>
 <td><!-- bar top --><div id="div_bar_top"></div></td>
-<td><div style="padding:10px;" id="div_mut2"></div></td>
+<td style="vertical-align:top;"><div id="div_mut2"><!-- save image --><button type="button" onclick="push_export()" id="dw_btn" style="margin-left: 20px; margin-top: 30px;"><img src="../layout/download.png" style="margin-right: 5px;">export</button><div id="btn"></div></div></td>
 </tr>
 
 
 <!-- sub bar -->
 <tr>
-<td><div id="div_sub0_t"><b>Clinical Gender</b>
+<td><div id="div_sub0_t" class="subplot_title"><b>Clinical Gender</b>
       <section>
         <input type="radio" name="optSub0" value="0" id="xSub0_0" onclick="sort_sub(0, 0)" checked /><label for="xSub0_0" class="radio">none</label>
         <input type="radio" name="optSub0" value="1" id="xSub0_1" onclick="sort_sub(0, 1)" />        <label for="xSub0_1" class="radio">ASC </label>
@@ -107,11 +107,7 @@ Generated on 2016-06-23 15:21:41 for demo by paplot-0.3.0release-py2.7.
       </section>
 </div></td>
 <td><div id="div_sub0_p"></div></td>
-<td><div style="overflow: auto;" id="div_sub0_l">
-    
-    <div class="legend"><div id="sub0_legend0" class="legend legend_bar"></div><div id="sub0_legend0_text" class="legend legend_label"></div></div>
-    <div class="legend"><div id="sub0_legend1" class="legend legend_bar"></div><div id="sub0_legend1_text" class="legend legend_label"></div></div>    
-</div></td>
+<td><div style="overflow: auto;" id="div_sub0_l_svg"></div></td>
 </tr>
 
 
@@ -119,29 +115,15 @@ Generated on 2016-06-23 15:21:41 for demo by paplot-0.3.0release-py2.7.
 <tr height=10><td></td><td></td><td></td></tr>
 
 <tr>
-<td><!-- bar left --><div id="div_bar_left"></div></td>
-<td><!-- checker --><div id="div_checker"></div></td>
-<td><div style="padding-top:10px; padding-left:30px; overflow: auto;" id="div_mut3">
-<div id="legend_title"></div>
-
-    <div><input type="checkbox" id="v0" onclick="change_stack('v0', 'UTR3')" checked><div id="legend0" class="legend legend_bar"></div><div id="legend0_text" class="legend legend_label"></div></div>
-    <div><input type="checkbox" id="v1" onclick="change_stack('v1', 'UTR5')" checked><div id="legend1" class="legend legend_bar"></div><div id="legend1_text" class="legend legend_label"></div></div>
-    <div><input type="checkbox" id="v2" onclick="change_stack('v2', 'downstream')" checked><div id="legend2" class="legend legend_bar"></div><div id="legend2_text" class="legend legend_label"></div></div>
-    <div><input type="checkbox" id="v3" onclick="change_stack('v3', 'exonic')" checked><div id="legend3" class="legend legend_bar"></div><div id="legend3_text" class="legend legend_label"></div></div>
-    <div><input type="checkbox" id="v4" onclick="change_stack('v4', 'intergenic')" checked><div id="legend4" class="legend legend_bar"></div><div id="legend4_text" class="legend legend_label"></div></div>
-    <div><input type="checkbox" id="v5" onclick="change_stack('v5', 'intronic')" checked><div id="legend5" class="legend legend_bar"></div><div id="legend5_text" class="legend legend_label"></div></div>
-    <div><input type="checkbox" id="v6" onclick="change_stack('v6', 'ncRNA_exonic')" checked><div id="legend6" class="legend legend_bar"></div><div id="legend6_text" class="legend legend_label"></div></div>
-    <div><input type="checkbox" id="v7" onclick="change_stack('v7', 'ncRNA_intronic')" checked><div id="legend7" class="legend legend_bar"></div><div id="legend7_text" class="legend legend_label"></div></div>
-    <div><input type="checkbox" id="v8" onclick="change_stack('v8', 'ncRNA_splicing')" checked><div id="legend8" class="legend legend_bar"></div><div id="legend8_text" class="legend legend_label"></div></div>
-    <div><input type="checkbox" id="v9" onclick="change_stack('v9', 'splicing')" checked><div id="legend9" class="legend legend_bar"></div><div id="legend9_text" class="legend legend_label"></div></div>
-    <div><input type="checkbox" id="v10" onclick="change_stack('v10', 'upstream')" checked><div id="legend10" class="legend legend_bar"></div><div id="legend10_text" class="legend legend_label"></div></div>
-</div></td>
+<td valign="top"><!-- bar left --><div id="div_bar_left"></div></td>
+<td valign="top"><!-- checker --><div id="div_checker"></div></td>
+<td valign="top"><!-- legend --><div id='legend_html'></div><div id='legend_svg'></div></td>
 </tr>
 
 
 <!-- sub bar -->
 <tr>
-<td><div id="div_sub1_t"><b>Clinical Age</b>
+<td><div id="div_sub1_t" class="subplot_title"><b>Clinical Age</b>
       <section>
         <input type="radio" name="optSub1" value="0" id="xSub1_0" onclick="sort_sub(1, 0)" checked /><label for="xSub1_0" class="radio">none</label>
         <input type="radio" name="optSub1" value="1" id="xSub1_1" onclick="sort_sub(1, 1)" />        <label for="xSub1_1" class="radio">ASC </label>
@@ -149,18 +131,12 @@ Generated on 2016-06-23 15:21:41 for demo by paplot-0.3.0release-py2.7.
       </section>
 </div></td>
 <td><div id="div_sub1_p"></div></td>
-<td><div style="overflow: auto;" id="div_sub1_l">
-    
-    <div class="legend"><div id="sub1_legend0" class="legend legend_bar"></div><div id="sub1_legend0_text" class="legend legend_label"></div></div>
-    <div class="legend"><div id="sub1_legend1" class="legend legend_bar"></div><div id="sub1_legend1_text" class="legend legend_label"></div></div>
-    <div class="legend"><div id="sub1_legend2" class="legend legend_bar"></div><div id="sub1_legend2_text" class="legend legend_label"></div></div>
-    <div class="legend"><div id="sub1_legend3" class="legend legend_bar"></div><div id="sub1_legend3_text" class="legend legend_label"></div></div>    
-</div></td>
+<td><div style="overflow: auto;" id="div_sub1_l_svg"></div></td>
 </tr>
 
 <!-- sub bar -->
 <tr>
-<td><div id="div_sub2_t"><b>Clinical BMI</b>
+<td><div id="div_sub2_t" class="subplot_title"><b>Clinical BMI</b>
       <section>
         <input type="radio" name="optSub2" value="0" id="xSub2_0" onclick="sort_sub(2, 0)" checked /><label for="xSub2_0" class="radio">none</label>
         <input type="radio" name="optSub2" value="1" id="xSub2_1" onclick="sort_sub(2, 1)" />        <label for="xSub2_1" class="radio">ASC </label>
@@ -168,11 +144,7 @@ Generated on 2016-06-23 15:21:41 for demo by paplot-0.3.0release-py2.7.
       </section>
 </div></td>
 <td><div id="div_sub2_p"></div></td>
-<td><div style="overflow: auto;" id="div_sub2_l">
-    
-    <div class="legend"><div id="sub2_legend0" class="legend legend_bar"></div><div id="sub2_legend0_text" class="legend legend_label"></div></div>
-    <div class="legend"><div id="sub2_legend1" class="legend legend_bar"></div><div id="sub2_legend1_text" class="legend legend_label"></div></div>    
-</div></td>
+<td><div style="overflow: auto;" id="div_sub2_l_svg"></div></td>
 </tr>
 
 
@@ -185,65 +157,25 @@ Generated on 2016-06-23 15:21:41 for demo by paplot-0.3.0release-py2.7.
 <div id="tooltip" class="hidden"></div>
 <!-- ### spin mark ### -->
 <div id="spin" class="hidden"></div>
+<!-- canvas for save image -->
+<canvas id="dw_canvas" class="hidden"></canvas>
 
 <script type="text/javascript" src="../lib/d3_v3.5.13/d3.min.js"></script>
+<script type="text/javascript" src="../lib/d3-legend_v1.10.0/d3-legend.min.js"></script>
 <script type="text/javascript" src="../style/default.js"></script>
+<script type="text/javascript" src="../js/utils.js"></script>
 <script type="text/javascript" src="../js/bar.js"></script>
 <script type="text/javascript" src="../js/checker.js"></script>
 <script type="text/javascript" src="data_mut.js"></script>
 <script type="text/javascript" src="../js/graph_mut.js"></script>
 
 <script type="text/javascript">
-    d3.select("#legend_title").style("color", "#333", "font-size", "14");
-    d3.select("#legend_title").attr("id",  "text").text(style_mut.func_title);
     var subs = [];
     
 
-    d3.select("#legend0").style("background-color", "#F39600");
-    d3.select("#legend0_text").attr("id", "text").text('UTR3');
-    d3.select("#legend1").style("background-color", "#E60011");
-    d3.select("#legend1_text").attr("id", "text").text('UTR5');
-    d3.select("#legend2").style("background-color", "#9CAEB7");
-    d3.select("#legend2_text").attr("id", "text").text('downstream');
-    d3.select("#legend3").style("background-color", "#E85299");
-    d3.select("#legend3_text").attr("id", "text").text('exonic');
-    d3.select("#legend4").style("background-color", "#00A4DB");
-    d3.select("#legend4_text").attr("id", "text").text('intergenic');
-    d3.select("#legend5").style("background-color", "#009943");
-    d3.select("#legend5_text").attr("id", "text").text('intronic');
-    d3.select("#legend6").style("background-color", "#D7C447");
-    d3.select("#legend6_text").attr("id", "text").text('ncRNA_exonic');
-    d3.select("#legend7").style("background-color", "#6BBB5A");
-    d3.select("#legend7_text").attr("id", "text").text('ncRNA_intronic');
-    d3.select("#legend8").style("background-color", "#00ADA6");
-    d3.select("#legend8_text").attr("id", "text").text('ncRNA_splicing');
-    d3.select("#legend9").style("background-color", "#007AC2");
-    d3.select("#legend9_text").attr("id", "text").text('splicing');
-    d3.select("#legend10").style("background-color", "#B6007B");
-    d3.select("#legend10_text").attr("id", "text").text('upstream');
-
-    
-    d3.select("#sub0_legend0").style("background-color", "#0000ff");
-    d3.select("#sub0_legend0_text").attr("id",  "text").text('Male');
-    d3.select("#sub0_legend1").style("background-color", "#ff0000");
-    d3.select("#sub0_legend1_text").attr("id",  "text").text('Female');
-    subs.push(add_subdiv("div_sub0", "sub0"));
-    
-    d3.select("#sub1_legend0").style("background-color", "#E51721");
-    d3.select("#sub1_legend0_text").attr("id",  "text").text('0-19');
-    d3.select("#sub1_legend1").style("background-color", "#0079BA");
-    d3.select("#sub1_legend1_text").attr("id",  "text").text('20-39');
-    d3.select("#sub1_legend2").style("background-color", "#019A68");
-    d3.select("#sub1_legend2_text").attr("id",  "text").text('40-59');
-    d3.select("#sub1_legend3").style("background-color", "#522886");
-    d3.select("#sub1_legend3_text").attr("id",  "text").text('60over');
-    subs.push(add_subdiv("div_sub1", "sub1"));
-    
-    d3.select("#sub2_legend0").style("background-color", "#0000ff");
-    d3.select("#sub2_legend0_text").attr("id",  "text").text('Min(15)');
-    d3.select("#sub2_legend1").style("background-color", "#ff0000");
-    d3.select("#sub2_legend1_text").attr("id",  "text").text('Max(40)');
-    subs.push(add_subdiv("div_sub2", "sub2"));
+    subs.push(add_subdiv("div_sub0", "sub0", 1));
+    subs.push(add_subdiv("div_sub1", "sub1", 2));
+    subs.push(add_subdiv("div_sub2", "sub2", 2));
     
     init();
     

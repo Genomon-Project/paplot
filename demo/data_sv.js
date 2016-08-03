@@ -4,23 +4,6 @@ bundle_data_sv = {};
 bundle_data_sv.node_size_detail = 6503523;
 bundle_data_sv.node_size_thumb = 13697687;
 bundle_data_sv.node_size_select = 5000000;
-
-bundle_data_sv.item_num = 83;
-
-// sorted by index
-bundle_data_sv.index_ID = [
-'SAMPLE0',
-'SAMPLE1',
-'SAMPLE2',
-'SAMPLE3',
-'SAMPLE4',
-'SAMPLE5',
-'SAMPLE6',
-'SAMPLE7',
-'SAMPLE8',
-'SAMPLE9'
-];
-
 bundle_data_sv.genome_size = [
 {"chr":"00", "size":249250621},
 {"chr":"01", "size":243199373},
@@ -48,93 +31,12 @@ bundle_data_sv.genome_size = [
 {"chr":"23", "size":59373566}
 ];
 
-// 0:ID, 1:chr1, 2:break1, 3:direction1, 4:gene_name1, 5:chr2, 6:break2, 7:direction2, 8:gene_name2, 9:type, 10:is_inter, 11:is_snippet
-bundle_data_sv.links = [
-["SAMPLE7","11",5808948,"+","DHHTZS0BXA","00",126650799,"+","9R3ZGE3IXH","inversion",false,false],
-["SAMPLE7","22",62416825,"-","7AX4FKAKAK","08",103363021,"+","HF1ETI110G","deletion",false,false],
-["SAMPLE7","21",49569332,"-","ZJGH7LM6AV","10",43957639,"-","9L8Z8B3IMV","tandem_duplication",false,false],
-["SAMPLE7","17",33987824,"+","8XM6N804SW","08",20235198,"-","AX3PXI48GR","tandem_duplication",false,false],
-["SAMPLE7","11",82038786,"+","S129U3CYCM","03",188188728,"-","8YJYOLTITN","deletion",false,false],
-["SAMPLE7","00",238731382,"+","XLUN7MJTAJ","04",147513508,"+","GN5Z3BYX2X","tandem_duplication",false,false],
-["SAMPLE7","18",30665368,"-","GK7YOHPRXS","14",88366003,"-","CT1IP0EUVH","deletion",false,false],
-["SAMPLE7","13",82447532,"-","496U6Z0SVN","20",15166596,"-","MURBDM2A6G","deletion",false,false],
-["SAMPLE7","20",17082231,"-","CO9P7G1IGG","19",15076736,"-","14AI31M02V","inversion",false,false],
-["SAMPLE7","00",139050751,"+","CAWBGB2XGN","18",17400358,"+","OPGCA72Z00","inversion",false,false],
-["SAMPLE4","05",170379443,"-","LEEM78T94A","16",80831681,"-","7XL15GMBTG","deletion",false,false],
-["SAMPLE4","08",1133301,"-","AUGJHPYY5R","06",134732389,"+","XVL9G2Y5X9","tandem_duplication",false,false],
-["SAMPLE4","07",77149226,"+","H0Y20DBD1E","15",26753461,"-","5NKT2ASPG3","tandem_duplication",false,false],
-["SAMPLE4","06",16278731,"+","93AESRZLEE","09",83172731,"-","YZ6WS39WMB","translocation",false,false],
-["SAMPLE4","10",83471004,"+","L7M0UDTPQ5","13",85966489,"+","M4DTGT0ML5","inversion",false,false],
-["SAMPLE4","04",20810285,"+","71MB9E5TTO","21",7340004,"+","JAUV7W6UKT","tandem_duplication",false,false],
-["SAMPLE4","06",150114646,"+","NSOMTTCSG2","23",3930914,"-","QM0BXA34DC","translocation",false,false],
-["SAMPLE0","13",16019088,"-","LS7T1EG444","11",62784483,"+","4GRRIO5AVR","deletion",false,false],
-["SAMPLE0","08",99412502,"-","FQFW16UF5U","06",129302434,"+","QP779MLPNV","translocation",false,false],
-["SAMPLE0","12",84663781,"+","Q9VX1I9U3I","17",52991509,"-","7XM09ETN40","deletion",false,false],
-["SAMPLE0","00",153160367,"+","CEE2SPV1R1","21",33751554,"+","PVYYQIVS8G","inversion",false,false],
-["SAMPLE0","17",12249358,"-","HH9OL7CK6G","02",146222593,"+","XD80LI4E6Q","translocation",false,false],
-["SAMPLE0","20",8658030,"+","I20EVP15ZM","22",133492043,"-","WPE8O5H237","tandem_duplication",false,false],
-["SAMPLE0","11",120178477,"+","IMYXD3TCA4","00",155354923,"-","3MNN5J0MDN","deletion",false,false],
-["SAMPLE5","20",3692977,"-","RV1LGQXB9D","20",44510875,"+","7SBB6O5SCF","tandem_duplication",true,false],
-["SAMPLE5","17",17920148,"+","TNFICY6HOP","22",144608009,"+","FLPJ3LKYEK","inversion",false,false],
-["SAMPLE5","03",149672094,"+","FU23DJ4Q20","02",185716105,"+","MLKJP6DHMF","inversion",false,false],
-["SAMPLE5","14",30455273,"-","SHU259UCN0","01",78238193,"-","ERQ3B751EJ","translocation",false,false],
-["SAMPLE5","17",31707099,"+","3BBXNLV4L0","01",187464066,"-","2KCD4ABQKF","deletion",false,false],
-["SAMPLE5","22",13113310,"-","EJWJPOI28R","21",22014231,"-","8TCTGP98KC","tandem_duplication",false,false],
-["SAMPLE5","07",43600568,"-","CLQE7SHAC0","10",4511056,"-","ZAR4QCMZQC","deletion",false,false],
-["SAMPLE5","06",121989817,"+","X0ACLQM3T6","07",145405637,"+","Y3ZK0NSAAI","translocation",false,false],
-["SAMPLE5","15",67070418,"+","2PL9Y1IHDT","02",1508171,"+","K5OMKPB6X1","translocation",false,false],
-["SAMPLE5","00",244043779,"+","80UBEXTRIK","00",71692260,"+","EGRJWCKCR4","tandem_duplication",true,false],
-["SAMPLE1","10",101374238,"+","FZ7LOS66RD","21",26701405,"+","9WYBJR57E0","translocation",false,false],
-["SAMPLE1","01",121708638,"-","5655M5E46B","06",137424167,"-","HB14VJXDHV","translocation",false,false],
-["SAMPLE1","15",43027789,"+","REFSIL0H2M","21",23791492,"-","L5EA31R8U0","inversion",false,false],
-["SAMPLE1","18",3862589,"-","1IRWHVZLH8","15",37135239,"+","6FUR9YMZOH","deletion",false,false],
-["SAMPLE1","19",50294222,"+","DOH5G0YRQ9","00",164250235,"-","9TWYMR5CZ2","inversion",false,false],
-["SAMPLE1","22",67392415,"+","EM36MRX9B3","14",3327412,"+","G4FPLN527D","translocation",false,false],
-["SAMPLE8","06",95490728,"+","FYDK568GIN","08",89410590,"-","UJX2LBYPRZ","deletion",false,false],
-["SAMPLE8","09",21675120,"+","WEK2P6N7A8","23",27300286,"+","GO8C5MYWF9","tandem_duplication",false,false],
-["SAMPLE8","01",172625375,"+","RIYAPG7Y85","02",140646175,"-","EMJPDIYB8B","inversion",false,false],
-["SAMPLE8","08",1853842,"-","IEOOJSNII2","17",59233042,"-","H52A5JY270","deletion",false,false],
-["SAMPLE8","08",54636902,"+","1UWZ33GM3B","13",55352858,"+","MKR4ZN37FR","translocation",false,false],
-["SAMPLE8","07",21951154,"-","MHS14HPP3R","06",54405063,"-","X0EYXQTYU2","translocation",false,false],
-["SAMPLE8","14",42446898,"-","UNHE56HB00","19",9996637,"-","ATU9W7QOBH","tandem_duplication",false,false],
-["SAMPLE8","00",8928882,"-","LH7ZVFY9KG","23",33387475,"+","NGMDE51OG3","inversion",false,false],
-["SAMPLE8","15",32688406,"-","QIS13ZEE2H","07",77568655,"+","SCZE01KD0Z","inversion",false,false],
-["SAMPLE8","05",103119146,"-","ZPU0C5WVUB","05",939420,"-","F6JNF1FF11","deletion",true,false],
-["SAMPLE8","18",14532685,"+","YB2O0CHDU4","09",6879161,"+","4PSGVQVNXP","deletion",false,false],
-["SAMPLE3","07",135644313,"-","UGR3O3UQS3","02",116748248,"-","SOA8DC1SVF","translocation",false,false],
-["SAMPLE3","06",6037836,"-","KEHLYR1QQS","20",34855497,"-","F5J3QLOZ5I","inversion",false,false],
-["SAMPLE3","06",109724564,"+","FUJKDGDW5K","13",106387943,"-","E44HKKEN06","tandem_duplication",false,false],
-["SAMPLE3","21",21329746,"+","Z3JQJDLZ5Q","18",49132777,"-","T456SI8NFE","tandem_duplication",false,false],
-["SAMPLE3","09",79484145,"+","BEW4LC26A9","21",48499740,"-","U985JNNU2W","translocation",false,false],
-["SAMPLE3","10",122930352,"+","46NNN0OFRV","21",22765050,"-","JPUS6N5749","deletion",false,false],
-["SAMPLE3","23",30102935,"+","WX0R8IGEK7","16",20945220,"-","EUAXA4NFHN","translocation",false,false],
-["SAMPLE3","06",88998071,"-","523QAD1C8I","06",88999025,"+","523QAD1C8I","inversion",true,true],
-["SAMPLE3","06",134692916,"-","QVH5C6GNQK","05",59279632,"-","LUJESA5CAC","tandem_duplication",false,false],
-["SAMPLE3","03",18658364,"-","76CX2VBN92","03",18658859,"-","76CX2VBN92","deletion",true,false],
-["SAMPLE3","05",58073561,"+","XQY7GCETVS","06",113049570,"-","PHN2WTGOLS","inversion",false,false],
-["SAMPLE3","21",12753561,"+","OWWS9EYKPA","09",93983219,"-","7LYZCPRWQE","tandem_duplication",false,false],
-["SAMPLE3","09",127888623,"-","1V92D2XBKB","09",127889381,"-","1V92D2XBKB","tandem_duplication",true,false],
-["SAMPLE9","05",22883110,"+","RE9I9P9P2B","12",103743864,"-","P0L7N6I28J","inversion",false,false],
-["SAMPLE9","03",170386551,"-","7HK6HBA03P","09",18115326,"-","B2I9RFL1QS","translocation",false,false],
-["SAMPLE9","12",1987292,"-","20LWDLGBW9","15",30986341,"-","ZP6CM7GTIZ","tandem_duplication",false,false],
-["SAMPLE9","14",98927733,"+","F7RNE23QBU","19",45592948,"+","UXHC93P2H6","translocation",false,false],
-["SAMPLE9","09",23863882,"+","GEEUZIZ38F","04",171994772,"+","ATLMZ8104J","inversion",false,false],
-["SAMPLE9","22",38494022,"+","FCB5OOKVCS","07",41894232,"-","LOFLF6ZT3A","translocation",false,false],
-["SAMPLE9","13",72225317,"+","ELNV107ABY","12",80044106,"-","JRKN4SU57O","tandem_duplication",false,false],
-["SAMPLE9","11",40058944,"+","PAJPAEH2O7","00",248492226,"-","X3ZE2O929G","deletion",false,false],
-["SAMPLE9","22",14558186,"-","6SRCV24HTA","14",22615302,"-","W9F9D9M11L","inversion",false,false],
-["SAMPLE9","09",59857362,"+","GG53SLDQZQ","07",15918102,"-","EX3SWZNHFF","tandem_duplication",false,false],
-["SAMPLE6","12",108406515,"-","D4MV8CVUMH","03",103771354,"-","7GO6H15CL3","tandem_duplication",false,false],
-["SAMPLE6","00",192482367,"-","GBSS53RWD7","16",39548764,"-","7GFQ9EX33K","tandem_duplication",false,false],
-["SAMPLE6","18",24395717,"-","G9R6FMQ0UX","02",10876086,"-","40ZZ3JOOCL","tandem_duplication",false,false],
-["SAMPLE6","03",174399989,"+","P0AFN2SI82","19",59075611,"+","XO7PGNX7TR","inversion",false,false],
-["SAMPLE6","06",7433935,"-","FI152UQ37C","10",28020133,"-","89X8VFQJCD","inversion",false,false],
-["SAMPLE6","06",30987719,"+","1JIJ86YDS3","14",31607367,"+","CL4XGDKUG0","tandem_duplication",false,false],
-["SAMPLE2","21",34268355,"+","9SVRQCFVCO","09",19871820,"+","2BEWSO91FZ","tandem_duplication",false,false],
-["SAMPLE2","01",51849987,"-","9HK7LTVZST","19",47304716,"+","DNCS44WCW0","inversion",false,false],
-["SAMPLE2","05",66742149,"-","TJJCWQ6K6J","05",31916435,"+","V5X8Y5QHVS","translocation",true,false]
-];
-
+bundle_data_sv.index_ID = ['SAMPLE0','SAMPLE1','SAMPLE2','SAMPLE3','SAMPLE4','SAMPLE5','SAMPLE6','SAMPLE7','SAMPLE8','SAMPLE9',];
+bundle_data_sv.group = [{"name":"outer", "label":"Inter Chromosome", "color":"#9E4A98" },{"name":"inner", "label":"Intra Chromosome", "color":"#51BF69" }];
+bundle_data_sv.tooltip_format = { bundle:{format:[[{label:'[',type:'fix',keys:[],ext:''},{label:'{chr1}',type:'str',keys:['chr1',],ext:''},{label:'] ',type:'fix',keys:[],ext:''},{label:'{break1}',type:'numeric',keys:['break1',],ext:','},{label:' (',type:'fix',keys:[],ext:''},{label:'{dir1}',type:'str',keys:['dir1',],ext:''},{label:') ',type:'fix',keys:[],ext:''},{label:'{gene_name1}',type:'str',keys:['gene_name1',],ext:''},{label:'; [',type:'fix',keys:[],ext:''},{label:'{chr2}',type:'str',keys:['chr2',],ext:''},{label:'] ',type:'fix',keys:[],ext:''},{label:'{break2}',type:'numeric',keys:['break2',],ext:','},{label:' (',type:'fix',keys:[],ext:''},{label:'{dir2}',type:'str',keys:['dir2',],ext:''},{label:') ',type:'fix',keys:[],ext:''},{label:'{gene_name2}',type:'str',keys:['gene_name2',],ext:''},{label:'; ',type:'fix',keys:[],ext:''},{label:'{type}',type:'str',keys:['type',],ext:''},],], keys: '{dir2} {dir1} {chr2} {chr1} {break1} {break2} {type} {gene_name2} {gene_name1} '}, };
+bundle_data_sv.link_header = ['dir2','dir1','gene_name2','type','gene_name1',];
+// 0:ID, 1:chr1, 2:break1, 3:chr2, 4:break2, 5:is_outer, 6:group_id, 7:tooltip_data
+bundle_data_sv.links = [["SAMPLE0","13",16019088,"11",62784483,false,0,[['+','-','4GRRIO5AVR','deletion','LS7T1EG444',],]],["SAMPLE0","08",99412502,"06",129302434,false,0,[['+','-','QP779MLPNV','translocation','FQFW16UF5U',],]],["SAMPLE0","12",84663781,"17",52991509,false,0,[['-','+','7XM09ETN40','deletion','Q9VX1I9U3I',],]],["SAMPLE0","00",153160367,"21",33751554,false,0,[['+','+','PVYYQIVS8G','inversion','CEE2SPV1R1',],]],["SAMPLE0","17",12249358,"02",146222593,false,0,[['+','-','XD80LI4E6Q','translocation','HH9OL7CK6G',],]],["SAMPLE0","20",8658030,"22",133492043,false,0,[['-','+','WPE8O5H237','tandem_duplication','I20EVP15ZM',],]],["SAMPLE0","11",120178477,"00",155354923,false,0,[['-','+','3MNN5J0MDN','deletion','IMYXD3TCA4',],]],["SAMPLE1","10",101374238,"21",26701405,false,0,[['+','+','9WYBJR57E0','translocation','FZ7LOS66RD',],]],["SAMPLE1","01",121708638,"06",137424167,false,0,[['-','-','HB14VJXDHV','translocation','5655M5E46B',],]],["SAMPLE1","15",43027789,"21",23791492,false,0,[['-','+','L5EA31R8U0','inversion','REFSIL0H2M',],]],["SAMPLE1","18",3862589,"15",37135239,false,0,[['+','-','6FUR9YMZOH','deletion','1IRWHVZLH8',],]],["SAMPLE1","19",50294222,"00",164250235,false,0,[['-','+','9TWYMR5CZ2','inversion','DOH5G0YRQ9',],]],["SAMPLE1","22",67392415,"14",3327412,false,0,[['+','+','G4FPLN527D','translocation','EM36MRX9B3',],]],["SAMPLE2","21",34268355,"09",19871820,false,0,[['+','+','2BEWSO91FZ','tandem_duplication','9SVRQCFVCO',],]],["SAMPLE2","01",51849987,"19",47304716,false,0,[['+','-','DNCS44WCW0','inversion','9HK7LTVZST',],]],["SAMPLE2","05",66742149,"05",31916435,true,1,[['+','-','V5X8Y5QHVS','translocation','TJJCWQ6K6J',],]],["SAMPLE3","07",135644313,"02",116748248,false,0,[['-','-','SOA8DC1SVF','translocation','UGR3O3UQS3',],]],["SAMPLE3","06",6037836,"20",34855497,false,0,[['-','-','F5J3QLOZ5I','inversion','KEHLYR1QQS',],]],["SAMPLE3","06",109724564,"13",106387943,false,0,[['-','+','E44HKKEN06','tandem_duplication','FUJKDGDW5K',],]],["SAMPLE3","21",21329746,"18",49132777,false,0,[['-','+','T456SI8NFE','tandem_duplication','Z3JQJDLZ5Q',],]],["SAMPLE3","09",79484145,"21",48499740,false,0,[['-','+','U985JNNU2W','translocation','BEW4LC26A9',],]],["SAMPLE3","10",122930352,"21",22765050,false,0,[['-','+','JPUS6N5749','deletion','46NNN0OFRV',],]],["SAMPLE3","23",30102935,"16",20945220,false,0,[['-','+','EUAXA4NFHN','translocation','WX0R8IGEK7',],]],["SAMPLE3","06",88998071,"06",88999025,true,1,[['+','-','523QAD1C8I','inversion','523QAD1C8I',],]],["SAMPLE3","06",134692916,"05",59279632,false,0,[['-','-','LUJESA5CAC','tandem_duplication','QVH5C6GNQK',],]],["SAMPLE3","03",18658364,"03",18658859,true,1,[['-','-','76CX2VBN92','deletion','76CX2VBN92',],]],["SAMPLE3","05",58073561,"06",113049570,false,0,[['-','+','PHN2WTGOLS','inversion','XQY7GCETVS',],]],["SAMPLE3","21",12753561,"09",93983219,false,0,[['-','+','7LYZCPRWQE','tandem_duplication','OWWS9EYKPA',],]],["SAMPLE3","09",127888623,"09",127889381,true,1,[['-','-','1V92D2XBKB','tandem_duplication','1V92D2XBKB',],]],["SAMPLE4","05",170379443,"16",80831681,false,0,[['-','-','7XL15GMBTG','deletion','LEEM78T94A',],]],["SAMPLE4","08",1133301,"06",134732389,false,0,[['+','-','XVL9G2Y5X9','tandem_duplication','AUGJHPYY5R',],]],["SAMPLE4","07",77149226,"15",26753461,false,0,[['-','+','5NKT2ASPG3','tandem_duplication','H0Y20DBD1E',],]],["SAMPLE4","06",16278731,"09",83172731,false,0,[['-','+','YZ6WS39WMB','translocation','93AESRZLEE',],]],["SAMPLE4","10",83471004,"13",85966489,false,0,[['+','+','M4DTGT0ML5','inversion','L7M0UDTPQ5',],]],["SAMPLE4","04",20810285,"21",7340004,false,0,[['+','+','JAUV7W6UKT','tandem_duplication','71MB9E5TTO',],]],["SAMPLE4","06",150114646,"23",3930914,false,0,[['-','+','QM0BXA34DC','translocation','NSOMTTCSG2',],]],["SAMPLE5","20",3692977,"20",44510875,true,1,[['+','-','7SBB6O5SCF','tandem_duplication','RV1LGQXB9D',],]],["SAMPLE5","17",17920148,"22",144608009,false,0,[['+','+','FLPJ3LKYEK','inversion','TNFICY6HOP',],]],["SAMPLE5","03",149672094,"02",185716105,false,0,[['+','+','MLKJP6DHMF','inversion','FU23DJ4Q20',],]],["SAMPLE5","14",30455273,"01",78238193,false,0,[['-','-','ERQ3B751EJ','translocation','SHU259UCN0',],]],["SAMPLE5","17",31707099,"01",187464066,false,0,[['-','+','2KCD4ABQKF','deletion','3BBXNLV4L0',],]],["SAMPLE5","22",13113310,"21",22014231,false,0,[['-','-','8TCTGP98KC','tandem_duplication','EJWJPOI28R',],]],["SAMPLE5","07",43600568,"10",4511056,false,0,[['-','-','ZAR4QCMZQC','deletion','CLQE7SHAC0',],]],["SAMPLE5","06",121989817,"07",145405637,false,0,[['+','+','Y3ZK0NSAAI','translocation','X0ACLQM3T6',],]],["SAMPLE5","15",67070418,"02",1508171,false,0,[['+','+','K5OMKPB6X1','translocation','2PL9Y1IHDT',],]],["SAMPLE5","00",244043779,"00",71692260,true,1,[['+','+','EGRJWCKCR4','tandem_duplication','80UBEXTRIK',],]],["SAMPLE6","12",108406515,"03",103771354,false,0,[['-','-','7GO6H15CL3','tandem_duplication','D4MV8CVUMH',],]],["SAMPLE6","00",192482367,"16",39548764,false,0,[['-','-','7GFQ9EX33K','tandem_duplication','GBSS53RWD7',],]],["SAMPLE6","18",24395717,"02",10876086,false,0,[['-','-','40ZZ3JOOCL','tandem_duplication','G9R6FMQ0UX',],]],["SAMPLE6","03",174399989,"19",59075611,false,0,[['+','+','XO7PGNX7TR','inversion','P0AFN2SI82',],]],["SAMPLE6","06",7433935,"10",28020133,false,0,[['-','-','89X8VFQJCD','inversion','FI152UQ37C',],]],["SAMPLE6","06",30987719,"14",31607367,false,0,[['+','+','CL4XGDKUG0','tandem_duplication','1JIJ86YDS3',],]],["SAMPLE7","11",5808948,"00",126650799,false,0,[['+','+','9R3ZGE3IXH','inversion','DHHTZS0BXA',],]],["SAMPLE7","22",62416825,"08",103363021,false,0,[['+','-','HF1ETI110G','deletion','7AX4FKAKAK',],]],["SAMPLE7","21",49569332,"10",43957639,false,0,[['-','-','9L8Z8B3IMV','tandem_duplication','ZJGH7LM6AV',],]],["SAMPLE7","17",33987824,"08",20235198,false,0,[['-','+','AX3PXI48GR','tandem_duplication','8XM6N804SW',],]],["SAMPLE7","11",82038786,"03",188188728,false,0,[['-','+','8YJYOLTITN','deletion','S129U3CYCM',],]],["SAMPLE7","00",238731382,"04",147513508,false,0,[['+','+','GN5Z3BYX2X','tandem_duplication','XLUN7MJTAJ',],]],["SAMPLE7","18",30665368,"14",88366003,false,0,[['-','-','CT1IP0EUVH','deletion','GK7YOHPRXS',],]],["SAMPLE7","13",82447532,"20",15166596,false,0,[['-','-','MURBDM2A6G','deletion','496U6Z0SVN',],]],["SAMPLE7","20",17082231,"19",15076736,false,0,[['-','-','14AI31M02V','inversion','CO9P7G1IGG',],]],["SAMPLE7","00",139050751,"18",17400358,false,0,[['+','+','OPGCA72Z00','inversion','CAWBGB2XGN',],]],["SAMPLE8","06",95490728,"08",89410590,false,0,[['-','+','UJX2LBYPRZ','deletion','FYDK568GIN',],]],["SAMPLE8","09",21675120,"23",27300286,false,0,[['+','+','GO8C5MYWF9','tandem_duplication','WEK2P6N7A8',],]],["SAMPLE8","01",172625375,"02",140646175,false,0,[['-','+','EMJPDIYB8B','inversion','RIYAPG7Y85',],]],["SAMPLE8","08",1853842,"17",59233042,false,0,[['-','-','H52A5JY270','deletion','IEOOJSNII2',],]],["SAMPLE8","08",54636902,"13",55352858,false,0,[['+','+','MKR4ZN37FR','translocation','1UWZ33GM3B',],]],["SAMPLE8","07",21951154,"06",54405063,false,0,[['-','-','X0EYXQTYU2','translocation','MHS14HPP3R',],]],["SAMPLE8","14",42446898,"19",9996637,false,0,[['-','-','ATU9W7QOBH','tandem_duplication','UNHE56HB00',],]],["SAMPLE8","00",8928882,"23",33387475,false,0,[['+','-','NGMDE51OG3','inversion','LH7ZVFY9KG',],]],["SAMPLE8","15",32688406,"07",77568655,false,0,[['+','-','SCZE01KD0Z','inversion','QIS13ZEE2H',],]],["SAMPLE8","05",103119146,"05",939420,true,1,[['-','-','F6JNF1FF11','deletion','ZPU0C5WVUB',],]],["SAMPLE8","18",14532685,"09",6879161,false,0,[['+','+','4PSGVQVNXP','deletion','YB2O0CHDU4',],]],["SAMPLE9","05",22883110,"12",103743864,false,0,[['-','+','P0L7N6I28J','inversion','RE9I9P9P2B',],]],["SAMPLE9","03",170386551,"09",18115326,false,0,[['-','-','B2I9RFL1QS','translocation','7HK6HBA03P',],]],["SAMPLE9","12",1987292,"15",30986341,false,0,[['-','-','ZP6CM7GTIZ','tandem_duplication','20LWDLGBW9',],]],["SAMPLE9","14",98927733,"19",45592948,false,0,[['+','+','UXHC93P2H6','translocation','F7RNE23QBU',],]],["SAMPLE9","09",23863882,"04",171994772,false,0,[['+','+','ATLMZ8104J','inversion','GEEUZIZ38F',],]],["SAMPLE9","22",38494022,"07",41894232,false,0,[['-','+','LOFLF6ZT3A','translocation','FCB5OOKVCS',],]],["SAMPLE9","13",72225317,"12",80044106,false,0,[['-','+','JRKN4SU57O','tandem_duplication','ELNV107ABY',],]],["SAMPLE9","11",40058944,"00",248492226,false,0,[['-','+','X3ZE2O929G','deletion','PAJPAEH2O7',],]],["SAMPLE9","22",14558186,"14",22615302,false,0,[['-','-','W9F9D9M11L','inversion','6SRCV24HTA',],]],["SAMPLE9","09",59857362,"07",15918102,false,0,[['-','+','EX3SWZNHFF','tandem_duplication','GG53SLDQZQ',],]],];
 var node_name = function(Chr, index, leveling) {
     if (leveling == null) {
         leveling = false;
@@ -173,11 +75,63 @@ var create_blank_nodes = function(node_size, leveling) {
     return nodes
 };
 
+function tooltip_partial(format, link) {
+    
+    var obj = {id: link[0], chr1: link[1], break1: link[2], chr2: link[3], break2: link[4], func: bundle_data_sv.group[link[6]].label};
+    
+    var tooltip = [];
+    
+    for (var p = 0; p < link[7].length; p++) {
+        for (var p2 = 0; p2 < link[7][p].length; p2++) {
+            obj[bundle_data_sv.link_header[p2]] = link[7][p][p2];
+        }
+        for (var t in format.format) {
+            var text = text_format(format.format[t], obj);
+            if (tooltip.indexOf(text) < 0){
+                tooltip.push(text);
+            }
+        }
+    }
+
+    return tooltip;
+};
+function text_format(format, obj) {
+
+    var text = "";
+    for (var f in format) {
+        if (format[f].type == 'fix') {
+            text += format[f].label;
+            continue;
+        }
+        var replaced = format[f].label;
+        for (var k in format[f].keys) {
+            var reg = new RegExp("{" + format[f].keys[k] + "}", 'g');
+            replaced = replaced.replace(reg, obj[format[f].keys[k]]);
+        }
+        // case numeric
+        if (format[f].type == 'numeric') {
+            try{  replaced = eval(replaced);
+            } catch(e) {}
+            if (format[f].ext != null) {
+                if (format[f].ext == ",") {
+                    replaced = String(replaced).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+                }
+                if (format[f].ext[0] == ".") {
+                    replaced = parseFloat(replaced).toFixed(parseInt(format[f].ext.substr(1)));
+                }
+            }
+        }
+        text += replaced;
+    }
+    return text;
+};
+
 var create_bundle_dataset = function (ID, node_size, tooltip) {
 
-    var dataset_outer = create_blank_nodes(node_size);
-    var dataset_inner = create_blank_nodes(node_size);
-    var dataset_snipp = create_blank_nodes(node_size);
+    var each_dataset = [];
+    for (var i = 0; i< bundle_data_sv.group.length; i++) {
+        each_dataset[i] = create_blank_nodes(node_size);
+    }
     
     for (var i = 0; i < bundle_data_sv.links.length; i++) {
         if (bundle_data_sv.links[i][0] != ID) {
@@ -186,8 +140,8 @@ var create_bundle_dataset = function (ID, node_size, tooltip) {
         
         var start = node_name(bundle_data_sv.links[i][1], Math.floor(bundle_data_sv.links[i][2]/node_size));
         var index = -1;
-        for (var j = 0; j < dataset_outer.length; j++){
-            if (dataset_outer[j].start == start) {
+        for (var j = 0; j < each_dataset[0].length; j++){
+            if (each_dataset[0][j].start == start) {
                 index = j;
                 break;
             }
@@ -195,89 +149,28 @@ var create_bundle_dataset = function (ID, node_size, tooltip) {
         if (index < 0) {
             continue;
         }
-        var end_pos = Math.floor(bundle_data_sv.links[i][6]/node_size);
-        var end = node_name(bundle_data_sv.links[i][5], end_pos);
+        var end_pos = Math.floor(bundle_data_sv.links[i][4]/node_size);
+        var end = node_name(bundle_data_sv.links[i][3], end_pos);
         // if same position, sift end position.
         if (start == end) {
-            if (end_pos == Math.floor(bundle_data_sv.genome_size[Number(bundle_data_sv.links[i][5])].size/node_size)) {
-                end = node_name(bundle_data_sv.links[i][5], end_pos - 1);
+            if (end_pos == Math.floor(bundle_data_sv.genome_size[Number(bundle_data_sv.links[i][3])].size/node_size)) {
+                end = node_name(bundle_data_sv.links[i][3], end_pos - 1);
             }
             else {
-                end = node_name(bundle_data_sv.links[i][5], end_pos + 1);
+                end = node_name(bundle_data_sv.links[i][3], end_pos + 1);
             }
         }
         
-        // link type
-        if (bundle_data_sv.links[i][11] == true) {
-            // snippet
-            dataset_snipp[index].ends.push(end);
-        }
-        else if(bundle_data_sv.links[i][10] == true) {
-            // inner
-            dataset_inner[index].ends.push(end);
-        }
-        else {
-            // outer
-            dataset_outer[index].ends.push(end);
-        }
+        var group = bundle_data_sv.links[i][6];
+        each_dataset[group][index].ends.push(end);
         
         // tooltip
         if (tooltip == true) {
-            // Chr1 and breakpoint1
-            var must1 = "[" + style_sv_detail.arc_label_text[Number(bundle_data_sv.links[i][1])] + "] " + bundle_data_sv.links[i][2].toLocaleString();
-            // Chr2 and breakpoint2
-            var must2 = "; [" + style_sv_detail.arc_label_text[Number(bundle_data_sv.links[i][5])] + "] " + bundle_data_sv.links[i][6].toLocaleString();
-            
-            // direction1
-            var dir1 = "";
-            if (bundle_data_sv.links[i][3].length > 0) {
-                dir1 = " (" + bundle_data_sv.links[i][3] + ")";
-            }
-            // direction2
-            var dir2 = "";
-            if (bundle_data_sv.links[i][7].length > 0) {
-                dir2 = " (" + bundle_data_sv.links[i][7] + ")";
-            }
-            
-            // gene name 1
-            var name1 = "";
-            if (bundle_data_sv.links[i][4].length > 0) {
-                name1 = " " + bundle_data_sv.links[i][4];
-            }
-            // gene name 2
-            var name2 = "";
-            if (bundle_data_sv.links[i][8].length > 0) {
-                name2 = " " + bundle_data_sv.links[i][8];
-            }
-            
-            // type
-            var sv_type = "";
-            if (bundle_data_sv.links[i][9].length > 0) {
-                sv_type = "; " + bundle_data_sv.links[i][9];
-            }
-            
-            var tooltip_txt = must1 + dir1 + name1 + must2 + dir2 + name2 + sv_type
-
-            if (bundle_data_sv.links[i][11] == true) {
-                // snippet
-                dataset_snipp[index].tooltip.push(tooltip_txt);
-            }
-            else if(bundle_data_sv.links[i][10] == true) {
-                // inner
-                dataset_inner[index].tooltip.push(tooltip_txt);
-            }
-            else {
-                // outer
-                dataset_outer[index].tooltip.push(tooltip_txt);
-            }
+            each_dataset[group][index].tooltip.push(tooltip_partial(bundle_data_sv.tooltip_format.bundle, bundle_data_sv.links[i]));
         }
     }
     
-    ret = [];
-    ret.push(dataset_outer);
-    ret.push(dataset_inner);
-    ret.push(dataset_snipp);
-    return ret;
+    return each_dataset;
 };
 
 bundle_data_sv.get_data_thumb = function (ID) {
@@ -308,77 +201,63 @@ var key_to_index = function (list, key) {
 
 bundle_data_sv.get_select = function () {
     var node_size = bundle_data_sv.node_size_select;
-    var dataset = {"key":[], "item":[[],[],[]], "value":[[],[],[]]};
     
+    var link = [];
+    for (var i = 0; i< bundle_data_sv.group.length; i++) {
+        link[i] = {};
+    }
+    for (var i = 0; i < bundle_data_sv.links.length; i++) {
+        
+        var bp1 = node_name(bundle_data_sv.links[i][1], Math.floor(bundle_data_sv.links[i][2]/node_size), true);
+        var bp2 = node_name(bundle_data_sv.links[i][3], Math.floor(bundle_data_sv.links[i][4]/node_size), true);
+        
+        var group = bundle_data_sv.links[i][6];
+        
+        // add bp1
+        if (link[group][bp1] == undefined) {
+            link[group][bp1] = [];
+        }
+        link[group][bp1].push(bundle_data_sv.links[i][0]);
+        
+        // add bp2
+        if (bp1 != bp2) {
+            if (link[group][bp2] == undefined) {
+                link[group][bp2] = [];
+            }
+            link[group][bp2].push(bundle_data_sv.links[i][0]);
+        }
+    }
+    
+    var item = [];
+    var value = [];
+    var key = [];
+    for (var g = 0; g < bundle_data_sv.group.length; g++) {
+        item[g] = [];
+        value[g] = [];
+        key[g] = [];
+        for (var i in link[g]) {
+            // delete duplication
+            var sort = link[g][i].filter(function (x, y, self) {
+                return self.indexOf(x) === y;
+             });
+            //item[g][i] = sort;
+            value[g].push(link[g][i].length);
+            key[g].push(i);
+            item[g].push(sort);
+        }
+    }
+    
+    var all_key = [];
     var c = 0;
     for (var i = 0; i < bundle_data_sv.genome_size.length; i++){
         var item_num = Math.floor(bundle_data_sv.genome_size[i].size/node_size) + 1;
         for (var j = 0; j < item_num; j++){
-            var key = node_name(bundle_data_sv.genome_size[i].chr, j, true);
-            dataset.key[c] = key;
-            dataset.item[0][c] = [];  // outer
-            dataset.item[1][c] = [];  // inner
-            dataset.item[2][c] = [];  // snippet
-            dataset.value[0][c] = 0;  // outer
-            dataset.value[1][c] = 0;  // inner
-            dataset.value[2][c] = 0;  // snippet
+            all_key[c] = node_name(bundle_data_sv.genome_size[i].chr, j, true);
             c++;
         }
     }
-    for (var i = 0; i < bundle_data_sv.links.length; i++) {
-        
-        var key = node_name(bundle_data_sv.links[i][1], Math.floor(bundle_data_sv.links[i][2]/node_size), true);
-        var item = node_name(bundle_data_sv.links[i][5], Math.floor(bundle_data_sv.links[i][6]/node_size), true);
-        
-        var idx1 = key_to_index(dataset.key, key);
-        var idx2 = key_to_index(dataset.key, item);
-
-        if ((idx1 < 0) || (idx2 < 0)) {
-            continue;
-        }
-        // snippet
-        if (bundle_data_sv.links[i][11] == true) {
-            // add bp1
-            dataset.item[2][idx1].push(bundle_data_sv.links[i][0]);
-            
-            // add bp2
-            dataset.item[2][idx2].push(bundle_data_sv.links[i][0]);
-        }
-        // outer
-        else if (bundle_data_sv.links[i][10] == false) {
-            // add bp1
-            dataset.item[0][idx1].push(bundle_data_sv.links[i][0]);
-        
-            // add bp2
-            dataset.item[0][idx2].push(bundle_data_sv.links[i][0]);
-        }
-        // inner
-        else {
-            // add bp1
-            dataset.item[1][idx1].push(bundle_data_sv.links[i][0]);
-            // add bp2
-            if (key != item) {
-                dataset.item[1][idx2].push(bundle_data_sv.links[i][0]);
-            }
-        }
-    }
-
-   
-     for (var i = 0; i < dataset.key.length; i++) {
-        for (var j = 0; j < 3; j++) {
-            if (dataset.item[j][i].length == 0) {
-                continue;
-            }
-            // delete duplication
-            var sort = dataset.item[j][i].filter(function (x, y, self) {
-                return self.indexOf(x) === y;
-             });
-            dataset.item[j][i] = sort;
-            dataset.value[j][i] = dataset.item[j][i].length;
-        }
-    }
     
-    return dataset;
+    return {value:value, key:key, item:item, all_key:all_key};
 };
 })();
-
+Object.freeze(bundle_data_sv);
