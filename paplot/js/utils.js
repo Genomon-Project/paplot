@@ -136,6 +136,7 @@ var downloader = (function() {
             'white-space': 'nowrap',
             'text-decoration': 'none',
             'font-size': '14px',
+            'cursor': 'pointer',
         };
 
         var menu = d3.select("#" + id).append("ul").attr("class", "download_menu")

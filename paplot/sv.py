@@ -4,7 +4,7 @@ Created on Wed Feb 03 12:31:47 2016
 
 @author: okada
 
-$Id: sv.py 145 2016-08-03 01:37:47Z aokada $
+$Id: sv.py 146 2016-08-04 08:13:23Z aokada $
 """
 
 ########### js template
@@ -24,7 +24,7 @@ bundle_data_sv.group = [{group}];
 bundle_data_sv.tooltip_format = {{ bundle:{tooltip}, }};
 bundle_data_sv.link_header = [{link_header}];
 """
-genome_size_template = '{{"chr":"{Chr:0>2}", "size":{size}}}'
+genome_size_template = '{{"chr":"{Chr:0>2}", "size":{size}, "color":"{color}", "label":"{label}",}}'
 group_template = '{{"name":"{name}", "label":"{label}", "color":"{color}" }}'
 
 js_links_1 = """// 0:ID, 1:chr1, 2:break1, 3:chr2, 4:break2, 5:is_outer, 6:group_id, 7:tooltip_data
@@ -273,12 +273,31 @@ import paplot.subcode.tools as tools
 def load_genome_size(config):
     
     path = tools.config_getpath(config, "genome", "path", "../../config/hg19.csv")
-    use_chrs = tools.config_getstr(config, "sv", "use_chrs").lower().replace(" ", "").split(",")
-    for i in range(len(use_chrs)):
-        label = use_chrs[i]
-        if label[0:3] == "chr":
-            use_chrs[i] = label[3:len(label)]
+ 
+    settings = tools.config_getstr(config, "sv", "use_chrs").replace(" ", "").split(",")
+    use_chrs = [];
+    colors = [];
+    labels = [];
     
+    for i in range(len(settings)):
+        items = settings[i].split(":")
+        use_chrs.append(items[0].lower())
+        labels.append("")
+        colors.append("#BBBBBB")
+        
+        for j in range(len(items)):            
+            if j == 0: 
+                if items[j][0:3] == "chr":
+                    use_chrs[i] = items[j][3:]
+                    
+            elif j == 1:
+                labels[i] = items[j]
+            elif j == 2:
+                colors[i] = items[j]
+
+    if len(use_chrs) < 1:
+        return []
+        
     f = open(path)
     read = f.read()
     f.close()
@@ -300,12 +319,18 @@ def load_genome_size(config):
         if label[0:3] == "chr":
             label = label[3:len(label)]
             
-        if len(use_chrs) > 1 and (label in use_chrs) == False:
+        if (label in use_chrs) == False:
             continue
+        
+        pos = use_chrs.index(label)
         
         if _max < int(items[1]):
             _max = int(items[1])
-        genome_size.append([label, int(items[1])])
+        
+        if labels[pos] == "":
+            labels[pos] = items[0]
+            
+        genome_size.append([label, int(items[1]), colors[pos], labels[pos]])
 
     for i in range(len(genome_size)):
         if genome_size[i][1] < int(_max/10):
@@ -362,15 +387,16 @@ def convert_tojs(input_file, output_file, positions, config):
     import paplot.convert as convert
     
     genome_size = load_genome_size(config)
+
     if len(genome_size) == 0:
-        return []
+        return None
 
     genome = ""
     for i in range(len(genome_size)):
         if len(genome) > 0:
             genome += ",\n"
-        genome += genome_size_template.format(Chr=i, size = genome_size[i][1])
-    
+        genome += genome_size_template.format(Chr=i, size = genome_size[i][1], color = genome_size[i][2], label = genome_size[i][3])
+
     cols_di = merge.position_to_dict(positions)
 
     # data read

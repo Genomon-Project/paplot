@@ -146,14 +146,14 @@ function draw_select()
         var pos = Number(split[1]);
         
         if (pos == 0) {
-            chromos[i] = style_sv_bar.axis_x_label[Number(split[0].split(".")[1])];
+            chromos[i] = bundle_data_sv.genome_size[Number(split[0].split(".")[1])].label;
         }
         else {
             chromos[i] = "";
         }
         
         if ((pos != 0) && (pos % Math.floor(bar_dataset.all_key.length/60) == 0)) {
-            chromos_grid[i] = style_sv_bar.axis_x_label[Number(split[0].split(".")[1])];
+            chromos_grid[i] = bundle_data_sv.genome_size[Number(split[0].split(".")[1])].label;
         }
         else {
             chromos_grid[i] = "";
@@ -317,15 +317,22 @@ function selection_mode() {
 
 // style
 {
+    var color_list = [];
+    var label_list = [];
+    for (var i = 0; i < bundle_data_sv.genome_size.length; i++) {
+        color_list.push(bundle_data_sv.genome_size[i].color);
+        label_list.push(bundle_data_sv.genome_size[i].label);
+    }
+    
     var arc_style_detail = {
-        fill : style_sv_detail.arc_fill_color,
+        fill : color_list,
         fill_opacity : style_sv_detail.arc_fill_opacity,
-        stroke : style_sv_detail.arc_stroke_color,
+        stroke : color_list,
         stroke_opacity : style_sv_detail.arc_stroke_opacity,
         font_family: "'Helvetica Neue', Helvetica, Arial, sans-serif",
         text_color: style_sv_detail.arc_label_color,
         font_size: style_sv_detail.arc_label_fontsize,
-        label: style_sv_detail.arc_label_text,
+        label: label_list,
     };
 
     var link_style_detail = [];
@@ -346,9 +353,9 @@ function selection_mode() {
     }
     
     var arc_style_thumb = {
-        fill : style_sv_thumb.arc_fill_color,
+        fill : color_list,
         fill_opacity : style_sv_thumb.arc_fill_opacity,
-        stroke : style_sv_thumb.arc_stroke_color,
+        stroke : color_list,
         stroke_opacity : style_sv_thumb.arc_stroke_opacity,
         //font_family: "'Helvetica Neue', Helvetica, Arial, sans-serif",
         //text_color: style_sv_thumb.arc_label_color,
