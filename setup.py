@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 """
-$Id: setup.py 118 2016-07-05 02:05:54Z aokada $
+$Id: setup.py 145 2016-08-03 01:37:47Z aokada $
 """
 
 from setuptools import setup, find_packages
 
-version = '0.3.1'
+version = '0.4.0'
 
 import sys
 sys.path.append('./paplot')
@@ -34,7 +34,7 @@ parser result files created by genomon (SV, mutaion-call and so on)""",
       # -*- Entry points: -*-
       """,
       package_data = {
-          'paplot': ['lib/*/*','js/*','templates/*.html', 'style/*'],
+          'paplot': ['lib/*/*','js/*','templates/*.html', 'style/*', 'layout/*'],
       },
       test_suite = 'unit_tests.suite',
 )

@@ -4,7 +4,7 @@ Created on Wed Dec 02 17:43:52 2015
 
 @author: okada
 
-$Id: tools.py 118 2016-07-05 02:05:54Z aokada $
+$Id: tools.py 129 2016-07-19 09:27:52Z aokada $
 """
    
 def config_getboolean(config, section, item):
@@ -15,15 +15,15 @@ def config_getboolean(config, section, item):
 
     return value
     
-def config_getint(config, section, item):
+def config_getint(config, section, item, default = -1):
     
-    value = -1
+    value = default
     if config.has_option(section, item) == True:
         value = config.getint(section, item)
 
     return value
 
-def config_getpath(config, section, item, default=""):
+def config_getpath(config, section, item, default = ""):
     import os
     
     path = ""
@@ -37,6 +37,19 @@ def config_getpath(config, section, item, default=""):
         path = os.path.dirname(os.path.abspath(__file__)) + "/" + default
         
     return path
+
+def config_getjson(config, section, item, default = ""):
+    import json
+    
+    obj = {}
+    if config.has_option(section, item) == True:
+        text = config.get(section, item)
+        try:
+            obj = json.loads(text)
+        except Exception as e:
+            print("load config error.%s\n" + e.message)
+        
+    return obj
     
 def config_getstr(config, section, item):
     

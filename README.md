@@ -119,3 +119,16 @@ pa_plot {qc, sv, mutation} [-h] [--version] [--config_file CONFIG_FILE]
 
 </pre>
 
+## 7. License 
+
+See document LICENSE.
+
+## A. Javascript Libraries
+
+Javascript Libraries used in paplot are listed below.
+
+ - D3.js <https://d3js.org/>
+ - d3-legend <http://d3-legend.susielu.com>
+
+See document under ./paplot/lib/<each lib>.
+

@@ -3,7 +3,7 @@
   <title>Matrix of Mutation - {project}</title>
   <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 
-  <link rel="stylesheet" type="text/css" href="../js/paplot.css"/>
+  <link rel="stylesheet" type="text/css" href="../layout/paplot.css"/>
 </head>
 <body>
 <div class="version">
@@ -93,7 +93,7 @@ Generated on {date} for {project} by {version}.
 <tr>
 <td><div  id="div_mut1"></div></td>
 <td><!-- bar top --><div id="div_bar_top"></div></td>
-<td><div style="padding:10px;" id="div_mut2"></div></td>
+<td style="vertical-align:top;"><div id="div_mut2"><!-- save image --><button type="button" onclick="push_export()" id="dw_btn" style="margin-left: 20px; margin-top: 30px;"><img src="../layout/download.png" style="margin-right: 5px;">export</button><div id="btn"></div></div></td>
 </tr>
 
 {sub1}
@@ -102,12 +102,9 @@ Generated on {date} for {project} by {version}.
 <tr height=10><td></td><td></td><td></td></tr>
 
 <tr>
-<td><!-- bar left --><div id="div_bar_left"></div></td>
-<td><!-- checker --><div id="div_checker"></div></td>
-<td><div style="padding-top:10px; padding-left:30px; overflow: auto;" id="div_mut3">
-<div id="legend_title"></div>
-{legend}
-</div></td>
+<td valign="top"><!-- bar left --><div id="div_bar_left"></div></td>
+<td valign="top"><!-- checker --><div id="div_checker"></div></td>
+<td valign="top"><!-- legend --><div id='legend_html'></div><div id='legend_svg'></div></td>
 </tr>
 
 {sub2}
@@ -121,21 +118,22 @@ Generated on {date} for {project} by {version}.
 <div id="tooltip" class="hidden"></div>
 <!-- ### spin mark ### -->
 <div id="spin" class="hidden"></div>
+<!-- canvas for save image -->
+<canvas id="dw_canvas" class="hidden"></canvas>
 
 <script type="text/javascript" src="../lib/d3_v3.5.13/d3.min.js"></script>
-<script type="text/javascript" src="../style/default.js"></script>
+<script type="text/javascript" src="../lib/d3-legend_v1.10.0/d3-legend.min.js"></script>
+<script type="text/javascript" src="{style}"></script>
+<script type="text/javascript" src="../js/utils.js"></script>
 <script type="text/javascript" src="../js/bar.js"></script>
 <script type="text/javascript" src="../js/checker.js"></script>
 <script type="text/javascript" src="data_mut.js"></script>
 <script type="text/javascript" src="../js/graph_mut.js"></script>
 
 <script type="text/javascript">
-    d3.select("#legend_title").style("color", "#333", "font-size", "14");
-    d3.select("#legend_title").attr("id",  "text").text(style_mut.func_title);
     var subs = [];
     
-{set_legend}
-{set_sub_legend}
+{set_sub_add}
     
     init();
     
