@@ -18,7 +18,7 @@ var timer = false;
 var SORT_STATE_DEFAULT_X = {name_list: ["sample_ID"], asc_list: [true]};
 var SORT_STATE_DEFAULT_Y = {name_list: ["number_of_mutations"], asc_list: [false]};
 
-var sort_state = {x: {init: true, waterfall:false}, y: {init: true}};
+var sort_state = {x: {state: "default"}, y: {state: "default"}};
 sort_state.x.name_list = [].concat(SORT_STATE_DEFAULT_X.name_list);
 sort_state.x.asc_list = [].concat(SORT_STATE_DEFAULT_X.asc_list);
 sort_state.y.name_list = [].concat(SORT_STATE_DEFAULT_Y.name_list);
@@ -332,13 +332,11 @@ function filter_gene() {
 
 function filter_gene_exec() {
 
+    sort_reset("x");
+    
     var gene_th = parseInt(d3.select("#viewgene_rate").property("value"));
     var gene_max = parseInt(d3.select("#viewgene_number").property("value"));
     
-    if (sort_state.y.name_list.length == 0) {
-        sort_state.y.name_list = ["number_of_mutations"];
-        sort_state.y.asc_list = [false];
-    }
     dataset_gene = mut_data.get_dataset_gene(func_flgs, gene_th, gene_max, sort_state.y.name_list, sort_state.y.asc_list);
     d3.select("#filter_text").text("{num:,}".format({num: dataset_gene.uncut_length}));
     var dataset_checker = mut_data.get_dataset_checker(func_flgs, dataset_gene.total_keys);
@@ -390,7 +388,7 @@ function filter_gene_exec() {
         div_mut_bar_left.sort(sort_state.y.name_list, sort_state.y.asc_list);
         div_mut_checker.sort(sort_state.y.name_list, sort_state.y.asc_list, "y");
         
-        if (sort_state.x.waterfall == true) {
+        if (sort_state.x.state == "waterfall") {
             sort_waterfall_exec();
         }
     }
@@ -402,7 +400,6 @@ function filter_gene_exec() {
 // *********************************************
 
 div_legend.stack_change = function(d, i, on) {
-//function change_stack(id, i, on) {
 
     d3.select("#spin").classed("hidden", false);
 
@@ -420,10 +417,7 @@ function change_stack_exec(name, on) {
     func_flgs[name] = on;
     var gene_th = parseInt(d3.select("#viewgene_rate").property("value"));
     var gene_max = parseInt(d3.select("#viewgene_number").property("value"));
-    if (sort_state.y.name_list.length == 0) {
-        sort_state.y.name_list = ["number_of_mutations"];
-        sort_state.y.asc_list = [false];
-    }
+
     dataset_gene = mut_data.get_dataset_gene(func_flgs, gene_th, gene_max, sort_state.y.name_list, sort_state.y.asc_list);
     d3.select("#filter_text").text("{num:,}".format({num: dataset_gene.uncut_length}));
     var dataset_checker = mut_data.get_dataset_checker(func_flgs, dataset_gene.total_keys);
@@ -515,7 +509,7 @@ function change_stack_exec(name, on) {
     // sort
     {
         // sort axis-x
-        if (sort_state.x.waterfall == true) {
+        if (sort_state.x.state == "waterfall") {
             sort_waterfall_exec();
         }
         else {
@@ -543,15 +537,14 @@ function sort_reset(axis) {
     if (axis == "x") {
         sort_state.x.name_list = [].concat(SORT_STATE_DEFAULT_X.name_list);
         sort_state.x.asc_list = [].concat(SORT_STATE_DEFAULT_X.asc_list);
-        sort_state.x.init = true;
-        sort_state.x.waterfall = false;
+        sort_state.x.state = "default";
 
         div_mut_bar_top.sort(sort_state.x.name_list, sort_state.x.asc_list);
         div_mut_checker.sort(sort_state.x.name_list, sort_state.x.asc_list, "x");
         
         d3.select("#sort_x_text").text("sample_ID(ASC)");
         
-        d3.select("#xID_1").property("checked", true);
+        d3.select("#xID_0").property("checked", true);
         d3.select("#xNum_0").property("checked", true);
         d3.select("#xGene_0").property("checked", true);
         d3.select("#gene_list").selectAll("option")[0][0].selected = true;
@@ -561,59 +554,24 @@ function sort_reset(axis) {
             d3.select("#xSub" + i + "_0").property("checked", true);
         }
         
-        if (d3.select("#waterfall_number").property("value") == "") {
-            d3.select("#waterfall_number").property("value", 30);
-        }
+        d3.select("#waterfall_number").property("value", 30);
     }
     else if (axis == "y") {
         sort_state.y.name_list = [].concat(SORT_STATE_DEFAULT_Y.name_list);
         sort_state.y.asc_list = [].concat(SORT_STATE_DEFAULT_Y.asc_list);
-        sort_state.y.init = true;
+        sort_state.y.state = "default";
         
         d3.select("#sort_y_text").text("number_of_mutations(DESC)");
-        d3.select("#yNum_2").property("checked", true);
+        d3.select("#yNum_0").property("checked", true);
         d3.select("#yGene_0").property("checked", true);
 
         filter_gene();
     }
 }
 
-function sort(name, asc, axis) {
-    var state;
-    var state_default = {};
-    var text_area;
-    
-    if (axis == "x") {
-        state = sort_state.x;
-        state_default.name_list = [].concat(SORT_STATE_DEFAULT_X.name_list);
-        state_default.asc_list = [].concat(SORT_STATE_DEFAULT_X.asc_list);
-        state_default.opt_btn = "#xID_";
-        text_area = d3.select("#sort_x_text");
-    }
-    else if (axis == "y") {
-        state = sort_state.y;
-        state_default.name_list = [].concat(SORT_STATE_DEFAULT_Y.name_list);
-        state_default.asc_list = [].concat(SORT_STATE_DEFAULT_Y.asc_list);
-        state_default["opt_btn"] = "#yNum_";
-        text_area = d3.select("#sort_y_text");
+function sort(name, option_value, axis) {
 
-    }
-    else {
-        return;
-    }
-    
-    var asc_flg;
-    if (asc == 0) {
-    }
-    else if (asc == 1) {
-        asc_flg = true;
-    }
-    else if (asc == 2) {
-        asc_flg = false;
-    }
-    else {
-        return;
-    }
+    var state = sort_state[axis];
     
     // delete my name
     var index = state.name_list.indexOf(name)
@@ -622,33 +580,27 @@ function sort(name, asc, axis) {
         state.asc_list.splice(index, 1);
     }
     
-    if (asc == 0) {
+    if (option_value == 0) {
         // if sort condisions are blank, set default
         if (state.name_list.length == 0) {
-            d3.select(state_default["opt_btn"] + "1").property("checked", true);
-
-            state.name_list = state_default.name_list;
-            state.asc_list = state_default.asc_list;
-            state.init = true;
+            sort_reset(axis);
         }
     }
     else{
+        var asc_flg = true;
+        if (option_value == 2) asc_flg = false;
+        
         // if sort state == initial, delete default.
-        if (state.init == true) {
-            if (state_default.name_list.indexOf(name) < 0) {
-                d3.select(state_default["opt_btn"] + "0").property("checked", true);
-            }
+        if (state.state == "default") {
             state.name_list = [name];
             state.asc_list = [asc_flg];
-            state.init = false;
+            state.state = "";
         }
         else {
             state.name_list.push(name);
             state.asc_list.push(asc_flg);
         }
     }
-    
-    //console.log(JSON.stringify(state));
     
     // call plot's sort function
     if (axis == "x") {
@@ -673,7 +625,7 @@ function sort(name, asc, axis) {
         if (state.asc_list[i]) text = text + "(ASC)";
         else text = text + "(DESC)";
     }
-    text_area.text(text);
+    d3.select("#sort_" + axis + "_text").text(text);
 }
 
 function sort_gene() {
@@ -748,10 +700,9 @@ function sort_waterfall_exec() {
             add_tag(divs_sub[i].obj, divs_sub[i].obj.tags, tag_name, list, "water-fall");
         }
         
-        sort_state.x.waterfall = true;
-        
         // sort
         sort(tag_name, 2, "x");
+        sort_state.x.state = "waterfall";
     }
 }
 
@@ -899,7 +850,8 @@ function init() {
     div_mut_bar_top.options.grid_y = new div_mut_bar_top.grid_template();
     div_mut_bar_top.options.grid_y.ticks = 2;
     div_mut_bar_top.options.grid_y.wide = BAR_TOP_AXIS_Y;
-    div_mut_bar_top.options.grid_y.border_color = "#DDC";
+    div_mut_bar_top.options.grid_y.border_color = style_mut.virtical_border_y_color;
+    div_mut_bar_top.options.grid_y.border_opacity = style_mut.virtical_border_y_opacity;
     div_mut_bar_top.options.grid_y.orient = "left";
     
     div_mut_bar_top.options.grid_xs[0] = new div_mut_bar_top.grid_template();
@@ -910,8 +862,8 @@ function init() {
     div_mut_bar_top.options.grid_xs[0].wide = 10;
     div_mut_bar_top.options.grid_xs[0].font_size = "9px";
     div_mut_bar_top.options.grid_xs[0].sift_x = 4;
-    div_mut_bar_top.options.grid_xs[0].border_color = "#CCE";
-    div_mut_bar_top.options.grid_xs[0].border_width = "1px";
+    div_mut_bar_top.options.grid_xs[0].border_color = style_mut.virtical_border_x_color;
+    div_mut_bar_top.options.grid_xs[0].border_width = style_mut.virtical_border_x_width;
     div_mut_bar_top.options.grid_xs[0].orient = "bottom";
     div_mut_bar_top.options.grid_xs[0].text_anchor = "end";
     div_mut_bar_top.options.grid_xs[0].text_rotate = "-90";
@@ -968,7 +920,8 @@ function init() {
     div_mut_bar_left.options.grid_y = new div_mut_bar_left.grid_template();
     div_mut_bar_left.options.grid_y.ticks = 2;
     div_mut_bar_left.options.grid_y.wide = BAR_LEFT_AXIS_Y;
-    div_mut_bar_left.options.grid_y.border_color = "#DDC";
+    div_mut_bar_left.options.grid_y.border_color = style_mut.horizon_border_y_color;
+    div_mut_bar_left.options.grid_y.border_opacity = style_mut.horizon_border_y_opacity;
     div_mut_bar_left.options.grid_y.orient = "bottom";
     
     div_mut_bar_left.options.grid_xs[0] = new div_mut_bar_left.grid_template();
@@ -977,8 +930,8 @@ function init() {
     div_mut_bar_left.options.grid_xs[0].wide = 80;
     div_mut_bar_left.options.grid_xs[0].font_size = "9px";
     div_mut_bar_left.options.grid_xs[0].sift_y = 4;
-    div_mut_bar_left.options.grid_xs[0].border_color = "#CCE";
-    div_mut_bar_left.options.grid_xs[0].border_width = "1px";
+    div_mut_bar_left.options.grid_xs[0].border_color = style_mut.horizon_border_x_color;
+    div_mut_bar_left.options.grid_xs[0].border_width = style_mut.horizon_border_x_width;
     div_mut_bar_left.options.grid_xs[0].orient = "right";
     div_mut_bar_left.options.grid_xs[0].text_anchor = "start";
     div_mut_bar_left.options.grid_xs[0].text_rotate = "0";
@@ -1057,8 +1010,8 @@ function init() {
     div_mut_checker.options.grids[0].keys = mut_data.Ids;
     div_mut_checker.options.grids[0].wide = 0;
     div_mut_checker.options.grids[0].font_size = "10px";
-    div_mut_checker.options.grids[0].border_color = "#CCE";
-    div_mut_checker.options.grids[0].border_width = "1px";
+    div_mut_checker.options.grids[0].border_color = style_mut.virtical_border_x_color;
+    div_mut_checker.options.grids[0].border_width = style_mut.virtical_border_x_width;
     div_mut_checker.options.grids[0].orient = "bottom";
     div_mut_checker.options.grids[0].text_anchor = "end";
     div_mut_checker.options.grids[0].text_rotate = "-90";
@@ -1070,8 +1023,8 @@ function init() {
     div_mut_checker.options.grids[1].keys = dataset_gene.total_keys;
     div_mut_checker.options.grids[1].wide = 0;
     div_mut_checker.options.grids[1].font_size = "10px";
-    div_mut_checker.options.grids[1].border_color = "#DDC";
-    div_mut_checker.options.grids[1].border_width = "2px";
+    div_mut_checker.options.grids[1].border_color = style_mut.horizon_border_x_color;
+    div_mut_checker.options.grids[1].border_width = style_mut.horizon_border_x_width;
 
     //div_mut_checker.draw();
     
@@ -1090,9 +1043,7 @@ function init() {
     
     // width-right
     var legend_w = Number(d3.select("#legend_html").style("width").replace("px", ""));
-    //var save_w = Number(d3.select("#save_image").style("width").replace("px", ""));
     var w_right_max = legend_w;
-    //if (legend_w < save_w) w_right_max = save_w;
     
     // subplot
     var sub1_counter = 0;
@@ -1140,7 +1091,6 @@ function init() {
         div_mut_bar_left.sort(sort_state.y.name_list, sort_state.y.asc_list);
         div_mut_checker.sort(sort_state.y.name_list, sort_state.y.asc_list, "y");
     }
-
 }
 
 function sub_plot(sub) {
@@ -1180,19 +1130,15 @@ function sub_plot(sub) {
     
     sub.obj.options.direction_x = "left-right";
     sub.obj.options.direction_y = "bottom-up";
-    
-    //sub.obj.draw();
+
+    // bar padding
+    sub.obj.options.grid_xs[0] = new sub.obj.grid_template();
+    sub.obj.options.grid_xs[0].keys = mut_data.Ids
+    sub.obj.options.grid_xs[0].labels = new Array(mut_data.Ids.length);
+    sub.obj.options.grid_xs[0].border_color = style_mut.sub_border_color;
+    sub.obj.options.grid_xs[0].border_width = style_mut.sub_border_width;
     
     // legend
-    //var options = new utils.legend_options_template();
-    //options.id = "div_" + sub.name + "_l";
-    //options.items = sub_dataset.label.text;
-    //options.colors = sub_dataset.label.color;
-    //options.svg_size = [0, 50];
-    //options.margin = [30, 10];
-    //options.horizon = true;
-    //utils.legend(options);
-    
     var div_legend = new legend("div_" + sub.name + "_l");
     div_legend.items   = sub_dataset.label.text;
     div_legend.colors  = sub_dataset.label.color;
@@ -1204,17 +1150,4 @@ function sub_plot(sub) {
     div_legend.options.horizon = true;
     div_legend.draw_svg(true);
     downloader.set_event_listner ("div_" + sub.name + "_l_svg");
-    
-    //// title
-    //var title = d3.select("#div_" + sub.name + "_t").selectAll("b").text();
-    //
-    //d3.select("#div_" + sub.name + "_t")
-    //    .append("svg")
-    //    .attr("class", "hidden")
-    //    .append("text")
-    //    .text(title)
-    //    .attr("font-size", "14px")
-    //    .attr("font-family", "'Helvetica Neue', Helvetica, Arial, sans-serif")
-    //    .attr("text-anchor", "end")
-    //;
 }

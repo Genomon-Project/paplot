@@ -4,7 +4,7 @@ Created on Thu May 12 12:34:57 2016
 
 @author: okada
 
-$Id: convert.py 130 2016-07-20 09:16:12Z aokada $
+$Id: convert.py 148 2016-08-08 07:49:31Z aokada $
 """
 import paplot.subcode.tools as tools
 
@@ -87,21 +87,10 @@ def group_list(colmun, mode, name, config):
         
     return [funcs, colors_n]
 
-def pyformat_to_jstooltip_text(config, section_fmt, section_col, item_startwith):
+def pyformat_to_jstooltip_text(positions, config, section_fmt, section_col, item_startwith):
 
     tooltip_templete = "{{format:[{formats}], keys: '{keys}'}}"
     tooltip_detail_templete = "{{label:'{label}',type:'{type}',keys:[{keys}],ext:'{ext}'}},"
-
-    cols = []
-    for col in tools.config_getoptions(config, section_col, "col_"):
-        val = config.get(section_col, col)
-        if val == "":
-            continue
-        
-        if col.find("col_opt") >= 0:
-            cols.append(col.replace("col_opt_", ""))
-        else:
-            cols.append(col.replace("col_", ""))
         
     import re
     re_compile=re.compile(r"\{[0-9a-zA-Z\+\-\*\/\#\:\,\.\_\ ]+\}")
@@ -152,7 +141,7 @@ def pyformat_to_jstooltip_text(config, section_fmt, section_col, item_startwith)
             
             check = True
             for sub_key in list(set(sub_keys)):
-                if not sub_key in cols:
+                if not sub_key in positions.keys():
                     if not sub_key.startswith("#"):
                         print("[WARNING] key:{key} is not defined.".format(key = sub_key))
                         check = False

@@ -204,9 +204,9 @@ var mut_bar = (function()
         }
         
         var bar_padding =  0;
-        if (plot1 / x_items > 3) {
-            bar_padding = 1;
-        }
+        //if (plot1 / x_items > 3) {
+        //    bar_padding = 1;
+        //}
         
         for (var idx=0; idx < this.dataset.length; idx++) {
             this.svg_obj.selectAll("g." + this.dataset[idx].name).selectAll("rect")
@@ -539,8 +539,15 @@ var mut_bar = (function()
         this._set_xw();
     }
 
-    p._set_sort_item = function(tag_name, asc) {
+    p._set_sort_item = function(tag_name_org, asc_org) {
       
+        var tag_name = [];
+        var asc = [];
+        for (var i = 0; i < tag_name_org.length; i++) {
+            tag_name.push(tag_name_org[i]);
+            asc.push(asc_org[i]);
+        }
+        
         var tags = [];
         for (var j = 0; j< tag_name.length; j++) {
             for (var i = 0; i< this.tags.length; i++) {
@@ -576,8 +583,9 @@ var mut_bar = (function()
         var item_index = {};
         for (var i = 0; i< item.length; i++) {
             item_index[item[i][0]] = i;
+            //console.log([item[i][0],item[i][1][0], i])
         }
-            this.asc.sort_list = item_index;
+        this.asc.sort_list = item_index;
 
     }
 
