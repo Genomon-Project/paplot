@@ -5,6 +5,15 @@ style_general = {
     
 // style of quality check graphs
 style_qc = {
+    brush_border_x_color: "#FFFFFF",
+    brush_border_x_width: "0px",
+    brush_border_y_color: "#DDDDCC",
+    brush_border_y_opacity: 0.5,
+    
+    plot_border_x_color: "#FFFFFF",
+    plot_border_x_width: "1px",
+    plot_border_y_color: "#DDDDCC",
+    plot_border_y_opacity: 0.2,
 };
 
 // style of genome-wide bar plot
@@ -13,6 +22,13 @@ style_sv_bar = {
     title_top: "Genome-wide SVs identify",
     title_y: "samples with SV breakp.",
     title_x: "Chromosome",
+    
+    border_x_main_color: "#E0E0E0",
+    border_x_main_width: "1px",
+    border_x_sub_color: "#A6A6A6",
+    border_x_sub_width: "1px",
+    border_y_color: "#DDDDCC",
+    border_y_opacity: 0.5,
 };
 
 // style of thumbnails
@@ -58,11 +74,23 @@ style_mut = {
     // title's text options
     title_sample: "Sample",
     title_sample_y: "Number of mutation",
+    virtical_border_x_color: "#CCCCEE",
+    virtical_border_x_width: "1px",
+    virtical_border_y_color: "#DDDDCC",
+    virtical_border_y_opacity: 0.5,
     
     title_gene: "Genes",
     title_gene_y1: "% Samples",
     title_gene_y2: "with mutation",
+    horizon_border_x_color: "#CCCCEE",
+    horizon_border_x_width: "1px",
+    horizon_border_y_color: "#DDDDCC",
+    horizon_border_y_opacity: 0.5,
     
     func_title: "functions",
+    
+    sub_border_color: "#FFFFFF",
+    sub_border_width: "1px",
+    
 };
 })();

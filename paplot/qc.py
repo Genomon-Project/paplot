@@ -4,7 +4,7 @@ Created on Wed Dec 02 17:43:52 2015
 
 @author: okada
 
-$Id: qc.py 144 2016-08-02 09:07:38Z aokada $
+$Id: qc.py 148 2016-08-08 07:49:31Z aokada $
 """
 
 ########### js template
@@ -207,11 +207,11 @@ def convert_tojs(input_file, output_file, positions, config):
             chart_id = chart_id, \
             title = tools.config_getstr(config, sec, "title"), \
             title_y = tools.config_getstr(config, sec, "title_y"), \
-            stack = convert.pyformat_to_jstooltip_text(config, sec, "result_format_qc", "stack"), \
+            stack = convert.pyformat_to_jstooltip_text(cols_di, config, sec, "result_format_qc", "stack"), \
             stack_id = convert.list_to_text(stack_id), \
             label = convert.list_to_text(label), \
             color = convert.list_to_text(colors_li), \
-            tooltip = convert.pyformat_to_jstooltip_text(config, sec, "result_format_qc", "tooltip_format"), \
+            tooltip = convert.pyformat_to_jstooltip_text(cols_di, config, sec, "result_format_qc", "tooltip_format"), \
             )
         plots_option.append(chart_id)
     
@@ -246,6 +246,8 @@ def convert_tojs(input_file, output_file, positions, config):
             val = row[df.name_to_index(cols_di[item])]
             if type(val) == type(""):
                 values += "'" + val + "'"
+            elif type(val) == type(0.0):
+                values += str('%.2f' % val)
             else:
                 values += str(val)
         

@@ -116,7 +116,6 @@ function push_export() {
     
     svgText = downloader.add_svgtag(svgText, height, width)
     
-    //utils.download_image(filename, mode, width, height, svgText, "dw_hide");
     rect = utils.absolute_position("dw_btn");
     downloader.createMenu ([rect.x + rect.width, rect.y], "btn", "paplot_sv", width, height, svgText);
 }
@@ -189,25 +188,26 @@ function draw_select()
     
     div_select_bar.options.grid_y = new div_select_bar.grid_template();
     div_select_bar.options.grid_y.ticks = 2;
-    div_select_bar.options.grid_y.wide = 0;//BAR_TOP_AXIS_Y;
-    div_select_bar.options.grid_y.border_color = "#DDC";
+    div_select_bar.options.grid_y.wide = 0;
+    div_select_bar.options.grid_y.border_color = style_sv_bar.border_y_color;
+    div_select_bar.options.grid_y.border_opacity = style_sv_bar.border_y_opacity;
     div_select_bar.options.grid_y.orient = "left";
     
     div_select_bar.options.grid_xs[0] = new div_select_bar.grid_template();
     div_select_bar.options.grid_xs[0].keys = bar_dataset.all_key;
     div_select_bar.options.grid_xs[0].labels = chromos_grid;
     div_select_bar.options.grid_xs[0].wide = 0;
-    div_select_bar.options.grid_xs[0].border_color = "#E0E0E0";
-    div_select_bar.options.grid_xs[0].border_width = "1px";
-
+    div_select_bar.options.grid_xs[0].border_color = style_sv_bar.border_x_main_color;
+    div_select_bar.options.grid_xs[0].border_width = style_sv_bar.border_x_main_width;
+    
     div_select_bar.options.grid_xs[1] = new div_select_bar.grid_template();
     div_select_bar.options.grid_xs[1].keys = bar_dataset.all_key;
     div_select_bar.options.grid_xs[1].labels = chromos;
     div_select_bar.options.grid_xs[1].wide = 40;
     div_select_bar.options.grid_xs[1].font_size = "9px";
     div_select_bar.options.grid_xs[1].sift_y = 10;
-    div_select_bar.options.grid_xs[1].border_color = "#A6A6A6";
-    div_select_bar.options.grid_xs[1].border_width = "1px";
+    div_select_bar.options.grid_xs[1].border_color = style_sv_bar.border_x_sub_color;
+    div_select_bar.options.grid_xs[1].border_width = style_sv_bar.border_x_sub_width;
     div_select_bar.options.grid_xs[1].orient = "bottom";
     div_select_bar.options.grid_xs[1].text_anchor_ext = true;
     div_select_bar.options.grid_xs[1].text_anchor = "middle";

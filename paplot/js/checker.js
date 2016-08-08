@@ -125,11 +125,17 @@ var mut_checker = (function() {
     p.sort = function(tag_name, asc, axis) {
 
         this.set_sort_item(tag_name, asc, axis);
-        
         this.bar_sort();
     }
     
-    p.set_sort_item = function(tag_name, asc, axis) {
+    p.set_sort_item = function(tag_name_org, asc_org, axis) {
+
+        var tag_name = [];
+        var asc = [];
+        for (var i = 0; i < tag_name_org.length; i++) {
+            tag_name.push(tag_name_org[i]);
+            asc.push(asc_org[i]);
+        }
 
         var this_keys = this.keys;
         var this_tags = this.tags;
@@ -357,9 +363,9 @@ var mut_checker = (function() {
     // bar padding
     // -----------------------------------
     p.bar_padding = function(wide, items) {
-        if (wide / items > 3) {
-            return 1;
-        }
+        //if (wide / items > 3) {
+        //    return 1;
+        //}
         return 0;
     }
     

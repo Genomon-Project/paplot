@@ -4,7 +4,7 @@ Created on Wed Feb 03 12:31:47 2016
 
 @author: okada
 
-$Id: sv.py 146 2016-08-04 08:13:23Z aokada $
+$Id: sv.py 148 2016-08-08 07:49:31Z aokada $
 """
 
 ########### js template
@@ -74,8 +74,12 @@ var create_blank_nodes = function(node_size, leveling) {
 
 function tooltip_partial(format, link) {
     
-    var obj = {id: link[0], chr1: link[1], break1: link[2], chr2: link[3], break2: link[4], func: bundle_data_sv.group[link[6]].label};
-    
+    var obj = {id: link[0], 
+        chr1: bundle_data_sv.genome_size[Number(link[1])].label, 
+        break1: link[2], 
+        chr2: bundle_data_sv.genome_size[Number(link[3])].label, 
+        break2: link[4], func: bundle_data_sv.group[link[6]].label};
+        
     var tooltip = [];
     
     for (var p = 0; p < link[7].length; p++) {
@@ -462,7 +466,7 @@ def convert_tojs(input_file, output_file, positions, config):
             genome_size = genome, \
             IDs = convert.list_to_text(Ids), \
             group = group_text, \
-            tooltip = convert.pyformat_to_jstooltip_text(config, "sv", "result_format_sv", "tooltip_format"), \
+            tooltip = convert.pyformat_to_jstooltip_text(cols_di, config, "sv", "result_format_sv", "tooltip_format"), \
             link_header = convert.list_to_text(option_keys), \
             ))
             

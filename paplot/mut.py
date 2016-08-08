@@ -4,7 +4,7 @@ Created on Wed Mar 16 15:40:29 2016
 
 @author: okada
 
-$Id: mut.py 145 2016-08-03 01:37:47Z aokada $
+$Id: mut.py 148 2016-08-08 07:49:31Z aokada $
 """
 
 ########### js template
@@ -614,12 +614,12 @@ def convert_tojs(input_file, output_file, positions, config):
             funcs = convert.list_to_text(funcs), \
             func_colors_n = convert.list_to_text(colors_n), \
             mutation_header = convert.list_to_text(option_keys), \
-            checker_title = convert.pyformat_to_jstooltip_text(config, "mut", "result_format_mutation", "tooltip_format_checker_title"), \
-            checker_partial = convert.pyformat_to_jstooltip_text(config, "mut", "result_format_mutation", "tooltip_format_checker_partial"), \
-            gene_title = convert.pyformat_to_jstooltip_text(config, "mut", "result_format_mutation", "tooltip_format_gene_title"), \
-            gene_partial = convert.pyformat_to_jstooltip_text(config, "mut", "result_format_mutation", "tooltip_format_gene_partial"), \
-            id_title = convert.pyformat_to_jstooltip_text(config, "mut", "result_format_mutation", "tooltip_format_id_title"), \
-            id_partial = convert.pyformat_to_jstooltip_text(config, "mut", "result_format_mutation", "tooltip_format_id_partial"), \
+            checker_title = convert.pyformat_to_jstooltip_text(cols_di, config, "mut", "result_format_mutation", "tooltip_format_checker_title"), \
+            checker_partial = convert.pyformat_to_jstooltip_text(cols_di, config, "mut", "result_format_mutation", "tooltip_format_checker_partial"), \
+            gene_title = convert.pyformat_to_jstooltip_text(cols_di, config, "mut", "result_format_mutation", "tooltip_format_gene_title"), \
+            gene_partial = convert.pyformat_to_jstooltip_text(cols_di, config, "mut", "result_format_mutation", "tooltip_format_gene_partial"), \
+            id_title = convert.pyformat_to_jstooltip_text(cols_di, config, "mut", "result_format_mutation", "tooltip_format_id_title"), \
+            id_partial = convert.pyformat_to_jstooltip_text(cols_di, config, "mut", "result_format_mutation", "tooltip_format_id_partial"), \
             ))
             
     # mutation list
