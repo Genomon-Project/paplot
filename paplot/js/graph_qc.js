@@ -151,12 +151,6 @@ function init() {
             bar.options.tooltip.position = "bar";
         }
         
-        // bar padding
-        bar.options.grid_xs[0] = new bar.grid_template();
-        bar.options.grid_xs[0].keys = dataset.key;
-        bar.options.grid_xs[0].labels = dataset.key;
-        bar.options.grid_xs[0].wide = 0;
-        
         // axis-y
         bar.options.grid_y = new bar.grid_template();
         bar.options.grid_y.wide = 80;
@@ -168,9 +162,6 @@ function init() {
             bar.options.brush.fill = "blue";
             bar.options.brush.stroke = "blue";
             
-            bar.options.grid_xs[0].border_color = style_qc.brush_border_x_color;
-            bar.options.grid_xs[0].border_width = style_qc.brush_border_x_width;
-            
             bar.options.grid_y.ticks = 2;
             bar.options.grid_y.border_color = style_qc.brush_border_y_color;
             bar.options.grid_y.border_opacity = style_qc.brush_border_y_opacity;
@@ -179,9 +170,6 @@ function init() {
             bar.options.padding_right = 100;
             bar.options.zoom.enable = true;
             
-            bar.options.grid_xs[0].border_color = style_qc.plot_border_x_color;
-            bar.options.grid_xs[0].border_width = style_qc.plot_border_x_width;
-
             bar.options.grid_y.ticks = 10;
             bar.options.grid_y.border_color = style_qc.plot_border_y_color;
             bar.options.grid_y.border_opacity = style_qc.plot_border_y_opacity;
@@ -196,6 +184,9 @@ function init() {
         }
         // for debug
         if (_DEBUG == true) {
+            bar.options.grid_xs[0] = new bar.grid_template();
+            bar.options.grid_xs[0].keys = dataset.key;
+            bar.options.grid_xs[0].labels = dataset.key;
             bar.options.grid_xs[0].wide = 40;
             bar.options.grid_xs[0].font_size = "9px";
             bar.options.grid_xs[0].sift_y = 10;
@@ -255,15 +246,20 @@ function selection_reset() {
 // *********************************************
 function sort(name, asc) {
     // call plot's sort function
-    for (var i = 0; i< divs.length; i++) {
-        //divs[i].obj.brush_reset();
-        //divs[i].obj.zoom_reset();
-        divs[i].obj.sort([name], [asc]);
+    
+    divs[0].obj.sort([name], [asc]);
+    
+    for (var i = 1; i< divs.length; i++) {
+        divs[i].obj.sort_simple(divs[0].obj.asc.sort_list);
     }
+    
+    //for (var i = 0; i< divs.length; i++) {
+    //    divs[i].obj.sort([name], [asc]);
+    //}
 }
 
 function click_sort() {
-    brush_reset("sample_ID");
+    brush_reset();
     
     var obj = d3.select("#sort_list").selectAll("option");
     var name = "";
@@ -320,7 +316,6 @@ function chart_brushed(data, range) {
         }
         
         d3.select("#" + divs[i].chart_id).style("width", w.width_extend + "px");
-        divs[i].obj.resize();
         divs[i].obj.reset_select();
         divs[i].obj.zoom(data);
         

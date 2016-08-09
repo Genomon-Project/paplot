@@ -5,13 +5,8 @@ style_general = {
     
 // style of quality check graphs
 style_qc = {
-    brush_border_x_color: "#FFFFFF",
-    brush_border_x_width: "0px",
     brush_border_y_color: "#DDDDCC",
     brush_border_y_opacity: 0.5,
-    
-    plot_border_x_color: "#FFFFFF",
-    plot_border_x_width: "1px",
     plot_border_y_color: "#DDDDCC",
     plot_border_y_opacity: 0.2,
 };

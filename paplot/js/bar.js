@@ -205,8 +205,9 @@ var mut_bar = (function()
         
         var bar_padding =  0;
         //if (plot1 / x_items > 3) {
-        //    bar_padding = 1;
-        //}
+        if (plot1 / x_items > 20) {
+            bar_padding = 1;
+        }
         
         for (var idx=0; idx < this.dataset.length; idx++) {
             this.svg_obj.selectAll("g." + this.dataset[idx].name).selectAll("rect")
@@ -539,6 +540,14 @@ var mut_bar = (function()
         this._set_xw();
     }
 
+    p.sort_simple = function(sort_list)
+    {
+        this.asc.sort_list = {};
+        for (var k in sort_list) {
+            this.asc.sort_list[k] = sort_list[k];
+        }
+        this._set_xw();
+    }
     p._set_sort_item = function(tag_name_org, asc_org) {
       
         var tag_name = [];
@@ -962,11 +971,6 @@ var mut_bar = (function()
         
         this.svg_obj = d3.select("#" + this.id).append("svg");
         
-        //this.svg_obj
-        //    //.call(downloadable().filename(this.id))
-        //    .call(this.onload(this.id))
-        //    ;
-        
         // plot asc
         switch (this.options.direction_x) {
             case "bottom-up":
@@ -1255,6 +1259,8 @@ var mut_bar = (function()
         this.options.zoom.pos_start = this.asc.sort_list[keys[0]];
         this.options.zoom.pos_end = this.asc.sort_list[keys[keys.length-1]];
         
+        this._update_plot_size(); //
+        this._set_w_options();    //
         this._set_xw();
     }
     p.zoom_reset = function() {
