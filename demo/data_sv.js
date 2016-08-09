@@ -5,30 +5,30 @@ bundle_data_sv.node_size_detail = 6503523;
 bundle_data_sv.node_size_thumb = 13697687;
 bundle_data_sv.node_size_select = 5000000;
 bundle_data_sv.genome_size = [
-{"chr":"00", "size":249250621},
-{"chr":"01", "size":243199373},
-{"chr":"02", "size":198022430},
-{"chr":"03", "size":191154276},
-{"chr":"04", "size":180915260},
-{"chr":"05", "size":171115067},
-{"chr":"06", "size":159138663},
-{"chr":"07", "size":146364022},
-{"chr":"08", "size":141213431},
-{"chr":"09", "size":135534747},
-{"chr":"10", "size":135006516},
-{"chr":"11", "size":133851895},
-{"chr":"12", "size":115169878},
-{"chr":"13", "size":107349540},
-{"chr":"14", "size":102531392},
-{"chr":"15", "size":90354753},
-{"chr":"16", "size":81195210},
-{"chr":"17", "size":78077248},
-{"chr":"18", "size":59128983},
-{"chr":"19", "size":63025520},
-{"chr":"20", "size":48129895},
-{"chr":"21", "size":51304566},
-{"chr":"22", "size":155270560},
-{"chr":"23", "size":59373566}
+{"chr":"00", "size":249250621, "color":"#BBBBBB", "label":"1",},
+{"chr":"01", "size":243199373, "color":"#BBBBBB", "label":"2",},
+{"chr":"02", "size":198022430, "color":"#BBBBBB", "label":"3",},
+{"chr":"03", "size":191154276, "color":"#BBBBBB", "label":"4",},
+{"chr":"04", "size":180915260, "color":"#BBBBBB", "label":"5",},
+{"chr":"05", "size":171115067, "color":"#BBBBBB", "label":"6",},
+{"chr":"06", "size":159138663, "color":"#BBBBBB", "label":"7",},
+{"chr":"07", "size":146364022, "color":"#BBBBBB", "label":"8",},
+{"chr":"08", "size":141213431, "color":"#BBBBBB", "label":"9",},
+{"chr":"09", "size":135534747, "color":"#BBBBBB", "label":"10",},
+{"chr":"10", "size":135006516, "color":"#BBBBBB", "label":"11",},
+{"chr":"11", "size":133851895, "color":"#BBBBBB", "label":"12",},
+{"chr":"12", "size":115169878, "color":"#BBBBBB", "label":"13",},
+{"chr":"13", "size":107349540, "color":"#BBBBBB", "label":"14",},
+{"chr":"14", "size":102531392, "color":"#BBBBBB", "label":"15",},
+{"chr":"15", "size":90354753, "color":"#BBBBBB", "label":"16",},
+{"chr":"16", "size":81195210, "color":"#BBBBBB", "label":"17",},
+{"chr":"17", "size":78077248, "color":"#BBBBBB", "label":"18",},
+{"chr":"18", "size":59128983, "color":"#BBBBBB", "label":"19",},
+{"chr":"19", "size":63025520, "color":"#BBBBBB", "label":"20",},
+{"chr":"20", "size":48129895, "color":"#BBBBBB", "label":"21",},
+{"chr":"21", "size":51304566, "color":"#BBBBBB", "label":"22",},
+{"chr":"22", "size":155270560, "color":"#BBBBBB", "label":"X",},
+{"chr":"23", "size":59373566, "color":"#BBBBBB", "label":"Y",}
 ];
 
 bundle_data_sv.index_ID = ['SAMPLE0','SAMPLE1','SAMPLE2','SAMPLE3','SAMPLE4','SAMPLE5','SAMPLE6','SAMPLE7','SAMPLE8','SAMPLE9',];
@@ -77,8 +77,12 @@ var create_blank_nodes = function(node_size, leveling) {
 
 function tooltip_partial(format, link) {
     
-    var obj = {id: link[0], chr1: link[1], break1: link[2], chr2: link[3], break2: link[4], func: bundle_data_sv.group[link[6]].label};
-    
+    var obj = {id: link[0], 
+        chr1: bundle_data_sv.genome_size[Number(link[1])].label, 
+        break1: link[2], 
+        chr2: bundle_data_sv.genome_size[Number(link[3])].label, 
+        break2: link[4], func: bundle_data_sv.group[link[6]].label};
+        
     var tooltip = [];
     
     for (var p = 0; p < link[7].length; p++) {

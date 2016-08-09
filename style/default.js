@@ -5,6 +5,10 @@ style_general = {
     
 // style of quality check graphs
 style_qc = {
+    brush_border_y_color: "#DDDDCC",
+    brush_border_y_opacity: 0.5,
+    plot_border_y_color: "#DDDDCC",
+    plot_border_y_opacity: 0.2,
 };
 
 // style of genome-wide bar plot
@@ -14,93 +18,18 @@ style_sv_bar = {
     title_y: "samples with SV breakp.",
     title_x: "Chromosome",
     
-    // circular sector's label options
-    axis_x_label: [
-        "1",  // chr1
-        "2",  // chr2
-        "3",  // chr3
-        "4",  // chr4
-        "5",  // chr5
-        "6",  // chr6
-        "7",  // chr7
-        "8",  // chr8
-        "9",  // chr9
-        "10", // chr10
-        "11", // chr11
-        "12", // chr12
-        "13", // chr13
-        "14", // chr14
-        "15", // chr15
-        "16", // chr16
-        "17", // chr17
-        "18", // chr18
-        "19", // chr19
-        "20", // chr20
-        "21", // chr21
-        "22", // chr22
-        "X",  // chrX
-        "Y",  // chrY
-    ],
+    border_x_main_color: "#E0E0E0",
+    border_x_main_width: "1px",
+    border_x_sub_color: "#A6A6A6",
+    border_x_sub_width: "1px",
+    border_y_color: "#DDDDCC",
+    border_y_opacity: 0.5,
 };
 
 // style of thumbnails
 style_sv_thumb = {
-    // circular sector's fill color options
-    arc_fill_color: [
-        "#BBBBBB", // chr1
-        "#BBBBBB", // chr2
-        "#BBBBBB", // chr3
-        "#BBBBBB", // chr4
-        "#BBBBBB", // chr5
-        "#BBBBBB", // chr6
-        "#BBBBBB", // chr7
-        "#BBBBBB", // chr8
-        "#BBBBBB", // chr9
-        "#BBBBBB", // chr10
-        "#BBBBBB", // chr11
-        "#BBBBBB", // chr12
-        "#BBBBBB", // chr13
-        "#BBBBBB", // chr14
-        "#BBBBBB", // chr15
-        "#BBBBBB", // chr16
-        "#BBBBBB", // chr17
-        "#BBBBBB", // chr18
-        "#BBBBBB", // chr19
-        "#BBBBBB", // chr20
-        "#BBBBBB", // chr21
-        "#BBBBBB", // chr22
-        "#BBBBBB", // chrX
-        "#BBBBBB", // chrY
-    ],
+    // circular sector's color options
     arc_fill_opacity: 1.0,
-    
-    // circular sector's edge color options
-    arc_stroke_color: [
-        "#BBBBBB", // chr1
-        "#BBBBBB", // chr2
-        "#BBBBBB", // chr3
-        "#BBBBBB", // chr4
-        "#BBBBBB", // chr5
-        "#BBBBBB", // chr6
-        "#BBBBBB", // chr7
-        "#BBBBBB", // chr8
-        "#BBBBBB", // chr9
-        "#BBBBBB", // chr10
-        "#BBBBBB", // chr11
-        "#BBBBBB", // chr12
-        "#BBBBBB", // chr13
-        "#BBBBBB", // chr14
-        "#BBBBBB", // chr15
-        "#BBBBBB", // chr16
-        "#BBBBBB", // chr17
-        "#BBBBBB", // chr18
-        "#BBBBBB", // chr19
-        "#BBBBBB", // chr20
-        "#BBBBBB", // chr21
-        "#BBBBBB", // chr22
-        "#BBBBBB", // chrX
-        "#BBBBBB", // chrY
-    ],
     arc_stroke_opacity: 1.0,
     
     // link options
@@ -117,91 +46,11 @@ style_sv_detail = {
     win_border_width: "1px",
     win_background_color: "white",
     
-    // circular sector's fill color options
-    arc_fill_color: [
-        "#BBBBBB", // chr1
-        "#BBBBBB", // chr2
-        "#BBBBBB", // chr3
-        "#BBBBBB", // chr4
-        "#BBBBBB", // chr5
-        "#BBBBBB", // chr6
-        "#BBBBBB", // chr7
-        "#BBBBBB", // chr8
-        "#BBBBBB", // chr9
-        "#BBBBBB", // chr10
-        "#BBBBBB", // chr11
-        "#BBBBBB", // chr12
-        "#BBBBBB", // chr13
-        "#BBBBBB", // chr14
-        "#BBBBBB", // chr15
-        "#BBBBBB", // chr16
-        "#BBBBBB", // chr17
-        "#BBBBBB", // chr18
-        "#BBBBBB", // chr19
-        "#BBBBBB", // chr20
-        "#BBBBBB", // chr21
-        "#BBBBBB", // chr22
-        "#BBBBBB", // chrX
-        "#BBBBBB", // chrY
-    ],
+    // circular sector's color options
     arc_fill_opacity: 1.0,
-    
-    // circular sector's edge color options
-    arc_stroke_color: [
-        "#BBBBBB", // chr1
-        "#BBBBBB", // chr2
-        "#BBBBBB", // chr3
-        "#BBBBBB", // chr4
-        "#BBBBBB", // chr5
-        "#BBBBBB", // chr6
-        "#BBBBBB", // chr7
-        "#BBBBBB", // chr8
-        "#BBBBBB", // chr9
-        "#BBBBBB", // chr10
-        "#BBBBBB", // chr11
-        "#BBBBBB", // chr12
-        "#BBBBBB", // chr13
-        "#BBBBBB", // chr14
-        "#BBBBBB", // chr15
-        "#BBBBBB", // chr16
-        "#BBBBBB", // chr17
-        "#BBBBBB", // chr18
-        "#BBBBBB", // chr19
-        "#BBBBBB", // chr20
-        "#BBBBBB", // chr21
-        "#BBBBBB", // chr22
-        "#BBBBBB", // chrX
-        "#BBBBBB", // chrY
-    ],
     arc_stroke_opacity: 1.0,
     
     // circular sector's label options
-    arc_label_text: [
-        "1",  // chr1
-        "2",  // chr2
-        "3",  // chr3
-        "4",  // chr4
-        "5",  // chr5
-        "6",  // chr6
-        "7",  // chr7
-        "8",  // chr8
-        "9",  // chr9
-        "10", // chr10
-        "11", // chr11
-        "12", // chr12
-        "13", // chr13
-        "14", // chr14
-        "15", // chr15
-        "16", // chr16
-        "17", // chr17
-        "18", // chr18
-        "19", // chr19
-        "20", // chr20
-        "21", // chr21
-        "22", // chr22
-        "X",  // chrX
-        "Y",  // chrY
-    ],
     arc_label_fontsize: "10px",
     arc_label_color: "#333333",
     
@@ -220,11 +69,23 @@ style_mut = {
     // title's text options
     title_sample: "Sample",
     title_sample_y: "Number of mutation",
+    virtical_border_x_color: "#CCCCEE",
+    virtical_border_x_width: "1px",
+    virtical_border_y_color: "#DDDDCC",
+    virtical_border_y_opacity: 0.5,
     
     title_gene: "Genes",
     title_gene_y1: "% Samples",
     title_gene_y2: "with mutation",
+    horizon_border_x_color: "#CCCCEE",
+    horizon_border_x_width: "1px",
+    horizon_border_y_color: "#DDDDCC",
+    horizon_border_y_opacity: 0.5,
     
     func_title: "functions",
+    
+    sub_border_color: "#FFFFFF",
+    sub_border_width: "1px",
+    
 };
 })();

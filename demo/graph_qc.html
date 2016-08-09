@@ -6,21 +6,19 @@
 </head>
 <body>
 <div class="version">
-Generated on 2016-08-03 15:05:06 for demo by paplot-0.4.0release-py2.7.
+Generated on 2016-08-09 11:45:39 for demo by paplot-0.4.0release-py2.7.
 </div>
 
 <div class="container">
 <h2>QC - demo</h2>
 
-<div id="select" style="margin-top: 20px;" >
+<div style="margin-top: 20px;" >
   <p class="muted pull-left" style="margin-right: 15px;">select a sort type</p>
-  <section>
-    <input type="radio" name="xSort" value="0" id="x_sort_0" onclick="sort('sample_ID')" checked />     <label for="x_sort_0" class="radio">name of sample</label>
-    <input type="radio" name="xSort" value="1" id="x_sort_1" onclick="sort('value_of_brush')" /><label for="x_sort_1" class="radio">average of depth</label>
-  </section>
-  <p><input type="button" value="reset" onclick="brush_reset()"></p>
+  <select id="sort_list" style="margin-left:10"></select>
+  <input type="button" value="sort" onclick="click_sort()">
+  <input type="button" value="reset" onclick="click_reset()">
+  <!-- save image --><button type="button" onclick="push_export()" id="dw_btn" style="margin-bottom: 20px;"><img src="../layout/download.png" style="margin-right: 5px;">export</button><div id="btn"></div>
 </div>
-<!-- save image --><button type="button" onclick="push_export()" id="dw_btn" style="margin-bottom: 20px;"><img src="../layout/download.png" style="margin-right: 5px;">export</button><div id="btn"></div>
 
 <p class="muted pull-left" style="margin-right: 15px;">select a range to zoom in</p>
 <div id='legend_chart_brush_svg'></div><div id='chart_brush'></div>

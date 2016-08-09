@@ -116,7 +116,6 @@ function push_export() {
     
     svgText = downloader.add_svgtag(svgText, height, width)
     
-    //utils.download_image(filename, mode, width, height, svgText, "dw_hide");
     rect = utils.absolute_position("dw_btn");
     downloader.createMenu ([rect.x + rect.width, rect.y], "btn", "paplot_sv", width, height, svgText);
 }
@@ -146,14 +145,14 @@ function draw_select()
         var pos = Number(split[1]);
         
         if (pos == 0) {
-            chromos[i] = style_sv_bar.axis_x_label[Number(split[0].split(".")[1])];
+            chromos[i] = bundle_data_sv.genome_size[Number(split[0].split(".")[1])].label;
         }
         else {
             chromos[i] = "";
         }
         
         if ((pos != 0) && (pos % Math.floor(bar_dataset.all_key.length/60) == 0)) {
-            chromos_grid[i] = style_sv_bar.axis_x_label[Number(split[0].split(".")[1])];
+            chromos_grid[i] = bundle_data_sv.genome_size[Number(split[0].split(".")[1])].label;
         }
         else {
             chromos_grid[i] = "";
@@ -189,25 +188,26 @@ function draw_select()
     
     div_select_bar.options.grid_y = new div_select_bar.grid_template();
     div_select_bar.options.grid_y.ticks = 2;
-    div_select_bar.options.grid_y.wide = 0;//BAR_TOP_AXIS_Y;
-    div_select_bar.options.grid_y.border_color = "#DDC";
+    div_select_bar.options.grid_y.wide = 0;
+    div_select_bar.options.grid_y.border_color = style_sv_bar.border_y_color;
+    div_select_bar.options.grid_y.border_opacity = style_sv_bar.border_y_opacity;
     div_select_bar.options.grid_y.orient = "left";
     
     div_select_bar.options.grid_xs[0] = new div_select_bar.grid_template();
     div_select_bar.options.grid_xs[0].keys = bar_dataset.all_key;
     div_select_bar.options.grid_xs[0].labels = chromos_grid;
     div_select_bar.options.grid_xs[0].wide = 0;
-    div_select_bar.options.grid_xs[0].border_color = "#E0E0E0";
-    div_select_bar.options.grid_xs[0].border_width = "1px";
-
+    div_select_bar.options.grid_xs[0].border_color = style_sv_bar.border_x_main_color;
+    div_select_bar.options.grid_xs[0].border_width = style_sv_bar.border_x_main_width;
+    
     div_select_bar.options.grid_xs[1] = new div_select_bar.grid_template();
     div_select_bar.options.grid_xs[1].keys = bar_dataset.all_key;
     div_select_bar.options.grid_xs[1].labels = chromos;
     div_select_bar.options.grid_xs[1].wide = 40;
     div_select_bar.options.grid_xs[1].font_size = "9px";
     div_select_bar.options.grid_xs[1].sift_y = 10;
-    div_select_bar.options.grid_xs[1].border_color = "#A6A6A6";
-    div_select_bar.options.grid_xs[1].border_width = "1px";
+    div_select_bar.options.grid_xs[1].border_color = style_sv_bar.border_x_sub_color;
+    div_select_bar.options.grid_xs[1].border_width = style_sv_bar.border_x_sub_width;
     div_select_bar.options.grid_xs[1].orient = "bottom";
     div_select_bar.options.grid_xs[1].text_anchor_ext = true;
     div_select_bar.options.grid_xs[1].text_anchor = "middle";
@@ -317,15 +317,22 @@ function selection_mode() {
 
 // style
 {
+    var color_list = [];
+    var label_list = [];
+    for (var i = 0; i < bundle_data_sv.genome_size.length; i++) {
+        color_list.push(bundle_data_sv.genome_size[i].color);
+        label_list.push(bundle_data_sv.genome_size[i].label);
+    }
+    
     var arc_style_detail = {
-        fill : style_sv_detail.arc_fill_color,
+        fill : color_list,
         fill_opacity : style_sv_detail.arc_fill_opacity,
-        stroke : style_sv_detail.arc_stroke_color,
+        stroke : color_list,
         stroke_opacity : style_sv_detail.arc_stroke_opacity,
         font_family: "'Helvetica Neue', Helvetica, Arial, sans-serif",
         text_color: style_sv_detail.arc_label_color,
         font_size: style_sv_detail.arc_label_fontsize,
-        label: style_sv_detail.arc_label_text,
+        label: label_list,
     };
 
     var link_style_detail = [];
@@ -346,9 +353,9 @@ function selection_mode() {
     }
     
     var arc_style_thumb = {
-        fill : style_sv_thumb.arc_fill_color,
+        fill : color_list,
         fill_opacity : style_sv_thumb.arc_fill_opacity,
-        stroke : style_sv_thumb.arc_stroke_color,
+        stroke : color_list,
         stroke_opacity : style_sv_thumb.arc_stroke_opacity,
         //font_family: "'Helvetica Neue', Helvetica, Arial, sans-serif",
         //text_color: style_sv_thumb.arc_label_color,

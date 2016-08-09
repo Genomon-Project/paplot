@@ -204,7 +204,8 @@ var mut_bar = (function()
         }
         
         var bar_padding =  0;
-        if (plot1 / x_items > 3) {
+        //if (plot1 / x_items > 3) {
+        if (plot1 / x_items > 20) {
             bar_padding = 1;
         }
         
@@ -539,8 +540,23 @@ var mut_bar = (function()
         this._set_xw();
     }
 
-    p._set_sort_item = function(tag_name, asc) {
+    p.sort_simple = function(sort_list)
+    {
+        this.asc.sort_list = {};
+        for (var k in sort_list) {
+            this.asc.sort_list[k] = sort_list[k];
+        }
+        this._set_xw();
+    }
+    p._set_sort_item = function(tag_name_org, asc_org) {
       
+        var tag_name = [];
+        var asc = [];
+        for (var i = 0; i < tag_name_org.length; i++) {
+            tag_name.push(tag_name_org[i]);
+            asc.push(asc_org[i]);
+        }
+        
         var tags = [];
         for (var j = 0; j< tag_name.length; j++) {
             for (var i = 0; i< this.tags.length; i++) {
@@ -576,8 +592,9 @@ var mut_bar = (function()
         var item_index = {};
         for (var i = 0; i< item.length; i++) {
             item_index[item[i][0]] = i;
+            //console.log([item[i][0],item[i][1][0], i])
         }
-            this.asc.sort_list = item_index;
+        this.asc.sort_list = item_index;
 
     }
 
@@ -954,11 +971,6 @@ var mut_bar = (function()
         
         this.svg_obj = d3.select("#" + this.id).append("svg");
         
-        //this.svg_obj
-        //    //.call(downloadable().filename(this.id))
-        //    .call(this.onload(this.id))
-        //    ;
-        
         // plot asc
         switch (this.options.direction_x) {
             case "bottom-up":
@@ -1247,6 +1259,8 @@ var mut_bar = (function()
         this.options.zoom.pos_start = this.asc.sort_list[keys[0]];
         this.options.zoom.pos_end = this.asc.sort_list[keys[keys.length-1]];
         
+        this._update_plot_size(); //
+        this._set_w_options();    //
         this._set_xw();
     }
     p.zoom_reset = function() {

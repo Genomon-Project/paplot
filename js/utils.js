@@ -136,6 +136,7 @@ var downloader = (function() {
             'white-space': 'nowrap',
             'text-decoration': 'none',
             'font-size': '14px',
+            'cursor': 'pointer',
         };
 
         var menu = d3.select("#" + id).append("ul").attr("class", "download_menu")
@@ -223,7 +224,7 @@ var downloader = (function() {
 
     downloader.svg_text = function(id, tr_x, tr_y) {
         var svgText = document.getElementById(id).innerHTML;
-        svgText = svgText.replace("visibility: hidden", "display:none").replace("visibility:hidden", "display:none");
+        svgText = svgText.replace(/visibility\s?:\s?hidden/g, "display:none");
         
         return "\n<g transform='translate(" + tr_x + ", " + tr_y + ")'>\n" + svgText + "\n</g>\n";
     }

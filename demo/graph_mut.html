@@ -7,7 +7,7 @@
 </head>
 <body>
 <div class="version">
-Generated on 2016-08-03 15:05:37 for demo by paplot-0.4.0release-py2.7.
+Generated on 2016-08-09 11:45:41 for demo by paplot-0.4.0release-py2.7.
 </div>
 
 <div class="container">
@@ -21,19 +21,19 @@ Generated on 2016-08-03 15:05:37 for demo by paplot-0.4.0release-py2.7.
     <div id="sort_x_text" class="selected_text">sample_ID(ASC)</div>
     <div style="height: 10px;" class="spacer"></div>
     <section><b>Sample ID</b>
-      <input type="radio" name="ID" value="0" id="xID_0" onclick="sort('sample_ID', 0, 'x')" />        <label for="xID_0" class="radio">none</label>
-      <input type="radio" name="ID" value="1" id="xID_1" onclick="sort('sample_ID', 1, 'x')" checked /><label for="xID_1" class="radio">ASC </label>
-      <input type="radio" name="ID" value="2" id="xID_2" onclick="sort('sample_ID', 2, 'x')" />        <label for="xID_2" class="radio">DESC</label>
+      <input type="radio" name="ID" value="0" id="xID_0" onclick="sort('sample_ID', 0, 'x')" checked /><label for="xID_0" class="radio">none</label>
+      <input type="radio" name="ID" value="1" id="xID_1" onclick="sort('sample_ID', 1, 'x')" /><label for="xID_1" class="radio">ASC </label>
+      <input type="radio" name="ID" value="2" id="xID_2" onclick="sort('sample_ID', 2, 'x')" /><label for="xID_2" class="radio">DESC</label>
     </section>
     <section><b>Mutation num.</b>
       <input type="radio" name="mutation_num" value="0" id="xNum_0" onclick="sort('number_of_mutations', 0, 'x')" checked /><label for="xNum_0" class="radio">none</label>
-      <input type="radio" name="mutation_num" value="1" id="xNum_1" onclick="sort('number_of_mutations', 1, 'x')" />        <label for="xNum_1" class="radio">ASC </label>
-      <input type="radio" name="mutation_num" value="2" id="xNum_2" onclick="sort('number_of_mutations', 2, 'x')" />        <label for="xNum_2" class="radio">DESC</label>
+      <input type="radio" name="mutation_num" value="1" id="xNum_1" onclick="sort('number_of_mutations', 1, 'x')" /><label for="xNum_1" class="radio">ASC </label>
+      <input type="radio" name="mutation_num" value="2" id="xNum_2" onclick="sort('number_of_mutations', 2, 'x')" /><label for="xNum_2" class="radio">DESC</label>
     </section>
     <section><b>Genes</b>
       <input type="radio" name="gene" value="0" id="xGene_0" checked /><label for="xGene_0" class="radio">none</label>
-      <input type="radio" name="gene" value="1" id="xGene_1" />        <label for="xGene_1" class="radio">ASC </label>
-      <input type="radio" name="gene" value="2" id="xGene_2" />        <label for="xGene_2" class="radio">DESC&nbsp;&nbsp;&nbsp;</label>
+      <input type="radio" name="gene" value="1" id="xGene_1" /><label for="xGene_1" class="radio">ASC </label>
+      <input type="radio" name="gene" value="2" id="xGene_2" /><label for="xGene_2" class="radio">DESC&nbsp;&nbsp;&nbsp;</label>
       select gene name.&nbsp;
       <select id="gene_list"></select>
       <input type="button" value="add sort key" onclick="sort_gene()" style="margin-left:10" />
@@ -50,14 +50,14 @@ Generated on 2016-08-03 15:05:37 for demo by paplot-0.4.0release-py2.7.
     <div id="sort_y_text" class="selected_text">number_of_mutations(DESC)</div>
     <div style="height: 10px;" class="spacer"></div>
     <section><b>Mutation num.</b>
-      <input type="radio" name="mutation_sum" value="0" id="yNum_0" onclick="sort('number_of_mutations', 0, 'y')" />        <label for="yNum_0" class="radio">none</label>
-      <input type="radio" name="mutation_sum" value="1" id="yNum_1" onclick="sort('number_of_mutations', 1, 'y')" />        <label for="yNum_1" class="radio">ASC </label>
-      <input type="radio" name="mutation_sum" value="2" id="yNum_2" onclick="sort('number_of_mutations', 2, 'y')" checked /><label for="yNum_2" class="radio">DESC</label>
+      <input type="radio" name="mutation_sum" value="0" id="yNum_0" onclick="sort('number_of_mutations', 0, 'y')" checked /><label for="yNum_0" class="radio">none</label>
+      <input type="radio" name="mutation_sum" value="1" id="yNum_1" onclick="sort('number_of_mutations', 1, 'y')" /><label for="yNum_1" class="radio">ASC </label>
+      <input type="radio" name="mutation_sum" value="2" id="yNum_2" onclick="sort('number_of_mutations', 2, 'y')" /><label for="yNum_2" class="radio">DESC</label>
     </section>
     <section><b>Gene name</b>
       <input type="radio" name="gene_name" value="0" id="yGene_0" onclick="sort('name', 0, 'y')" checked /><label for="yGene_0" class="radio">none</label>
-      <input type="radio" name="gene_name" value="1" id="yGene_1" onclick="sort('name', 1, 'y')"  />       <label for="yGene_1" class="radio">ASC </label>
-      <input type="radio" name="gene_name" value="2" id="yGene_2" onclick="sort('name', 2, 'y')" />        <label for="yGene_2" class="radio">DESC</label>
+      <input type="radio" name="gene_name" value="1" id="yGene_1" onclick="sort('name', 1, 'y')" /><label for="yGene_1" class="radio">ASC </label>
+      <input type="radio" name="gene_name" value="2" id="yGene_2" onclick="sort('name', 2, 'y')" /><label for="yGene_2" class="radio">DESC</label>
     </section>
   </div>
 

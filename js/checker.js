@@ -23,6 +23,7 @@ var mut_checker = (function() {
             direction_y: "top-down",
             grids: [],
             color_hilight: "#FF0",
+            frame_border_color: "#000"
         };
 
         // don't touch
@@ -125,11 +126,17 @@ var mut_checker = (function() {
     p.sort = function(tag_name, asc, axis) {
 
         this.set_sort_item(tag_name, asc, axis);
-        
         this.bar_sort();
     }
     
-    p.set_sort_item = function(tag_name, asc, axis) {
+    p.set_sort_item = function(tag_name_org, asc_org, axis) {
+
+        var tag_name = [];
+        var asc = [];
+        for (var i = 0; i < tag_name_org.length; i++) {
+            tag_name.push(tag_name_org[i]);
+            asc.push(asc_org[i]);
+        }
 
         var this_keys = this.keys;
         var this_tags = this.tags;
@@ -357,7 +364,8 @@ var mut_checker = (function() {
     // bar padding
     // -----------------------------------
     p.bar_padding = function(wide, items) {
-        if (wide / items > 3) {
+        //if (wide / items > 3) {
+        if (wide / items > 20) {
             return 1;
         }
         return 0;
@@ -395,6 +403,19 @@ var mut_checker = (function() {
         this.svg_obj.selectAll("g.transparent_rect").selectAll("rect")
             .attr("height", height)
             .attr("width", width)
+        ;
+        
+        // frame
+        var frame_pos = [
+            {x1: this.padding.left, y1: this.padding.top, x2: this.padding.left+this.plot.w, y2: this.padding.top},
+            {x1: this.padding.left, y1: this.padding.top, x2: this.padding.left, y2: this.padding.top+this.plot.h},
+            {x1: this.padding.left, y1: this.padding.top+this.plot.h, x2: this.padding.left+this.plot.w, y2: this.padding.top+this.plot.h},
+            {x1: this.padding.left+this.plot.w, y1: this.padding.top, x2: this.padding.left+this.plot.w, y2: this.padding.top+this.plot.h},];
+        this.svg_obj.selectAll("g.frame").selectAll("line")
+            .attr("x1", function(d,i) { return frame_pos[i].x1; })
+            .attr("x2", function(d,i) { return frame_pos[i].x2; })
+            .attr("y1", function(d,i) { return frame_pos[i].y1; })
+            .attr("y2", function(d,i) { return frame_pos[i].y2; })
         ;
         
         this.bar_sort();
@@ -643,6 +664,9 @@ var mut_checker = (function() {
             .attr("stroke", function(d, i) {
                 return that.options.grids[grid_idx[i][0]].border_color;
             })
+            .attr("stroke-width", function(d, i) {
+                return that.options.grids[grid_idx[i][0]].border_width;
+            })
             .attr("shape-rendering", "crispEdges")
             .style("stroke-opacity", function(d, i) {
                 return that.options.grids[grid_idx[i][0]].border_opacity;
@@ -754,6 +778,17 @@ var mut_checker = (function() {
             .selectAll("line")
             .data([])
             .enter();
+        
+        this.svg_obj.append("g")
+            .attr("class", "frame")
+            .selectAll("line")
+            .data([1,1,1,1])
+            .enter()
+            .append("line")
+            .attr("stroke", that.options.frame_border_color)
+            .attr("stroke-width", "1px")
+            .attr("shape-rendering", "crispEdges")
+            ;
     }
     p.draw = function() {
         this.init();

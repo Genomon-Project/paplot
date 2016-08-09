@@ -1,6 +1,8 @@
 // *********************************************
 // initialize
 // *********************************************
+var _DEBUG = false;
+
 // div-dataset
 var divs = [];
 var legends = [];
@@ -31,40 +33,80 @@ window.addEventListener('resize', function() {
     }, 200);
 });
 
-function update_div() {
-    var margin_left = 100, margin_right = 100;
-    var w_min = qc_data.Ids.length*6;
-    var w_max = qc_data.Ids.length*50;
+function svg_resize(item_num) {
+    
+    var margin_left = 200, margin_right = 80, padding_left = 80, padding_right = 100;
+    var bar_min1 = 1, bar_min2 = 6, bar_max = 50;
+    
+    var w = window.innerWidth - margin_left - margin_right;
+    
+    if (item_num == undefined) {
+        item_num = qc_data.Ids.length;
+        
+        var w_min1 = item_num * bar_min1 + padding_left;
+        var w_min2 = item_num * bar_min2 + padding_left;
+        var w_max = item_num * bar_max + padding_left;
+
+        // width
+        if (w > w_max) w = w_max;
+        if (w < w_min1) w = w_min1;
+        var w_extend = w;
+        if (w_extend < w_min2) w_extend = w_min2;
+        
+        return {width_fix: w, width_extend: w_extend + padding_right};
+    }
+    
+    var w_min1 = item_num * bar_min1 + padding_left;
+    var w_min2 = item_num * bar_min2 + padding_left;
 
     // width
-    var w = window.innerWidth - margin_left - margin_right;
-    if (w < w_min) w = w_min;
-    if (w > w_max) w = w_max;
+    if (w < w_min1) w = w_min1;
+    var w_extend = w;
+    if (w_extend < w_min2) w_extend = w_min2;
     
-    // height
+    return {width_fix: w, width_extend: w_extend + padding_right};
+}
+
+function update_div() {
+    
+    var w = svg_resize();
+    
     for (var i = 0; i < divs.length; i++) {
-        d3.select("#" + divs[i].chart_id).style("width", Math.floor(w) + "px");
+        
         if (divs[i].chart_id == "chart_brush") {
+            d3.select("#" + divs[i].chart_id).style("width", w.width_fix + "px");
             d3.select("#" + divs[i].chart_id).style("height", "120px");
         }
         else {
+            d3.select("#" + divs[i].chart_id).style("width", w.width_extend + "px");
             d3.select("#" + divs[i].chart_id).style("height", "240px");
         }
     }
+}
+
+function load_tag_data(id) {
+    var dataset = qc_data.get_dataset(id);
+    var data = [];
+    for (var s = 0; s < dataset.data.length; s++) {
+        
+        for (var d = 0; d < dataset.data[s].length; d++) {
+            if (s == 0) data[d] = Number(dataset.data[s][d]);
+            else data[d] += Number(dataset.data[s][d]);
+        }
+    }
+    return {"id": id, "data": data, "title": qc_data.get_plot_config(id).title};
 }
 
 function init() {
 
     update_div();
     
-    var brush_dataset = qc_data.get_dataset("chart_brush");
-    var brush_data = [];
-    for (var s = 0; s < brush_dataset.data.length; s++) {
-        
-        for (var d = 0; d < brush_dataset.data[s].length; d++) {
-            if (s == 0) brush_data[d] = brush_dataset.data[s][d];
-            else brush_data[d] += brush_dataset.data[s][d];
+    var tag_data = [];
+    for (var i = 0; i < divs.length; i++) {
+        if (divs[i].chart_id == "chart_brush") {
+            continue;
         }
+        tag_data.push(load_tag_data(divs[i].chart_id));
     }
     
     for (var i = 0; i < divs.length; i++) {
@@ -80,19 +122,20 @@ function init() {
             bar.dataset[s].enable = true;
         };
         
-        bar.keys = qc_data.Ids;
+        bar.keys = dataset.key;
         bar.tags[0] = new bar.tag_template("sample_ID");
-        bar.tags[0].values = qc_data.Ids;
+        bar.tags[0].values = dataset.key;
         bar.tags[0].note = "fix";
-        bar.tags[1] = new bar.tag_template("value_of_brush");
-        bar.tags[1].values = brush_data;
-        bar.tags[1].note = "brush";
+
+        for (var k = 0; k < tag_data.length; k++) {
+            bar.tags[k+1] = new bar.tag_template(tag_data[k].id);
+            bar.tags[k+1].values = tag_data[k].data;
+        }
         
         bar.options.resizeable_w = true;
         bar.options.resizeable_h = false;
         bar.options.multi_select = false;
         bar.options.padding_left = 0;
-        bar.options.padding_right = 0;
         bar.options.padding_top = 10;
         bar.options.padding_bottom = 40;
         bar.options.direction_x = "left-right";
@@ -108,43 +151,29 @@ function init() {
             bar.options.tooltip.position = "bar";
         }
         
+        // axis-y
+        bar.options.grid_y = new bar.grid_template();
+        bar.options.grid_y.wide = 80;
+        bar.options.grid_y.orient = "left";
+        
         if (divs[i].chart_id == "chart_brush") {
+            bar.options.padding_right = 0;
             bar.options.brush.enable = true;
             bar.options.brush.fill = "blue";
             bar.options.brush.stroke = "blue";
             
-            bar.options.grid_y = new bar.grid_template();
-            bar.options.grid_y.ticks = 1;
-            bar.options.grid_y.wide = 80;
-            bar.options.grid_y.border_color = "#DDC";
-            bar.options.grid_y.border_opacity = 0.5;
-            bar.options.grid_y.orient = "left";
-            
-            bar.options.grid_xs[0] = new bar.grid_template();
-            bar.options.grid_xs[0].keys = qc_data.Ids
-            //bar.options.grid_xs[0].labels = qc_data.Ids;
-            bar.options.grid_xs[0].labels = new Array(qc_data.Ids.length);
-            //bar.options.grid_xs[0].wide = 120;
-            bar.options.grid_xs[0].wide = 0;
-            bar.options.grid_xs[0].font_size = "10px";
-            bar.options.grid_xs[0].sift_x = 0;
-            bar.options.grid_xs[0].border_color = "#CCE";
-            bar.options.grid_xs[0].border_width = "2px";
-            bar.options.grid_xs[0].border_opacity = 0.5;
-            bar.options.grid_xs[0].orient = "bottom";
-            bar.options.grid_xs[0].text_anchor = "end";
-            bar.options.grid_xs[0].text_rotate = "-90";
+            bar.options.grid_y.ticks = 2;
+            bar.options.grid_y.border_color = style_qc.brush_border_y_color;
+            bar.options.grid_y.border_opacity = style_qc.brush_border_y_opacity;
         }
         else {
+            bar.options.padding_right = 100;
             bar.options.zoom.enable = true;
             
-            bar.options.grid_y = new bar.grid_template();
             bar.options.grid_y.ticks = 10;
-            bar.options.grid_y.wide = 80;
-            bar.options.grid_y.border_color = "#DDC";
-            bar.options.grid_y.border_opacity = 0.5;
-            bar.options.grid_y.orient = "left";
-
+            bar.options.grid_y.border_color = style_qc.plot_border_y_color;
+            bar.options.grid_y.border_opacity = style_qc.plot_border_y_opacity;
+            
             bar.options.titles[0] = new bar.title_template(info.title_y);
             bar.options.titles[0].orient = "left";
             bar.options.titles[0].wide = 0;
@@ -153,12 +182,22 @@ function init() {
             bar.options.titles[0].font_size = "12px";
             bar.options.titles[0].sift_x = 8;
         }
+        // for debug
+        if (_DEBUG == true) {
+            bar.options.grid_xs[0] = new bar.grid_template();
+            bar.options.grid_xs[0].keys = dataset.key;
+            bar.options.grid_xs[0].labels = dataset.key;
+            bar.options.grid_xs[0].wide = 40;
+            bar.options.grid_xs[0].font_size = "9px";
+            bar.options.grid_xs[0].sift_y = 10;
+            bar.options.grid_xs[0].orient = "bottom";
+            bar.options.grid_xs[0].text_anchor = "middle";
+            bar.options.grid_xs[0].text_rotate = "90";
+        }
+        
         bar.draw();
         downloader.set_event_listner (divs[i].chart_id);
-        
-        if (d3.select("#x_sort_0").property("checked")) bar.sort(["sample_ID"], [true]);
-        else if (d3.select("#x_sort_1").property("checked")) bar.sort(["value_of_brush"], [true]);
-        
+
         // legend
         var legend = legends[i].obj;
         legend.items =  info.label;
@@ -168,6 +207,23 @@ function init() {
         legend.draw_svg(true);
         downloader.set_event_listner (legends[i].chart_id);
     }
+    
+    sort("sample_ID", true);
+    
+    listbox_items = [["sample_ID", "sample ID"]];
+    for (var i = 0; i < tag_data.length; i++) {
+        listbox_items.push([tag_data[i].id, tag_data[i].title]);
+    }
+
+    d3.select("#sort_list")
+        .selectAll("option")
+        .data(listbox_items)
+        .enter()
+        .append("option")
+        .attr("value", function(d){ return d[0]})
+        .text(function(d){ return d[1] })
+    ;
+    
 }
 
 // *********************************************
@@ -188,13 +244,44 @@ function selection_reset() {
 // *********************************************
 // sort functions
 // *********************************************
-function sort(name) {
+function sort(name, asc) {
     // call plot's sort function
-    for (var i = 0; i< divs.length; i++) {
-        divs[i].obj.brush_reset();
-        divs[i].obj.zoom_reset();
-        divs[i].obj.sort([name], [true]);
+    
+    divs[0].obj.sort([name], [asc]);
+    
+    for (var i = 1; i< divs.length; i++) {
+        divs[i].obj.sort_simple(divs[0].obj.asc.sort_list);
     }
+    
+    //for (var i = 0; i< divs.length; i++) {
+    //    divs[i].obj.sort([name], [asc]);
+    //}
+}
+
+function click_sort() {
+    brush_reset();
+    
+    var obj = d3.select("#sort_list").selectAll("option");
+    var name = "";
+    var asc = false;
+    for (var i = 0; i < obj[0].length; i++) {
+        if (obj[0][i].selected == true) {
+            name = obj[0][i].value;
+            if (i == 0) {
+                asc = true;
+            }
+            break;
+        }
+    }
+    
+    sort(name, asc);
+}
+
+function click_reset() {
+    brush_reset("sample_ID");
+    sort("sample_ID", true);
+    
+    d3.select("#sort_list").selectAll("option")[0][0].selected = true;
 }
 
 // *********************************************
@@ -221,20 +308,36 @@ function chart_brushed(data, range) {
     }
     if (updated == false) return;
     
-    for (var i = 1; i< divs.length; i++) {
+    var w = svg_resize(data.length);
+    
+    for (var i = 0; i< divs.length; i++) {
+        if (divs[i].chart_id == "chart_brush") {
+            continue;
+        }
+        
+        d3.select("#" + divs[i].chart_id).style("width", w.width_extend + "px");
         divs[i].obj.reset_select();
         divs[i].obj.zoom(data);
+        
     }
 }
 
 function brush_reset() {
+    
+    var w = svg_resize();
+    
     for (var i = 0; i< divs.length; i++) {
+        if (divs[i].chart_id == "chart_brush") {
+            d3.select("#" + divs[i].chart_id).style("width", w.width_fix + "px");
+        }
+        else {
+            d3.select("#" + divs[i].chart_id).style("width", w.width_extend + "px");
+        }
+        divs[i].obj.resize();
         divs[i].obj.brush_reset();
         divs[i].obj.zoom_reset();
     }
 }
-
-
 // *********************************************
 // save image
 // *********************************************
