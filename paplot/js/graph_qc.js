@@ -176,7 +176,7 @@ function init() {
             
             bar.options.titles[0] = new bar.title_template(info.title_y);
             bar.options.titles[0].orient = "left";
-            bar.options.titles[0].wide = 0;
+            bar.options.titles[0].wide = 10;
             bar.options.titles[0].text_anchor = "middle";
             bar.options.titles[0].text_rotate = -90;
             bar.options.titles[0].font_size = "12px";
