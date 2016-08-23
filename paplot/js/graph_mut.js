@@ -72,8 +72,8 @@ function update_div() {
 
     // width-center
     var w_center = w*4;
-    var w_center_min = mut_data.Ids.length*6;
-    var w_center_max = mut_data.Ids.length*50;
+    var w_center_min = mut_data.Ids.length*6 + BAR_TOP_AXIS_Y;
+    var w_center_max = mut_data.Ids.length*50 + BAR_TOP_AXIS_Y;
     
     if (w_center < w_center_min) w_center = w_center_min;
     if (w_center > w_center_max) w_center = w_center_max;
