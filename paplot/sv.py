@@ -477,9 +477,9 @@ def convert_tojs(input_file, output_file, positions, config):
         iid = row[df.name_to_index(cols_di["id"])]
         if iid == "": continue
 
-        chr1 = row[df.name_to_index(cols_di["chr1"])]
+        chr1 = str(row[df.name_to_index(cols_di["chr1"])])
         pos1 = row[df.name_to_index(cols_di["break1"])]
-        chr2 = row[df.name_to_index(cols_di["chr2"])]
+        chr2 = str(row[df.name_to_index(cols_di["chr2"])])
         pos2 = row[df.name_to_index(cols_di["break2"])]        
 
         [index1, rang] = insite_genome(genome_size, chr1, pos1)
