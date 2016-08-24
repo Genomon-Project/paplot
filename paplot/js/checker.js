@@ -598,6 +598,7 @@ var mut_checker = (function() {
                     key1 = key1 + "." + d[0];
                     key2 = key2 + "." + d[1]
                 }
+                
                 var on1 = that.svg_obj.selectAll("g.transparent_bar1").select("rect." + d[0]).classed(key1);
                 var on2 = that.svg_obj.selectAll("g.transparent_bar2").select("rect." + d[1]).classed(key2);
                 
@@ -681,6 +682,14 @@ var mut_checker = (function() {
     // initialize
     // -----------------------------------
     p.init = function() {
+        
+        // check key value
+        for (var idx=0; idx < this.keys.length; idx++) {
+            if (this.keys[idx][0].match(/[0-9]+/)) {
+                console.log("[WARNING] Key's first character is numeric. " + this.keys[idx]);
+            }
+        }
+                
         var that = this;
         
         this.svg_obj = d3.select("#" + this.id).append("svg");

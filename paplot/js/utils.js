@@ -79,6 +79,31 @@ var utils = (function() {
             y:document_obj.body.scrollTop  || document_obj.documentElement.scrollTop
         };
     }
+    
+    // *********************************************
+    // create key list
+    // *********************************************
+    utils.create_key_list = function(li) {
+        
+        var key_list = [];
+        
+        for (var idx=0; idx < li.length; idx++) {
+            if (li[idx][0].match(/[^0-9]+/)) {
+                key_list.push(li[idx]);
+                continue;
+            }
+            var temp = li[idx];
+            while(1) {
+                temp = "_" + temp;
+                if (li.indexOf(temp) < 0) {
+                    break;
+                }
+            }
+            key_list.push(temp);
+        }
+        return key_list;
+    }
+    
     return utils;
 })();
 

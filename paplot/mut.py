@@ -34,6 +34,9 @@ subdata_template = '{{name:"{name}",title:"{title}", type:"{type}",item:[{item}]
 subdata_data_template = '[{id},{item}],'
 
 js_function = """
+mut_data.Ids_keys = utils.create_key_list(mut_data.Ids);
+mut_data.genes_keys = utils.create_key_list(mut_data.genes);
+
 function calc_option(format, pos, sum, value) {
     
     var id = pos[0];
@@ -92,8 +95,8 @@ mut_data.get_dataset_id = function () {
     var keys = [];
     var tooltips = {};
     var sum_par_id = [];
-    for (var i=0; i < mut_data.Ids.length; i++) {
-        tooltips[mut_data.Ids[i]] = [];
+    for (var i=0; i < mut_data.Ids_keys.length; i++) {
+        tooltips[mut_data.Ids_keys[i]] = [];
         sum_par_id[i] = 0;
     }
     
@@ -104,7 +107,7 @@ mut_data.get_dataset_id = function () {
         keys[f] = [];
 
         // par ID
-        for (var i=0; i < mut_data.Ids.length; i++) {
+        for (var i=0; i < mut_data.Ids_keys.length; i++) {
             
             var data_filt = mut_data.mutations.filter(function(item, index){
                 if ((item[0] == i) && (item[1] == f)) return true;
@@ -114,16 +117,16 @@ mut_data.get_dataset_id = function () {
             for (var d in data_filt) sum += data_filt[d][3];
             if (sum > 0) {
                 data[f].push(sum);
-                keys[f].push(mut_data.Ids[i]);
-                tooltips[mut_data.Ids[i]].push(tooltip_partial(mut_data.tooltip_format.id_partial, [i, f, null], data_filt, false, sum));
+                keys[f].push(mut_data.Ids_keys[i]);
+                tooltips[mut_data.Ids_keys[i]].push(tooltip_partial(mut_data.tooltip_format.id_partial, [i, f, null], data_filt, false, sum));
                 sum_par_id[i] += sum;
             }
         }
     }
-    for (var i=0; i < mut_data.Ids.length; i++) {
+    for (var i=0; i < mut_data.Ids_keys.length; i++) {
         title = tooltip_title(mut_data.tooltip_format.id_title, [i, null, null], sum_par_id[i]);
         for (var t = 0; t < title.length; t++) {
-            tooltips[mut_data.Ids[i]].splice(t, 0, title[t]);
+            tooltips[mut_data.Ids_keys[i]].splice(t, 0, title[t]);
         }
     }
     
@@ -135,27 +138,27 @@ mut_data.get_dataset_checker = function (func_flgs, use_genes) {
     // tooltips
     var tooltips_matrix = [];
     {
-        for (var i in mut_data.Ids) {
+        for (var i in mut_data.Ids_keys) {
             tooltips_matrix[i] = {};
         }
         
         for (var d in mut_data.mutations) {
             var data = mut_data.mutations[d];
             if (func_flgs[mut_data.funcs[data[1]]] == false) continue;
-            if (use_genes.indexOf(mut_data.genes[data[2]]) < 0) continue;
+            if (use_genes.indexOf(mut_data.genes_keys[data[2]]) < 0) continue;
             
-            if (tooltips_matrix[data[0]][mut_data.genes[data[2]]] == null) {
+            if (tooltips_matrix[data[0]][mut_data.genes_keys[data[2]]] == null) {
                 var data_filt = mut_data.mutations.filter(function(item, index){
                     if ((item[0] == data[0]) && (item[2] == data[2])) return true;
                 });
                 
                 var sum = 0;
                 for (var d in data_filt) sum += data_filt[d][3];
-                tooltips_matrix[data[0]][mut_data.genes[data[2]]] = tooltip_title(mut_data.tooltip_format.checker_title, [data[0], null, data[2]], sum);
+                tooltips_matrix[data[0]][mut_data.genes_keys[data[2]]] = tooltip_title(mut_data.tooltip_format.checker_title, [data[0], null, data[2]], sum);
             }
             var texts = tooltip_partial(mut_data.tooltip_format.checker_partial, [data[0],data[1],data[2]], [data], true, 1);
             for (var t in texts) {
-                tooltips_matrix[data[0]][mut_data.genes[data[2]]].push(texts[t]);
+                tooltips_matrix[data[0]][mut_data.genes_keys[data[2]]].push(texts[t]);
             }
         }
     }
@@ -177,10 +180,10 @@ mut_data.get_dataset_checker = function (func_flgs, use_genes) {
         
         // par data
         for (var d in data_filt) {
-            if (use_genes.indexOf(mut_data.genes[data_filt[d][2]]) < 0) continue;
+            if (use_genes.indexOf(mut_data.genes_keys[data_filt[d][2]]) < 0) continue;
             data[f].push(1);
-            keys[f].push(mut_data.Ids[data_filt[d][0]]);
-            keys2[f].push(mut_data.genes[data_filt[d][2]]);
+            keys[f].push(mut_data.Ids_keys[data_filt[d][0]]);
+            keys2[f].push(mut_data.genes_keys[data_filt[d][2]]);
         }
     }
     
@@ -191,11 +194,11 @@ function extract_gene(func_flgs, gene_th, gene_max, sort_name_y, sort_asc_y) {
 
     var gene_nums = [];
     {
-        for (var g=0; g < mut_data.genes.length; g++) {
+        for (var g=0; g < mut_data.genes_keys.length; g++) {
             gene_nums[g] = 0;
         }
         var gene_Ids = [];
-        for (var i in mut_data.Ids) {
+        for (var i in mut_data.Ids_keys) {
             gene_Ids[i] = [];
         }
         for (var d in mut_data.mutations) {
@@ -211,8 +214,8 @@ function extract_gene(func_flgs, gene_th, gene_max, sort_name_y, sort_asc_y) {
     // sort
     var gene_obj = [];
     {
-        for (var g in mut_data.genes) {
-            if (gene_nums[g] * 100.0 / mut_data.Ids.length < gene_th) continue;
+        for (var g in mut_data.genes_keys) {
+            if (gene_nums[g] * 100.0 / mut_data.Ids_keys.length < gene_th) continue;
             if (gene_nums[g] == 0) continue;
 
             gene_obj.push({name: mut_data.genes[g], num: gene_nums[g]});
@@ -241,14 +244,16 @@ function extract_gene(func_flgs, gene_th, gene_max, sort_name_y, sort_asc_y) {
     }
 
     var gene_nums_ex = [];
+    var gene_keys = [];
     var gene_names = [];
     for (var g in gene_obj) {
         if (g >= gene_max) break;
         gene_nums_ex.push(gene_obj[g].num);
+        gene_keys.push(mut_data.genes_keys[mut_data.genes.indexOf(gene_obj[g].name)]);
         gene_names.push(gene_obj[g].name);
     }
     
-    return {names: gene_names, values: gene_nums_ex, uncut_length: gene_obj.length};
+    return {keys: gene_keys, names: gene_names, values: gene_nums_ex, uncut_length: gene_obj.length};
 };
 
 mut_data.get_dataset_gene = function (func_flgs, gene_th, gene_max, sort_name_y, sort_asc_y) {
@@ -264,18 +269,18 @@ mut_data.get_dataset_gene = function (func_flgs, gene_th, gene_max, sort_name_y,
 
     var gene_ids = [];
     var tooltips = {};
-    for (var ex_g=0; ex_g < ex_genes.names.length; ex_g++) {
-        var g = mut_data.genes.indexOf(ex_genes.names[ex_g]);
+    for (var ex_g=0; ex_g < ex_genes.keys.length; ex_g++) {
+        var g = mut_data.genes_keys.indexOf(ex_genes.keys[ex_g]);
         gene_ids[ex_g] = [];
-        tooltips[ex_genes.names[ex_g]] = tooltip_title(mut_data.tooltip_format.gene_title, [null, null, g], ex_genes.values[ex_g]);
+        tooltips[ex_genes.keys[ex_g]] = tooltip_title(mut_data.tooltip_format.gene_title, [null, null, g], ex_genes.values[ex_g]);
     }
     
     // par func
     for (var f=0; f < mut_data.funcs.length; f++) {
         if (func_flgs[mut_data.funcs[f]] == false) continue;
         // par gene
-        for (var ex_g=0; ex_g < ex_genes.names.length; ex_g++) {
-            var g = mut_data.genes.indexOf(ex_genes.names[ex_g]);
+        for (var ex_g=0; ex_g < ex_genes.keys.length; ex_g++) {
+            var g = mut_data.genes_keys.indexOf(ex_genes.keys[ex_g]);
             var data_filt = mut_data.mutations.filter(function(item, index){
                 if ((item[2] == g) && (item[1] == f)) return true;
             });
@@ -287,25 +292,26 @@ mut_data.get_dataset_gene = function (func_flgs, gene_th, gene_max, sort_name_y,
                 sum = sum + 1;
             }
             if (sum > 0) {
-                var value = sum * 100.0 / mut_data.Ids.length;
+                var value = sum * 100.0 / mut_data.Ids_keys.length;
                 
                 gene_nums[f].push(value);
-                genes[f].push(ex_genes.names[ex_g]);
+                genes[f].push(ex_genes.keys[ex_g]);
                 
                 var texts = tooltip_partial(mut_data.tooltip_format.gene_partial, [null, f, g], data_filt, false, sum);
                 for (var t in texts) {
-                    tooltips[ex_genes.names[ex_g]].push(texts[t]);
+                    tooltips[ex_genes.keys[ex_g]].push(texts[t]);
                 }
             }
         }
     }
-    return {data: gene_nums, keys: genes, tooltips: tooltips, total_keys: ex_genes.names, total_nums: ex_genes.values, uncut_length: ex_genes.uncut_length};
+
+    return {data: gene_nums, keys: genes, tooltips: tooltips, total_keys: ex_genes.keys, total_names: ex_genes.names, total_nums: ex_genes.values, uncut_length: ex_genes.uncut_length};
 };
     
 mut_data.get_id_nums = function (func_flgs, data, keys) {
 
     var id_nums = [];
-    for (var i in mut_data.Ids) {
+    for (var i in mut_data.Ids_keys) {
         id_nums[i] = 0;
     }
     
@@ -313,7 +319,7 @@ mut_data.get_id_nums = function (func_flgs, data, keys) {
         if (func_flgs[mut_data.funcs[f]] == false) continue;
         
         for (var d=0; d < data[f].length; d++) {
-            id_nums[mut_data.Ids.indexOf(keys[f][d])] += data[f][d];
+            id_nums[mut_data.Ids_keys.indexOf(keys[f][d])] += data[f][d];
         }
     }
     
@@ -328,14 +334,14 @@ mut_data.get_id_flg_par_gene = function (name, func_flgs) {
     // par ID
     var idx_g = 0;
     
-    for (var g=0; g < mut_data.genes.length; g++) {
-        if (mut_data.genes[g] == name) {
+    for (var g=0; g < mut_data.genes_keys.length; g++) {
+        if (mut_data.genes_keys[g] == name) {
             idx_g = g;
             break;
         }
     }
     
-    for (var i in mut_data.Ids) {
+    for (var i in mut_data.Ids_keys) {
         
         var data_filt = mut_data.mutations.filter(function(item, index){
             if ((item[2] == idx_g) && (item[0] == i)) return true;
@@ -407,7 +413,7 @@ mut_data.get_sub_data = function (name) {
     // par data
     for (var i=0; i < sub.data.length; i++) {
         
-        var id = mut_data.Ids[sub.data[i][0]];
+        var id = mut_data.Ids_keys[sub.data[i][0]];
         var s = -1;
         var val = "";
         
@@ -459,7 +465,7 @@ mut_data.get_sub_values = function (name) {
         if (mut_data.subdata[f].name != name) continue;
         
         // par ID
-        for (var i in mut_data.Ids) {
+        for (var i in mut_data.Ids_keys) {
             
             var data_filt = mut_data.subdata[f].data.filter(function(item, index){
                 if (item[0] == i) return true;

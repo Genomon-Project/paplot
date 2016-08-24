@@ -967,6 +967,14 @@ var mut_bar = (function()
     // initialize
     // -----------------------------------
     p._init = function() {
+        
+        // check key value
+        for (var idx=0; idx < this.keys.length; idx++) {
+            if (this.keys[idx][0].match(/[0-9]+/)) {
+                console.log("[WARNING] Key's first character is numeric. " + this.keys[idx]);
+            }
+        }
+        
         var that = this;
         
         this.svg_obj = d3.select("#" + this.id).append("svg");
