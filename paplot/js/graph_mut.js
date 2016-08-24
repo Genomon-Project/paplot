@@ -343,7 +343,7 @@ function filter_gene_exec() {
     
     genes_length = dataset_gene.total_keys.length;
     update_div();
-    update_gene_listbox(dataset_gene.total_keys);
+    update_gene_listbox(dataset_gene.total_names);
     
     // bar-left update
     {
@@ -355,9 +355,9 @@ function filter_gene_exec() {
         
         div_mut_bar_left.tooltips = dataset_gene.tooltips;
         div_mut_bar_left.keys = dataset_gene.total_keys;
-        div_mut_bar_left.tags[0].values = dataset_gene.total_keys;
+        div_mut_bar_left.tags[0].values = dataset_gene.total_names;
         div_mut_bar_left.tags[1].values = dataset_gene.total_nums;
-        div_mut_bar_left.options.grid_xs[0].labels = dataset_gene.total_keys;
+        div_mut_bar_left.options.grid_xs[0].labels = dataset_gene.total_names;
         div_mut_bar_left.options.grid_xs[0].keys = dataset_gene.total_keys;
 
         div_mut_bar_left.update();
@@ -425,7 +425,7 @@ function change_stack_exec(name, on) {
     genes_length = dataset_gene.total_keys.length;
     
     update_div();
-    update_gene_listbox(dataset_gene.total_keys);
+    update_gene_listbox(dataset_gene.total_names);
     
     // bar-left update
     {
@@ -439,9 +439,9 @@ function change_stack_exec(name, on) {
         
         div_mut_bar_left.tooltips = dataset_gene.tooltips;
         div_mut_bar_left.keys = dataset_gene.total_keys;
-        div_mut_bar_left.tags[0].values = dataset_gene.total_keys;
+        div_mut_bar_left.tags[0].values = dataset_gene.total_names;
         div_mut_bar_left.tags[1].values = dataset_gene.total_nums;
-        div_mut_bar_left.options.grid_xs[0].labels = dataset_gene.total_keys;
+        div_mut_bar_left.options.grid_xs[0].labels = dataset_gene.total_names;
         div_mut_bar_left.options.grid_xs[0].keys = dataset_gene.total_keys;
 
         div_mut_bar_left.update();
@@ -466,7 +466,7 @@ function change_stack_exec(name, on) {
         
         div_mut_checker.tooltips = dataset_checker.tooltips;
         div_mut_checker.keys2 = dataset_gene.total_keys;
-        div_mut_checker.tags2[0].values = dataset_gene.total_keys;
+        div_mut_checker.tags2[0].values = dataset_gene.total_names;
         div_mut_checker.tags2[1].values = dataset_gene.total_nums;
         div_mut_checker.options.grids[1].labels = new Array(dataset_gene.total_keys.length);
         div_mut_checker.options.grids[1].keys = dataset_gene.total_keys;
@@ -638,7 +638,8 @@ function sort_gene() {
     var name = "";
     for (var i = 0; i < obj[0].length; i++) {
         if (obj[0][i].selected == true) {
-            name = obj[0][i].value;
+            //name = obj[0][i].value;
+            name = mut_data.genes_keys[mut_data.genes.indexOf(obj[0][i].value)];
             break;
         }
     }
@@ -790,6 +791,7 @@ function init() {
     }
     
     dataset_gene = mut_data.get_dataset_gene(func_flgs, gene_th, gene_max, sort_state.y.name_list, sort_state.y.asc_list);
+    //console.log(dataset_gene)
     d3.select("#filter_all_text").text("{num:,}".format({num: mut_data.genes.length}));
     d3.select("#filter_text").text("{num:,}".format({num: dataset_gene.uncut_length}));
     
@@ -827,7 +829,7 @@ function init() {
     
     div_mut_bar_top.tooltips = dataset_id.tooltips;
     
-    div_mut_bar_top.keys = mut_data.Ids;
+    div_mut_bar_top.keys = mut_data.Ids_keys;
     div_mut_bar_top.tags[0] = new div_mut_bar_top.tag_template("sample_ID");
     div_mut_bar_top.tags[0].values = mut_data.Ids;
     div_mut_bar_top.tags[0].note = "fix";
@@ -855,7 +857,7 @@ function init() {
     div_mut_bar_top.options.grid_y.orient = "left";
     
     div_mut_bar_top.options.grid_xs[0] = new div_mut_bar_top.grid_template();
-    div_mut_bar_top.options.grid_xs[0].keys = mut_data.Ids
+    div_mut_bar_top.options.grid_xs[0].keys = mut_data.Ids_keys
 //    div_mut_bar_top.options.grid_xs[0].labels = mut_data.Ids;
     div_mut_bar_top.options.grid_xs[0].labels = new Array(mut_data.Ids.length);
 //    div_mut_bar_top.options.grid_xs[0].wide = 120;
@@ -899,7 +901,7 @@ function init() {
     div_mut_bar_left.tooltips = dataset_gene.tooltips;
     div_mut_bar_left.keys = dataset_gene.total_keys;
     div_mut_bar_left.tags[0] = new div_mut_bar_left.tag_template("name");
-    div_mut_bar_left.tags[0].values = dataset_gene.total_keys;
+    div_mut_bar_left.tags[0].values = dataset_gene.total_names;
     div_mut_bar_left.tags[0].note = "fix";
     div_mut_bar_left.tags[1] = new div_mut_bar_left.tag_template("number_of_mutations");
     div_mut_bar_left.tags[1].values = dataset_gene.total_nums;
@@ -925,7 +927,7 @@ function init() {
     div_mut_bar_left.options.grid_y.orient = "bottom";
     
     div_mut_bar_left.options.grid_xs[0] = new div_mut_bar_left.grid_template();
-    div_mut_bar_left.options.grid_xs[0].labels = dataset_gene.total_keys;
+    div_mut_bar_left.options.grid_xs[0].labels = dataset_gene.total_names;
     div_mut_bar_left.options.grid_xs[0].keys = dataset_gene.total_keys;
     div_mut_bar_left.options.grid_xs[0].wide = 80;
     div_mut_bar_left.options.grid_xs[0].font_size = "9px";
@@ -974,7 +976,7 @@ function init() {
     };
 
     div_mut_checker.tooltips = dataset_checker.tooltips;
-    div_mut_checker.keys = mut_data.Ids;
+    div_mut_checker.keys = mut_data.Ids_keys;
     div_mut_checker.keys2 = dataset_gene.total_keys;
 
     div_mut_checker.tags[0] = new div_mut_checker.tag_template("sample_ID");
@@ -985,7 +987,7 @@ function init() {
     div_mut_checker.tags[1].note = "id_num";
 
     div_mut_checker.tags2[0] = new div_mut_checker.tag_template("name");
-    div_mut_checker.tags2[0].values = dataset_gene.total_keys;
+    div_mut_checker.tags2[0].values = dataset_gene.total_names;
     div_mut_checker.tags2[0].note = "fix";
     div_mut_checker.tags2[1] = new div_mut_checker.tag_template("number_of_mutations");
     div_mut_checker.tags2[1].values = dataset_gene.total_nums;
@@ -1006,8 +1008,8 @@ function init() {
     // axis-x
     div_mut_checker.options.grids[0] = new div_mut_checker.grid_template();
     div_mut_checker.options.grids[0].axis = "x";
-    div_mut_checker.options.grids[0].labels = new Array(mut_data.Ids.length);
-    div_mut_checker.options.grids[0].keys = mut_data.Ids;
+    div_mut_checker.options.grids[0].labels = new Array(mut_data.Ids_keys.length);
+    div_mut_checker.options.grids[0].keys = mut_data.Ids_keys;
     div_mut_checker.options.grids[0].wide = 0;
     div_mut_checker.options.grids[0].font_size = "10px";
     div_mut_checker.options.grids[0].border_color = style_mut.virtical_border_x_color;
@@ -1106,7 +1108,7 @@ function sub_plot(sub) {
     };
     
     sub.obj.tooltips = sub_dataset.tooltips;
-    sub.obj.keys = mut_data.Ids;
+    sub.obj.keys = mut_data.Ids_keys;
     sub.obj.tags[0] = new sub.obj.tag_template("sample_ID");
     sub.obj.tags[0].values = mut_data.Ids;
     sub.obj.tags[0].note = "fix";
@@ -1133,7 +1135,7 @@ function sub_plot(sub) {
 
     // bar padding
     sub.obj.options.grid_xs[0] = new sub.obj.grid_template();
-    sub.obj.options.grid_xs[0].keys = mut_data.Ids
+    sub.obj.options.grid_xs[0].keys = mut_data.Ids_keys
     sub.obj.options.grid_xs[0].labels = new Array(mut_data.Ids.length);
     sub.obj.options.grid_xs[0].border_color = style_mut.sub_border_color;
     sub.obj.options.grid_xs[0].border_width = style_mut.sub_border_width;
