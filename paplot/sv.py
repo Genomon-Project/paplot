@@ -277,7 +277,7 @@ import paplot.subcode.tools as tools
 def load_genome_size(config):
     
     path = tools.config_getpath(config, "genome", "path", "../../config/hg19.csv")
- 
+    
     settings = tools.config_getstr(config, "sv", "use_chrs").replace(" ", "").split(",")
     use_chrs = [];
     colors = [];
@@ -311,7 +311,10 @@ def load_genome_size(config):
     genome_size = []
     _max = 0
     for row in formatt.split("\n"):
-        items = row.split(",")
+        sept = ","
+        if row.find(",") < 0:
+            sept = "\t"
+        items = row.split(sept)
 
         if len(items) < 2:
             continue
