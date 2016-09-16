@@ -14,8 +14,8 @@ style_qc = {
 // style of genome-wide bar plot
 style_sv_bar = {
     // title's text options
-    title_top: "Genome-wide SVs identify",
-    title_y: "samples with SV breakp.",
+    title_top: "Genome-wide CAs identify",
+    title_y: "samples with CA breakp.",
     title_x: "Chromosome",
     
     border_x_main_color: "#E0E0E0",
