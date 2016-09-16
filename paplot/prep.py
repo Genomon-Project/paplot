@@ -99,11 +99,11 @@ def create_index(output_dir, project_name, config):
 
     link_qc = """<li><a href="{project}/graph_qc.html" target=_blank>QC graphs</a>......Quality Control of bam.</li>
 """
-    link_sv = """<li><a href="{project}/graph_sv.html" target=_blank>SV graphs</a>......Structural Variation.</li>
+    link_sv = """<li><a href="{project}/graph_ca.html" target=_blank>CA graphs</a>......Chromosomal Aberration.</li>
 """
     link_mut = """<li><a href="{project}/graph_mut.html" target=_blank>Mutation matrix</a>......Gene-sample mutational profiles.</li>
 """
-    link_sv_nodata = """<li>SV graphs......No Data.</li>
+    link_sv_nodata = """<li>CA graphs......No Data.</li>
 """
     link_mut_nodata = """<li>Mutation matrix......No Data.</li>
 """
@@ -118,10 +118,10 @@ def create_index(output_dir, project_name, config):
     if os.path.exists(output_dir + "/" + project_name + "/graph_qc.html") == True:
         link_text += link_qc.format(project = project_name)
     
-    if os.path.exists(output_dir + "/" + project_name + "/graph_sv.html") == True:
+    if os.path.exists(output_dir + "/" + project_name + "/graph_ca.html") == True:
         link_text += link_sv.format(project = project_name)
         
-    elif os.path.exists(output_dir + "/" + project_name + "/data_sv.csv") == True:
+    elif os.path.exists(output_dir + "/" + project_name + "/data_ca.csv") == True:
         link_text += link_sv_nodata
 
     if os.path.exists(output_dir + "/" + project_name + "/graph_mut.html") == True:

@@ -45,12 +45,12 @@ def main(argv):
     
     # dirs
     output_html_dir = prep.create_dirs(tools.win_to_unix(args.output_dir), args.project_name, config)
-    positions = merge.merge_result(input_list, id_list, output_html_dir + "/data_sv.csv", "sv", config, extract = True)
+    positions = merge.merge_result(input_list, id_list, output_html_dir + "/data_ca.csv", "sv", config, extract = True)
     if positions == {}:
         print ("merge.merge_result: input file is invalid.")
         return
-    sv.output_html(output_html_dir + "/data_sv.csv", output_html_dir + "/data_sv.js", \
-                output_html_dir, "graph_sv.html", args.project_name, positions, config)
+    sv.output_html(output_html_dir + "/data_ca.csv", output_html_dir + "/data_ca.js", \
+                output_html_dir, "graph_ca.html", args.project_name, positions, config)
     
     prep.create_index(args.output_dir,  args.project_name, config)
     
