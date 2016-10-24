@@ -1,29 +1,29 @@
 # -*- coding: utf-8 -*-
 """
-$Id: setup.py 145 2016-08-03 01:37:47Z aokada $
+$Id: setup.py 177 2016-10-24 04:23:59Z aokada $
 """
 
 from setuptools import setup, find_packages
-
-version = '0.4.0'
+from scripts.paplot import __version__
 
 import sys
 sys.path.append('./paplot')
 sys.path.append('./tests')
 
 setup(name='paplot',
-      version=version,
+      version=__version__,
       description="parser result files created by genomon",
       long_description="""\n
 parser result files created by genomon (SV, mutaion-call and so on)""",
       classifiers=[], # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
       keywords='genomon post analysis',
-      author='aokada',
+      author='ai okada',
       author_email='genomon.devel@gmail.com',
       url='https://github.com/Genomon-Project/paplot.git',
       license='GPL-3',
-      packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
-      scripts=['pa_plot'],
+      package_dir = {'': 'scripts'},
+      packages=['paplot', 'paplot.subcode'],
+      scripts=['paplot'],
       data_files=[('config', ['paplot.cfg']), ('config', ['genome/hg19.csv']), ('example', ['example/mutation/sample_summary.csv'])],
       include_package_data=True,
       zip_safe=False,

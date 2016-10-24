@@ -57,48 +57,171 @@ For example, (using sample data)
 cd {paplot install directory}
 
 # create bar graphs of qc
-pa_plot qc "example/qc/*.csv" ~/tmp DUMMY --config_file example/example.cfg
+paplot qc "example/qc/*.csv" ~/tmp DUMMY --config_file example/example.cfg
 
 # create bundle graphs of Structural Variation (SV)
-pa_plot sv "example/sv/*.txt" ~/tmp DUMMY --config_file example/example.cfg
+paplot sv "example/sv/*.txt" ~/tmp DUMMY --config_file example/example.cfg
 
 # create sample-mutation plot (Mutation Matrix)
-pa_plot mutation example/mutation/sample_merge.csv ~/tmp DUMMY --config_file example/example.cfg
+paplot mutation example/mutation/sample_merge.csv ~/tmp DUMMY --config_file example/example.cfg
+
+# create signature plot (Mutation Matrix)
+paplot signature example/signature/output_data.json ./demo demo 10 --config_file ./example/example.cfg
+
+# create pmsignature plot (see https://github.com/friend1ws/pmsignature)
+paplot pmsignature example/pmsignature/output_data.json ./demo demo 9 --config_file ./example/example.cfg
 ```
 
-Description 
+## 6. Description 
 
 ```
-pa_plot {qc, sv, mutation} [-h] [--version] [--config_file CONFIG_FILE]
+$ paplot -h
+usage: pa_plot [-h] [--version]
+               {conf,index,qc,ca,mutation,signature,pmsignature} ...
+
+positional arguments:
+  {conf,index,qc,ca,mutation,signature,pmsignature}
+    conf                view config file
+    index               re-create index file
+    qc                  plot Quarity Control graphs
+    ca                  plot Chromosomal Aberration graphs
+    mutation            plot mutation-matrix graph
+    signature           plot signature graphs
+    pmsignature         plot pmsignature graphs
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --version             show program's version number and exit
+```
+
+### 6.1 QC
+
+```
+$ paplot qc -h
+usage: pa_plot qc [-h] [--config_file CONFIG_FILE] [--title TITLE]
+                  [--ellipsis ELLIPSIS] [--overview OVERVIEW]
+                  [--remarks REMARKS]
                   input output_dir project_name
 
+positional arguments:
+  input                 input files path
+  output_dir            output file path
+  project_name          project name
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --config_file CONFIG_FILE
+                        config file
+  --title TITLE         report's title
+  --ellipsis ELLIPSIS   report file's ID
+  --overview OVERVIEW   overview about report file
+  --remarks REMARKS     optional text
 ```
 
- - `{qc, sv, mutation}`
- 
-    Sub commands
+### 6.2 CA
 
- - `input`
+```
+$ paplot ca -h
+usage: pa_plot ca [-h] [--config_file CONFIG_FILE] [--title TITLE]
+                  [--ellipsis ELLIPSIS] [--overview OVERVIEW]
+                  [--remarks REMARKS]
+                  input output_dir project_name
 
-    Input data files,<br>
-    Use wildcard('*') to specify multiple files, and take `"` last and first.
+positional arguments:
+  input                 input files path
+  output_dir            output file path
+  project_name          project name
 
- - `output_dir`
+optional arguments:
+  -h, --help            show this help message and exit
+  --config_file CONFIG_FILE
+                        config file
+  --title TITLE         report's title
+  --ellipsis ELLIPSIS   report file's ID
+  --overview OVERVIEW   overview about report file
+  --remarks REMARKS     optional text
+```
 
-    output directory path,<br>
-    see following section.
+### 6.3 mutation-matrix
 
- - `project_name`
- 
-   project name,<br>
-   it is output html's title.
+```
+$ paplot mutation -h
+usage: pa_plot mutation [-h] [--config_file CONFIG_FILE] [--title TITLE]
+                        [--ellipsis ELLIPSIS] [--overview OVERVIEW]
+                        [--remarks REMARKS]
+                        input output_dir project_name
 
- - `--config_file` 
+positional arguments:
+  input                 input files path
+  output_dir            output file path
+  project_name          project name
 
-    configure file,<br>
-    if not specified, use the default.
+optional arguments:
+  -h, --help            show this help message and exit
+  --config_file CONFIG_FILE
+                        config file
+  --title TITLE         report's title
+  --ellipsis ELLIPSIS   report file's ID
+  --overview OVERVIEW   overview about report file
+  --remarks REMARKS     optional text
+```
 
-## 6. Tree of output directory
+### 6.4 signature
+
+```
+$ paplot signature -h
+usage: pa_plot signature [-h] [--config_file CONFIG_FILE] [--title TITLE]
+                         [--ellipsis ELLIPSIS] [--overview OVERVIEW]
+                         [--sub_text SUB_TEXT] [--remarks REMARKS]
+                         input output_dir project_name sig_num
+
+positional arguments:
+  input                 input files path
+  output_dir            output file path
+  project_name          project name
+  sig_num               signature number
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --config_file CONFIG_FILE
+                        config file
+  --title TITLE         report's title
+  --ellipsis ELLIPSIS   report file's ID
+  --overview OVERVIEW   overview about report file
+  --sub_text SUB_TEXT   sub text for each signature
+  --remarks REMARKS     optional text
+```
+
+### 6.5 pmsignature
+
+About pmsignaute?, see https://github.com/friend1ws/pmsignature)
+
+```
+$ paplot pmsignature -h
+usage: pa_plot pmsignature [-h] [--config_file CONFIG_FILE] [--title TITLE]
+                           [--ellipsis ELLIPSIS] [--overview OVERVIEW]
+                           [--sub_text SUB_TEXT] [--remarks REMARKS]
+                           input output_dir project_name sig_num
+
+positional arguments:
+  input                 input files path
+  output_dir            output file path
+  project_name          project name
+  sig_num               signature number
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --config_file CONFIG_FILE
+                        config file
+  --title TITLE         report's title
+  --ellipsis ELLIPSIS   report file's ID
+  --overview OVERVIEW   overview about report file
+  --sub_text SUB_TEXT   sub text for each signature
+  --remarks REMARKS     optional text
+
+```
+
+## 7. Tree of output directory
 
 <pre>
 {output_dir}
@@ -119,7 +242,7 @@ pa_plot {qc, sv, mutation} [-h] [--version] [--config_file CONFIG_FILE]
 
 </pre>
 
-## 7. License 
+## 8. License 
 
 See document LICENSE.
 
