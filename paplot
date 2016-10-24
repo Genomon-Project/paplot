@@ -14,7 +14,7 @@ def main():
     from paplot import __version__
     import argparse
     
-    prog = "pa_plot"
+    prog = "paplot"
     parser = argparse.ArgumentParser(prog = prog)
     parser.add_argument("--version", action = "version", version = prog + "-" + __version__)
     subparsers = parser.add_subparsers()

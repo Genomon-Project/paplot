@@ -76,7 +76,7 @@ paplot pmsignature example/pmsignature/output_data.json ./demo demo 9 --config_f
 
 ```
 $ paplot -h
-usage: pa_plot [-h] [--version]
+usage: paplot [-h] [--version]
                {conf,index,qc,ca,mutation,signature,pmsignature} ...
 
 positional arguments:
@@ -98,7 +98,7 @@ optional arguments:
 
 ```
 $ paplot qc -h
-usage: pa_plot qc [-h] [--config_file CONFIG_FILE] [--title TITLE]
+usage: paplot qc [-h] [--config_file CONFIG_FILE] [--title TITLE]
                   [--ellipsis ELLIPSIS] [--overview OVERVIEW]
                   [--remarks REMARKS]
                   input output_dir project_name
@@ -122,7 +122,7 @@ optional arguments:
 
 ```
 $ paplot ca -h
-usage: pa_plot ca [-h] [--config_file CONFIG_FILE] [--title TITLE]
+usage: paplot ca [-h] [--config_file CONFIG_FILE] [--title TITLE]
                   [--ellipsis ELLIPSIS] [--overview OVERVIEW]
                   [--remarks REMARKS]
                   input output_dir project_name
@@ -146,7 +146,7 @@ optional arguments:
 
 ```
 $ paplot mutation -h
-usage: pa_plot mutation [-h] [--config_file CONFIG_FILE] [--title TITLE]
+usage: paplot mutation [-h] [--config_file CONFIG_FILE] [--title TITLE]
                         [--ellipsis ELLIPSIS] [--overview OVERVIEW]
                         [--remarks REMARKS]
                         input output_dir project_name
@@ -170,7 +170,7 @@ optional arguments:
 
 ```
 $ paplot signature -h
-usage: pa_plot signature [-h] [--config_file CONFIG_FILE] [--title TITLE]
+usage: paplot signature [-h] [--config_file CONFIG_FILE] [--title TITLE]
                          [--ellipsis ELLIPSIS] [--overview OVERVIEW]
                          [--sub_text SUB_TEXT] [--remarks REMARKS]
                          input output_dir project_name sig_num
@@ -198,7 +198,7 @@ About pmsignaute?, see https://github.com/friend1ws/pmsignature)
 
 ```
 $ paplot pmsignature -h
-usage: pa_plot pmsignature [-h] [--config_file CONFIG_FILE] [--title TITLE]
+usage: paplot pmsignature [-h] [--config_file CONFIG_FILE] [--title TITLE]
                            [--ellipsis ELLIPSIS] [--overview OVERVIEW]
                            [--sub_text SUB_TEXT] [--remarks REMARKS]
                            input output_dir project_name sig_num
