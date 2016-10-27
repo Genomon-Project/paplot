@@ -95,6 +95,15 @@ def create_dirs(args_output_dir, project_name, config):
     
     return output_html_dir
 
+def version_text():
+    from paplot import __version__
+    return "paplot-" + __version__
+    
+# -------------------------------------
+# methods for write index.html
+# -------------------------------------
+_META_FILE_ = ".meta.json"
+
 def _convert_index_item(jsonData):
 
     proj_template = """<h2>{proj}</h2>
@@ -103,6 +112,7 @@ def _convert_index_item(jsonData):
 </table>"""
     graph_templete = "<tr><td><img src='layout/{icon}'></td><td class='title'>{link}</td><td class='text'>...{overview}</td></tr>"
     link_templete = "<a class='plot' href='{proj}/{output_html}' target=_blank>{name}</a>"
+    unlink_templete = "{name}"
     graph_templete_table = """<tr><td><img src="layout/folder.png"></td><td class="title">{name}</td><td class="text">...{overview}</td></tr>
     <tr><td colspan=3>
     <table style="margin-left:40px;"><tr>
@@ -128,7 +138,7 @@ def _convert_index_item(jsonData):
                 graphs_text += graph_templete_table.format(name = graph["name"], overview = graph["overview"], td = td_text)
             else:
                 item = graph["items"][0]
-                link_text = ""
+                link_text = unlink_templete.format(name = graph["name"])
                 icon = "block.png"
                 overview = "No Data."
                 if item["exists"]:
@@ -161,7 +171,7 @@ def _load_metadata(
                    "items": [{"output_html":  output_html, "exists":  exists, "sub_text": sub_text}] \
                }]}
     try:
-        jsonData = json.load(open(output_dir + "/meta.json"))
+        jsonData = json.load(open(output_dir + "/" + _META_FILE_))
         
         # input args to jsonData
         find = False
@@ -194,8 +204,7 @@ def _load_metadata(
         # create jsonData from args
         jsonData = [argData]
     
-    #json.dump(jsonData, open(output_dir + "/meta.json", "w"))
-    f = open(output_dir + "/meta.json", "w")
+    f = open(output_dir + "/" + _META_FILE_, "w")
     f.writelines(json.dumps(jsonData, indent=2))
     f.close()
     
@@ -245,13 +254,13 @@ def _reload_metadata(output_dir):
     import json
     import os
     try:
-        jsonData = json.load(open(output_dir + "/meta.json"))
+        jsonData = json.load(open(output_dir + "/" + _META_FILE_))
         
         # input args to jsonData
         for data in jsonData:
             for graph in data["graphs"]:
                 for item in graph["items"]:
-                    if os.path.exists(output_dir + "/" + data["proj"] + "/" + item["output_html"]) == False:                    
+                    if item["output_html"] == True and os.path.exists(output_dir + "/" + data["proj"] + "/" + item["output_html"]) == False:                    
                         graph["items"].remove(item)
 
                 if len(graph["items"]) == 0:
@@ -263,27 +272,19 @@ def _reload_metadata(output_dir):
     except Exception:
         jsonData = []
     
-    #json.dump(jsonData, open(output_dir + "/meta.json", "w"))
-    f = open(output_dir + "/meta.json", "w")
+    f = open(output_dir + "/" + _META_FILE_, "w")
     f.writelines(json.dumps(jsonData, indent=2))
     f.close()
     
     return jsonData
     
-def recreate_index(
-    config,
-    output_dir,
-    remarks = "",
-    ):
+def recreate_index(config, output_dir, remarks = ""):
 
     import paplot.subcode.tools as tools
     import os
 
     jsonData = _reload_metadata(output_dir)
-    if len(jsonData) == 0:
-        print("HTML file is not exists.")
-        return
-        
+      
     link_text = _convert_index_item(jsonData)
     
     f_template = open(os.path.dirname(os.path.abspath(__file__)) + "/templates/index.html")
@@ -303,8 +304,4 @@ def recreate_index(
         )
     )
     f_html.close()
-
-def version_text():
-    from paplot import __version__
-    return "paplot-" + __version__
 
