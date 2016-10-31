@@ -291,7 +291,7 @@ def create_html(dataset, output_di, config):
     f_html = open(output_di["dir"] + "/" + output_di["html"], "w")
     f_html.write(
         html_template.format(project = output_di["project"], 
-            title = output_di["title"],  
+            title = "%s(#sig %d)" % (output_di["title"], output_di["sig_num"]),
             data_js = output_di["js"],
             version = prep.version_text(),
             date = tools.now_string(),
