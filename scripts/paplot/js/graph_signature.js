@@ -6,7 +6,7 @@ var SIGNATURE_W = 0;//450;
 var SIGNATURE_H = 200;//150;
 var SIGNATURE_TITLE_H = 20;
 var SIGNATURE_LEG_H = 50;
-var SIGNATURE_AXIS_YW = 80;
+var SIGNATURE_AXIS_YW = 100;
 
 var divs = [];
 var div_integral = new mut_bar("div_integral");
@@ -44,6 +44,8 @@ function update_div() {
     var w_max = sig_data.Ids.length*30 + BAR_PADDING_W;
     if (w < w_min) w = w_min;
     if (w > w_max) w = w_max;
+    
+    if (w < 160 + BAR_PADDING_W) w =  160 + BAR_PADDING_W;
     
     d3.select("#div_integral")
         .style("width", w + "px")

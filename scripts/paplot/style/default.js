@@ -92,7 +92,7 @@ style_mut = {
 // style of signature
 style_signature = {
     title_integral: "Signature integral",
-    title_integral_y: "mutation num.",
+    title_integral_y: "membership",
     title_signature_y: "probaility",
     border_y_color: "#DDDDCC",
     border_y_opacity: 0.5,
@@ -103,7 +103,7 @@ style_signature = {
 // style of pmsignature
 style_pmsignature = {
     title_integral: "Signature integral",
-    title_integral_y: "mutation num.",
+    title_integral_y: "membership",
     plot_border_y_color: "#DDDDCC",
     plot_border_y_opacity: 0.5,
 };

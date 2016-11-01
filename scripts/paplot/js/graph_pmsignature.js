@@ -37,6 +37,8 @@ function update_div() {
     if (w < w_min) w = w_min;
     if (w > w_max) w = w_max;
     
+    if (w < 160 + BAR_PADDING_W) w =  160 + BAR_PADDING_W;
+    
     d3.select("#div_integral")
         .style("width", w + "px")
         .style("height", "400px");
@@ -228,7 +230,7 @@ function draw_pmsignature(name, signature_id) {
     div_pm1.options.border_margin_top = 1;
     div_pm1.options.border_margin_bottom = 1;
     
-    // titile
+    // title
     div_pm1.options.titles[0] = new div_pm1.title_template(msig_data.signatures[signature_id]);
     div_pm1.options.titles[0].orient = "top";
     div_pm1.options.titles[0].wide = 30;
