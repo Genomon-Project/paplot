@@ -82,7 +82,7 @@ def ca_main(args):
     
     # dirs
     output_html_dir = prep.create_dirs(tools.win_to_unix(args.output_dir), args.project_name, config)
-    positions = merge.merge_result(input_list, id_list, output_html_dir + "/data_ca.csv", "ca", config, extract = True)
+    positions = merge.merge_result(input_list, id_list, output_html_dir + ("/data_%s.csv" % args.ellipsis), "ca", config, extract = True)
     if positions == {}:
         print ("merge.merge_result: input file is invalid.")
         return
@@ -117,7 +117,7 @@ def mutation_main(args):
     
     # dirs
     output_html_dir = prep.create_dirs(tools.win_to_unix(args.output_dir), args.project_name, config)
-    positions = merge.merge_result(input_list, id_list, output_html_dir + "/data_mutation.csv", "mutation", config, extract = True)
+    positions = merge.merge_result(input_list, id_list, output_html_dir + ("/data_%s.csv" % args.ellipsis), "mutation", config, extract = True)
     if positions == {}:
         print ("merge.merge_result: input file is invalid.")
         return
