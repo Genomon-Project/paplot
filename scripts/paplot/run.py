@@ -4,7 +4,7 @@ Created on Wed Dec 02 17:43:52 2015
 
 @author: okada
 
-$Id: run.py 177 2016-10-24 04:23:59Z aokada $
+$Id: run.py 179 2016-11-07 03:54:23Z aokada $
 """
 
 import paplot.subcode.tools as tools
