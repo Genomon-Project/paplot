@@ -85,7 +85,7 @@ var bundle = (function()
     var p = bundle.prototype;
     
     // -----------------------------------
-    // data templates
+    // link style templates
     // -----------------------------------
     p.link_style_template = (function() {
         var link_style_template = function(name) {
@@ -243,8 +243,8 @@ p.draw_bundle = function(obj, arc_data, data, options)
                 if (enable_tooltip == false) return;
                 
                 var group_id = -1;
-                for (var k = 0; k < bundle_data_sv.group.length; k++) {
-                   if (d3.select(this).classed(bundle_data_sv.group[k].name) == true) {
+                for (var k = 0; k < link_style.length; k++) {
+                   if (d3.select(this).classed(link_style[k].name) == true) {
                        group_id = k;
                        break;
                    }
@@ -258,16 +258,18 @@ p.draw_bundle = function(obj, arc_data, data, options)
                     ;
                 
                 // remove last tooltip data
-                d3.select("#tooltip").selectAll("p#text").remove();
+                d3.select("#tooltip").selectAll("p").remove();
                 
                 // add text to tooltip
                 var texts = link_data[group_id];
                 var result = getLinkData_values(texts, d.source.start, d.target.start);
-                d3.select("#tooltip").append("p").attr("id",  "text").text("link detail");
+                d3.select("#tooltip").append("p").attr("id",  "text").append("pre").text("link detail");
                 for (var i = 0; i<result.length; i++) {
                     d3.select("#tooltip")
                         .append("p")
-                        .attr("id",  "text").text(result[i]);
+                        .attr("id",  "text")
+                        .append("pre")
+                        .text(result[i]);
                 }
                 //Show the tooltip
                 d3.select("#tooltip").classed("hidden", false);
@@ -287,8 +289,8 @@ p.draw_bundle = function(obj, arc_data, data, options)
                 if (enable_tooltip == false) return;
                 
                 var group_id = -1;
-                for (var k = 0; k < bundle_data_sv.group.length; k++) {
-                   if (d3.select(this).classed(bundle_data_sv.group[k].name) == true) {
+                for (var k = 0; k < link_style.length; k++) {
+                   if (d3.select(this).classed(link_style[k].name) == true) {
                        group_id = k;
                        break;
                    }

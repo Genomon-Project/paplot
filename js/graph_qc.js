@@ -204,6 +204,8 @@ function init() {
         legend.colors = info.color;
         legend.options.title = info.title;
         legend.layout.shape_sift_left = 70;
+        
+        legend.svg_id = legends[i].chart_id;
         legend.draw_svg(true);
         downloader.set_event_listner (legends[i].chart_id);
     }
@@ -253,9 +255,6 @@ function sort(name, asc) {
         divs[i].obj.sort_simple(divs[0].obj.asc.sort_list);
     }
     
-    //for (var i = 0; i< divs.length; i++) {
-    //    divs[i].obj.sort([name], [asc]);
-    //}
 }
 
 function click_sort() {

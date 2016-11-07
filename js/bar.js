@@ -12,6 +12,7 @@ var mut_bar = (function()
         
         this.options =
         {
+            bar_padding: -1,
             padding_left: 10,
             padding_right: 10,
             padding_top: 10,
@@ -27,6 +28,7 @@ var mut_bar = (function()
             grid_y: 0,
             titles: [],
             tall_limit: 0,
+            tall_fix: 0,
             bar_min_width: 5,
             bar_max_width: 30,
             color_hilight: "#FFFF00",
@@ -35,8 +37,13 @@ var mut_bar = (function()
             call_back: 0,
         };
 
-        // don't touch
         this.svg_obj = 0;
+        this.svg = {
+            h: 0,
+            w: 0,
+        };
+        
+        // don't touch
         this.brush_obj = 0;
         this.y_axis = 0;
         this.asc = {
@@ -52,10 +59,6 @@ var mut_bar = (function()
             left : 0,
         };
         this.plot = {
-            h: 0,
-            w: 0,
-        };
-        this.svg = {
             h: 0,
             w: 0,
         };
@@ -203,10 +206,14 @@ var mut_bar = (function()
             plot2 = that.plot.w;
         }
         
-        var bar_padding =  0;
-        //if (plot1 / x_items > 3) {
-        if (plot1 / x_items > 20) {
-            bar_padding = 1;
+        var bar_padding = this.options.bar_padding;
+        if (bar_padding < 0) {
+            if (plot1 / x_items > 10) {
+                bar_padding = plot1 / x_items * 0.1;
+            }
+            else {
+                bar_padding = 0;
+            }
         }
         
         for (var idx=0; idx < this.dataset.length; idx++) {
@@ -436,7 +443,8 @@ var mut_bar = (function()
         var max =  Math.max.apply(null, sum_array);
         if (max == 0) max = 1;
         y_size = max
-        if ((this.tall_limit > 0) && (max > this.tall_limit)) y_size = this.tall_limit;
+        if ((this.options.tall_limit > 0) && (max > this.options.tall_limit)) y_size = this.options.tall_limit;
+        if (this.options.tall_fix > 0) y_size = this.options.tall_fix;
         
         // bar
         var y = "y";
@@ -453,22 +461,36 @@ var mut_bar = (function()
         for (var idx=0; idx < this.dataset.length; idx++) {
             this.svg_obj.selectAll("g." + this.dataset[idx].name).selectAll("rect")
                 .attr(y, function(d, i) {
-                    var base = p._bar_base(that.dataset, idx, that.dataset[idx].keys[i]);
-                    if (that.asc.value == true) {
-                        if (base > y_size) return padding1 + plot1;
-                        return padding1 + (base) * plot1 / y_size;
+                    if (that.options.tall_fix == 0) {
+                        var base = p._bar_base(that.dataset, idx, that.dataset[idx].keys[i]);
+                        if (that.asc.value == true) {
+                            if (base > y_size) return padding1 + plot1;
+                            return padding1 + (base) * plot1 / y_size;
+                        }
+                        if ((d + base) > y_size) return padding1;
+                        return padding1 + plot1 - ((d + base) * plot1 / y_size);
                     }
-                    if ((d + base) > y_size) return padding1;
-                    return padding1 + plot1 - ((d + base) * plot1 / y_size);
+                    // TODO add stack-type
+                    if (that.asc.value == true) {
+                        return padding1 + d * plot1 / y_size;
+                    }
+                    return padding1 + plot1 - (d * plot1 / y_size);
                 })
                 .attr(height, function(d, i) {
+                    if (that.options.tall_fix == 0) {
+                        if (that.dataset[idx].enable == false) {
+                            return 0;
+                        }
+                        var base = p._bar_base(that.dataset, idx, that.dataset[idx].keys[i]);
+                        if (base > y_size) return 0;
+                        if ((d + base) > y_size) return ((y_size-base) * plot1 / y_size);
+                        return (d * plot1 / y_size);
+                    }
+                    // TODO add stack-type
                     if (that.dataset[idx].enable == false) {
                         return 0;
                     }
-                    var base = p._bar_base(that.dataset, idx, that.dataset[idx].keys[i]);
-                    if (base > y_size) return 0;
-                    if ((d + base) > y_size) return ((y_size-base) * plot1 / y_size);
-                    return (d * plot1 / y_size);
+                    return d * plot1 / y_size;
                 });
         }
         
@@ -630,21 +652,17 @@ var mut_bar = (function()
     // -----------------------------------
     p._update_plot_size = function() {
         
-        // svg
         if ((this.svg.w == 0) || (this.options.resizeable_w == true)) {
             this.svg.w = parseInt(d3.select("#" + this.id).style("width"), 10);
+            this.svg_obj.style("width", this.svg.w + 'px');
         }
         if ((this.svg.h == 0) || (this.options.resizeable_h == true)) {
             this.svg.h = parseInt(d3.select("#" + this.id).style("height"), 10);
+            this.svg_obj.style("height", this.svg.h + 'px');
         }
         
-        // plot area
         this.plot.w = this.svg.w - this.padding.left - this.padding.right;
         this.plot.h = this.svg.h - this.padding.top - this.padding.bottom;
-        
-        // svg
-        this.svg_obj.style("width", this.svg.w + 'px');
-        this.svg_obj.style("height", this.svg.h + 'px');
     }
 
     p.resize = function() {
@@ -769,7 +787,7 @@ var mut_bar = (function()
     // set bar's max height
     // -----------------------------------
     p.set_bar_max = function(limit) {
-        this.tall_limit = limit;
+        this.options.tall_limit = limit;
         this._set_yh();
     }
     // -----------------------------------
@@ -830,16 +848,27 @@ var mut_bar = (function()
             .attr("class", function(d, i) {
                 return d;
             })
-            .on("mouseover", function(d, i) {
-                if (that.options.tooltip.enable == false) {
-                    return;
+            .on("click", function(d) {
+                if (that.options.brush.enable == true) return;
+                var target_class = "selected";
+                if (that.options.multi_select == true) {
+                    target_class = "selected." + d;
                 }
+                var on = !(d3.select(this).classed(target_class));
+                that.bar_selected(d, on);
+            })
+        ;
+        
+        if (this.options.tooltip.enable == true) {
+            this.svg_obj.selectAll("g.transparent_bar")
+            .selectAll("rect")
+            .on("mouseover", function(d, i) {
                 // remove last tooltip data
-                d3.select("#tooltip").selectAll("p#text").remove();
+                d3.select("#tooltip").selectAll("p").remove();
 
                 // add text to tooltip
                 for (var p=0; p < that.tooltips[d].length; p++) {
-                    d3.select("#tooltip").append("p").attr("id", "text").text(that.tooltips[d][p]);
+                    d3.select("#tooltip").append("p").attr("id", "text").append("pre").text(that.tooltips[d][p]);
                 }
                 
                 //Show the tooltip
@@ -866,23 +895,10 @@ var mut_bar = (function()
                     .style("top", y + "px");
             })
             .on("mouseout", function() {
-                if (that.options.tooltip.enable == false) {
-                    return;
-                }
                 //Hide the tooltip
                 d3.select("#tooltip").classed("hidden", true);
-            })
-            .on("click", function(d) {
-                if (that.options.brush.enable == true) return;
-                var target_class = "selected";
-                if (that.options.multi_select == true) {
-                    target_class = "selected." + d;
-                }
-                var on = !(d3.select(this).classed(target_class));
-                that.bar_selected(d, on);
-            })
-        ;
-
+            });
+        }
         
         this._update_plot_size();
         
@@ -967,9 +983,19 @@ var mut_bar = (function()
     // initialize
     // -----------------------------------
     p._init = function() {
+        
+        // check key value
+        for (var idx=0; idx < this.keys.length; idx++) {
+            if (this.keys[idx][0].match(/[0-9]+/)) {
+                console.log("[WARNING] Key's first character is numeric. " + this.keys[idx]);
+            }
+        }
+        
         var that = this;
         
-        this.svg_obj = d3.select("#" + this.id).append("svg");
+        if (this.svg_obj == 0) {
+            this.svg_obj = d3.select("#" + this.id).append("svg");
+        }
         
         // plot asc
         switch (this.options.direction_x) {

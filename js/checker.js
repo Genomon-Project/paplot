@@ -15,6 +15,8 @@ var mut_checker = (function() {
             padding_right: 0,
             padding_top: 0,
             padding_bottom: 0,
+            bar_padding_x: -1,
+            bar_padding_y: -1,
             resizeable_w: false,
             resizeable_h: false,
             tooltip: { enable: true, position: "parent", sift_x: 0, sift_y: 0, },
@@ -62,12 +64,18 @@ var mut_checker = (function() {
         var dataset_template = function(name) {
             this.data = [];
             this.tooltips = [];
-            this.color_fill = "#333";
+            //this.color_fill = "green";
             this.name = name;
             this.enable = true;
             
             this.keys = [];   // for axis-x
             this.keys2 = [];   // for axis-y
+            
+            this.color = {
+                mode: "mono",
+                fill: "pink",
+                range: [0,0],
+            };
         };
         return dataset_template;
     })();
@@ -363,12 +371,18 @@ var mut_checker = (function() {
     // -----------------------------------
     // bar padding
     // -----------------------------------
-    p.bar_padding = function(wide, items) {
-        //if (wide / items > 3) {
-        if (wide / items > 20) {
-            return 1;
+    p.bar_padding = function(wide, items, def) {
+        
+        var bar_padding = def;
+        if (bar_padding < 0) {
+            if (wide / items > 10) {
+                bar_padding = wide / items * 0.1;
+            }
+            else {
+                bar_padding = 0;
+            }
         }
-        return 0;
+        return bar_padding;
     }
     
     // -----------------------------------
@@ -385,14 +399,14 @@ var mut_checker = (function() {
         this.svg_obj.style("height", this.svg.h + 'px');
 
         // transparent-bar
-        var width = this.plot.w / this.x_items() -  this.bar_padding(this.plot.w, this.x_items());
+        var width = this.plot.w / this.x_items() -  this.bar_padding(this.plot.w, this.x_items(), this.options.bar_padding_x);
         
         this.svg_obj.selectAll("g.transparent_bar1").selectAll("rect")
             .attr("height", this.plot.h)
             .attr("width", width)
         ;
 
-        var height = this.plot.h / this.y_items() -  this.bar_padding(this.plot.h, this.y_items());
+        var height = this.plot.h / this.y_items() -  this.bar_padding(this.plot.h, this.y_items(), this.options.bar_padding_y);
         
         this.svg_obj.selectAll("g.transparent_bar2").selectAll("rect")
             .attr("height", height)
@@ -429,8 +443,8 @@ var mut_checker = (function() {
         var that = this;
         
         // rect-size
-        var height = this.plot.h / this.y_items() -  this.bar_padding(this.plot.h, this.y_items());
-        var width = this.plot.w / this.x_items() -  this.bar_padding(this.plot.w, this.x_items());
+        var height = this.plot.h / this.y_items() -  this.bar_padding(this.plot.h, this.y_items(), this.options.bar_padding_y);
+        var width = this.plot.w / this.x_items() -  this.bar_padding(this.plot.w, this.x_items(), this.options.bar_padding_x);
         
         for (var idx=0; idx < this.dataset.length; idx++) {
             this.svg_obj.selectAll("g." + this.dataset[idx].name).selectAll("rect")
@@ -469,10 +483,27 @@ var mut_checker = (function() {
                 .attr("x", 0)
                 .attr("width", 0)
                 .attr("height", 0)
-                .style("fill", this.dataset[idx].color_fill)
+                //.style("fill", this.dataset[idx].color.fill)
                 .attr("class", function(d, i) {
                     return that.dataset[idx].keys[i] + " " + that.dataset[idx].keys2[i];
                 });
+                
+            if (this.dataset[idx].color.mode == "mono") {
+                this.svg_obj.selectAll("g." + this.dataset[idx].name)
+                    .selectAll("rect")
+                    .style("fill", this.dataset[idx].color.fill)
+                    ;
+            }
+            else if (this.dataset[idx].color.mode == "gradient") {
+                var color = this.dataset[idx].color;
+                
+                this.svg_obj.selectAll("g." + this.dataset[idx].name)
+                    .selectAll("rect")
+                    .style("fill", function (d) {
+                        return utils.color_gradient(d, color.range, color.fill);
+                    })
+                    ;
+            }
         }
         
         // transparent-bar
@@ -551,12 +582,12 @@ var mut_checker = (function() {
                 if (tooltips == undefined) return;
                 
                 // remove last tooltip data
-                d3.select("#tooltip").selectAll("p#text").remove();
+                d3.select("#tooltip").selectAll("p").remove();
 
                 // add text to tooltip
                 
                 for (var p=0; p < tooltips.length; p++) {
-                    d3.select("#tooltip").append("p").attr("id", "text").text(tooltips[p]);
+                    d3.select("#tooltip").append("p").attr("id", "text").append("pre").text(tooltips[p]);
                 }
 
                 //Show the tooltip
@@ -681,6 +712,14 @@ var mut_checker = (function() {
     // initialize
     // -----------------------------------
     p.init = function() {
+        
+        // check key value
+        for (var idx=0; idx < this.keys.length; idx++) {
+            if (this.keys[idx][0].match(/[0-9]+/)) {
+                console.log("[WARNING] Key's first character is numeric. " + this.keys[idx]);
+            }
+        }
+        
         var that = this;
         
         this.svg_obj = d3.select("#" + this.id).append("svg");

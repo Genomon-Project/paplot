@@ -2,7 +2,7 @@
 style_general = {
     font_family: "'Helvetica Neue', Helvetica, Arial, sans-serif",
 }
-    
+
 // style of quality check graphs
 style_qc = {
     brush_border_y_color: "#DDDDCC",
@@ -14,8 +14,8 @@ style_qc = {
 // style of genome-wide bar plot
 style_sv_bar = {
     // title's text options
-    title_top: "Genome-wide SVs identify",
-    title_y: "samples with SV breakp.",
+    title_top: "Genome-wide CAs identify",
+    title_y: "samples with CA breakp.",
     title_x: "Chromosome",
     
     border_x_main_color: "#E0E0E0",
@@ -87,5 +87,24 @@ style_mut = {
     sub_border_color: "#FFFFFF",
     sub_border_width: "1px",
     
+};
+
+// style of signature
+style_signature = {
+    title_integral: "Signature integral",
+    title_integral_y: "membership",
+    title_signature_y: "probaility",
+    border_y_color: "#DDDDCC",
+    border_y_opacity: 0.5,
+    plot_border_y_color: "#DDDDCC",
+    plot_border_y_opacity: 0.5,
+};
+
+// style of pmsignature
+style_pmsignature = {
+    title_integral: "Signature integral",
+    title_integral_y: "membership",
+    plot_border_y_color: "#DDDDCC",
+    plot_border_y_opacity: 0.5,
 };
 })();

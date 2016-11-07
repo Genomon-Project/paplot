@@ -1,26 +1,47 @@
 <html lang="en">
 <head>
-  <title>demo - index</title>
+  <title>index</title>
   <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-  <link rel="stylesheet" type="text/css" href="layout/paplot.css"/>
+    <link rel="stylesheet" type="text/css" href="layout/paplot.css"/>
+    <style>
+        td {
+            font-size: 14px;
+            height: 40px;
+        }
+        td.title {
+            width: 150px;
+        }
+        td.text {
+            padding-right: 20px;
+        }
+        img {
+            margin-right: 10px;
+        }
+    </style>
 </head>
 <body style="background-image: url('layout/background.png'); background-repeat:no-repeat; background-position: right bottom;">
 <div class="version">
-Generated on 2016-08-09 11:45:41 for demo by paplot-0.4.0release-py2.7.
+Generated on 2016-11-07 15:54:53 by paplot-0.5.0.
 </div>
 
 <div class="container">
+<p style="margin-top: 30px;">This is the summary documentation of the analysis results.<br>
+Clicking on the link below, you can see each graph.</p>
+
 <h2>demo</h2>
-
-<p style="margin-top: 30px;">This is the summary documentation of the analysis results.</p>
-<p>Clicking on the link below, you can see each graph.</p>
-
-<ul>
-<li><a href="demo/graph_qc.html" target=_blank>QC graphs</a>......Quality Control of bam.</li>
-<li><a href="demo/graph_sv.html" target=_blank>SV graphs</a>......Structural Variation.</li>
-<li><a href="demo/graph_mut.html" target=_blank>Mutation matrix</a>......Gene-sample mutational profiles.</li>
-
-</ul>
+<table style="margin-left:40px;">
+<tr><td><img src='layout/bar_chart_1.png'></td><td class='title'><a class='plot' href='demo/graph_qc.html' target=_blank>QC graphs</a></td><td class='text'>...Quality Control of bam.</td></tr><tr><td><img src='layout/bar_chart_1.png'></td><td class='title'><a class='plot' href='demo/graph_ca.html' target=_blank>CA graphs</a></td><td class='text'>...Chromosomal Aberration.</td></tr><tr><td><img src='layout/bar_chart_1.png'></td><td class='title'><a class='plot' href='demo/graph_mutation.html' target=_blank>Mutation matrix</a></td><td class='text'>...Gene-sample mutational profiles.</td></tr><tr><td><img src="layout/folder.png"></td><td class="title">PMSignature</td><td class="text">...Express mutational signatures in pmsignature.</td></tr>
+    <tr><td colspan=3>
+    <table style="margin-left:40px;"><tr>
+        <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='demo/graph_pms2.html' target=_blank>#sig 2</a></td><td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='demo/graph_pms3.html' target=_blank>#sig 3</a></td><td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='demo/graph_pms4.html' target=_blank>#sig 4</a></td><td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='demo/graph_pms5.html' target=_blank>#sig 5</a></td><td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='demo/graph_pms6.html' target=_blank>#sig 6</a></td>
+    </tr></table>
+    </td></tr><tr><td><img src="layout/folder.png"></td><td class="title">Signature</td><td class="text">...Mutational signatures.</td></tr>
+    <tr><td colspan=3>
+    <table style="margin-left:40px;"><tr>
+        <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='demo/graph_sig2.html' target=_blank>#sig 2</a></td><td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='demo/graph_sig3.html' target=_blank>#sig 3</a></td><td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='demo/graph_sig4.html' target=_blank>#sig 4</a></td><td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='demo/graph_sig5.html' target=_blank>#sig 5</a></td><td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='demo/graph_sig6.html' target=_blank>#sig 6</a></td>
+    </tr></table>
+    </td></tr>
+</table>
 
 <p style="margin-top: 100px;">
 

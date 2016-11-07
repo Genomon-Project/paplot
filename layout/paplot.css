@@ -34,13 +34,12 @@
     -webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
     -moz-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
     box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
-    pointer-events: none;
-  
+    pointer-events: none;    
 }
 #tooltip.hidden {
     display: none;
 }
-#tooltip p {
+#tooltip p {    
     margin: 0;
 }
 #spin {
@@ -155,6 +154,11 @@ h1, .h1, h2, .h2, h3, .h3 {
 }
 h2, .h2 {
     font-size: 30px;
+}
+pre {
+    font-family: 'Lucida Console','SimSun','Courier','Courier New','BatangChe','DotumChe','GlimChe','GungsuhChe','MingLiU','OCRB','SimHei',monospace;
+    margin: 0;
+    padding: 0;
 }
 table {
 background-color: transparent;

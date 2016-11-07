@@ -1,0 +1,45 @@
+<html lang="en">
+<head>
+  <title>Signature(#sig 2) - demo</title>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+  <link rel="stylesheet" type="text/css" href="../layout/paplot.css"/>
+</head>
+<body>
+<div class="version">
+Generated on 2016-11-07 15:54:49 for demo by paplot-0.5.0.
+</div>
+
+<div class="container">
+<h2>Signature(#sig 2) - demo</h2>
+
+<!-- save image --><button type="button" onclick="push_export()" id="dw_btn" style="margin-bottom: 20px;"><img src="../layout/download.png" style="margin-right: 5px;">export</button><div id="btn"></div>
+
+<div style='float: left;' id='div_pm0'></div>
+
+
+<!-- spacer --><div style="float: left; height: 10px; width: 100%"></div>
+<div style="float: left;" id="div_integral"></div>
+<!-- legend --> <div style="float: left;" id='div_legend_html'></div><div style="float: left;" id='div_legend_svg'></div>
+
+<!-- ### tooltip ### -->
+<div id="tooltip" class="hidden"></div>
+<!-- ### spin mark ### -->
+<div id="spin" class="hidden"></div>
+<!-- canvas for save image -->
+<canvas id="dw_canvas" class="hidden"></canvas>
+
+<script type="text/javascript" src="../lib/d3_v3.5.13/d3.min.js"></script>
+<script type="text/javascript" src="../lib/d3-legend_v1.10.0/d3-legend.min.js"></script>
+<script type="text/javascript" src="../style/default.js"></script>
+<script type="text/javascript" src="../js/utils.js"></script>
+<script type="text/javascript" src="../js/bar.js"></script>
+<script type="text/javascript" src="./data_sig2.js"></script>
+<script type="text/javascript" src="../js/graph_signature.js"></script>
+
+<script type="text/javascript">
+add_div('div_pm0');
+
+init();
+</script>
+</body>
+</html>

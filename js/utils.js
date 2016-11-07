@@ -2,14 +2,29 @@ var utils = (function() {
     utils = {};
     utils.color_gradient = function(value, range, colors) {
 
-        var v0 = range[0];
-        var v1 = range[1];
+        if (value <= range[0]) return colors[0];
+        else if (value >= range[range.length-1]) return colors[range.length-1];
+
+        var pos = 0;
+        for (var i=0; i < (range.length-1); i++) {
+            
+            if ((value >= range[i]) && (value < range[i+1])) {
+                pos = i;
+                break;
+            }
+        }
+        
+        var v0 = range[pos];
+        var v1 = range[pos+1];
+        var color0 = colors[pos];
+        var color1 = colors[pos+1];
+        
         var ret = "#";
         
         for (var i=0; i < 3; i++) {
             
-            var c0 = parseInt(colors[0].slice(2*i+1, 2*i+3), 16);
-            var c1 = parseInt(colors[1].slice(2*i+1, 2*i+3), 16);
+            var c0 = parseInt(color0.slice(2*i+1, 2*i+3), 16);
+            var c1 = parseInt(color1.slice(2*i+1, 2*i+3), 16);
             
             var c = c0 + ((value - v0) * (c1 - c0)) / ((v1 - v0));
             if (c > 255) c = 255;
@@ -19,7 +34,6 @@ var utils = (function() {
             if (c16.length == 1) c16 = "0" + c16;
             ret = ret + c16;
         }
-
         return ret;
     };
         
@@ -51,8 +65,31 @@ var utils = (function() {
                     if (format[f].ext == ",") {
                         replaced = String(replaced).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
                     }
-                    if (format[f].ext[0] == ".") {
-                        replaced = parseFloat(replaced).toFixed(parseInt(format[f].ext.substr(1)));
+                    //if (format[f].ext.indexOf(".") == 0) {
+                    //    replaced = parseFloat(replaced).toFixed(parseInt(format[f].ext.substr(1)));
+                    //}
+                    if (format[f].ext.indexOf(".") >= 0) {
+                        
+                        replaced = parseFloat(replaced).toFixed(parseInt(format[f].ext.substr(format[f].ext.indexOf(".") + 1)));
+                        
+                        if (format[f].ext[0] != ".") {
+                            
+                            var fill_num, fill_chr;
+                            if (format[f].ext[0] == 0) {
+                                fill_num = Number(format[f].ext.slice(1, format[f].ext.indexOf(".")));
+                                fill_chr = '0';
+                            }
+                            else {
+                                fill_num = Number(format[f].ext.slice(0, format[f].ext.indexOf(".")));
+                                fill_chr = ' ';
+                            }
+                            var int_length = replaced.slice(0, replaced.indexOf(".")).length;
+                            var fill = "";
+                            if (fill_num > int_length) {
+                                fill = Array(fill_num - int_length + 1).join(fill_chr);
+                            }
+                            replaced = fill + replaced;
+                        }
                     }
                 }
             }
@@ -79,6 +116,31 @@ var utils = (function() {
             y:document_obj.body.scrollTop  || document_obj.documentElement.scrollTop
         };
     }
+    
+    // *********************************************
+    // create key list
+    // *********************************************
+    utils.create_key_list = function(li) {
+        
+        var key_list = [];
+        
+        for (var idx=0; idx < li.length; idx++) {
+            if (li[idx][0].match(/[^0-9]+/)) {
+                key_list.push(li[idx]);
+                continue;
+            }
+            var temp = li[idx];
+            while(1) {
+                temp = "_" + temp;
+                if (li.indexOf(temp) < 0) {
+                    break;
+                }
+            }
+            key_list.push(temp);
+        }
+        return key_list;
+    }
+    
     return utils;
 })();
 
@@ -369,7 +431,7 @@ var downloader = (function() {
 var legend = (function()
 {
 
-    var legend = function(id)
+    var legend = function()
     {
         this.items =[];
         this.colors =[];
@@ -410,8 +472,9 @@ var legend = (function()
             text_sift_right: 20,
         };
         
-        this.area_html = id + "_html";
-        this.area_svg = id + "_svg";
+        this.html_id;
+        this.svg_id;
+        this.svg_obj = 0;
     };
     
     var p = legend.prototype;
@@ -474,16 +537,16 @@ var legend = (function()
         };
         
         // div
-        d3.select("#" + this.area_html).style(css_div_frame);
+        d3.select("#" + this.html_id).style(css_div_frame);
         
         // title
         if (this.options.title != "") {
-            d3.select("#" + this.area_html).append("div").attr("class", "legend_title")
+            d3.select("#" + this.html_id).append("div").attr("class", "legend_title")
                 .text(this.options.title)
                 .style(css_title);
         }
         
-        var legend_items = d3.select("#" + this.area_html).append("div").attr("class", "legend_items");
+        var legend_items = d3.select("#" + this.html_id).append("div").attr("class", "legend_items");
         
         // items
         for (var pos = 0; pos < p_data.items.length; pos++) {
@@ -506,7 +569,7 @@ var legend = (function()
             var ui = div_p.append("input")
                 .attr({
                     'type': "checkbox",
-                    'id': this.area_html + "_" + pos,
+                    'id': this.html_id + "_" + pos,
                     'name': p_data.items[pos],
                     'value': pos,
                 })
@@ -523,12 +586,12 @@ var legend = (function()
             div_p.append("label")
                 .style(css_rect)
                 .style("background", p_data.colors[pos])
-                .attr("for", this.area_html + "_" + pos);
+                .attr("for", this.html_id + "_" + pos);
             
             // text
             div_p.append("label")
                 .style(css_text)
-                .attr("for", this.area_html + "_" + pos)
+                .attr("for", this.html_id + "_" + pos)
                 .text(p_data.items[pos]);
         }
     }
@@ -539,8 +602,8 @@ var legend = (function()
     p.draw_svg = function(display) {
         
         // if svg element is exists, remove
-        if (d3.select("#" + this.area_svg).select("svg").empty() == false) {
-            d3.select("#" + this.area_svg).select("svg").remove();
+        if (d3.select("#" + this.svg_id).select("svg").empty() == false) {
+            d3.select("#" + this.svg_id).select("svg").remove();
         }
         
         // params
@@ -554,6 +617,7 @@ var legend = (function()
         var legend_color = d3.legend.color()
             .shapePadding(this.layout.shape_padding)
             .shapeWidth(p_data.rect_width)
+            .shapeHeight(this.layout.rect_height)
         
         if (this.options.horizon == true) { // horizon
             legend_color
@@ -568,7 +632,11 @@ var legend = (function()
         }
         
         // create objects
-        var legend_svg = d3.select("#" + this.area_svg).append("svg");
+        var legend_svg = this.svg_obj;
+        if (legend_svg == 0) {
+            legend_svg = d3.select("#" + this.svg_id).append("svg");
+        }
+        
         legend_svg
             .style("width", p_data.svg_width + 'px')
             .style("height", p_data.svg_height + 'px')
@@ -680,7 +748,7 @@ var legend = (function()
         
         // rect-width
         var rect_width = this.layout.rect_width;
-        if ((this.options.horizon == true) && (mode == "svg")) {
+        if ((rect_width == 0) && (this.options.horizon == true) && (mode == "svg")) {
             rect_width = max_length*(this.layout.text_font_size-1);
         }
         

@@ -6,7 +6,7 @@
 var bar_dataset = [];
 var group_enable = [];
 var div_select_bar = new mut_bar("selector");
-var div_legend = new legend("legend");
+var div_legend = new legend();
 
 // resize timer
 var timer = false;
@@ -35,7 +35,7 @@ function push_export() {
     // thumb's size
     var thumb_margin_top, thumb_margin_bottom, thumb_margin_left, thumb_margin_right, thumb_width, thumb_height, thumb_title_height, thumb_title_fontsize;
     
-    for (var i in bundle_data_sv.index_ID) {
+    for (var i in ca_data.index_ID) {
         
         if (d3.select("#thumb" + i + "_li").classed("hidden") == true) {
             continue;
@@ -79,7 +79,7 @@ function push_export() {
     
     var thumbs_counter = 0;
     
-    for (var i in bundle_data_sv.index_ID) {
+    for (var i in ca_data.index_ID) {
         
         if (d3.select("#thumb" + i + "_li").classed("hidden") == true) {
             continue;
@@ -93,7 +93,7 @@ function push_export() {
         }
         
         //title
-        svgText += downloader.virtual_svg_text(bundle_data_sv.index_ID[i], thumb_title_height, thumb_width, sift_x, sift_y, thumb_title_fontsize, true);
+        svgText += downloader.virtual_svg_text(ca_data.index_ID[i], thumb_title_height, thumb_width, sift_x, sift_y, thumb_title_fontsize, true);
         
         // bundle
         svgText += downloader.svg_text("thumb" + i, sift_x, sift_y + thumb_title_height);
@@ -135,7 +135,7 @@ div_legend.stack_change = function(d, i, on)
 function draw_select()
 {
     update_div();
-    bar_dataset = bundle_data_sv.get_select();
+    bar_dataset = ca_data.get_select();
 
     var chromos = [];
     var chromos_grid = [];
@@ -145,14 +145,14 @@ function draw_select()
         var pos = Number(split[1]);
         
         if (pos == 0) {
-            chromos[i] = bundle_data_sv.genome_size[Number(split[0].split(".")[1])].label;
+            chromos[i] = ca_data.genome_size[Number(split[0].split(".")[1])].label;
         }
         else {
             chromos[i] = "";
         }
         
         if ((pos != 0) && (pos % Math.floor(bar_dataset.all_key.length/60) == 0)) {
-            chromos_grid[i] = bundle_data_sv.genome_size[Number(split[0].split(".")[1])].label;
+            chromos_grid[i] = ca_data.genome_size[Number(split[0].split(".")[1])].label;
         }
         else {
             chromos_grid[i] = "";
@@ -161,10 +161,10 @@ function draw_select()
 
     for (var i = 0; i < bar_dataset.value.length; i++) {
 
-        div_select_bar.dataset[i] = new div_select_bar.dataset_template(bundle_data_sv.group[i].name);
+        div_select_bar.dataset[i] = new div_select_bar.dataset_template(ca_data.group[i].name);
         div_select_bar.dataset[i].data = bar_dataset.value[i];
         div_select_bar.dataset[i].keys = bar_dataset.key[i];
-        div_select_bar.dataset[i].color_fill = bundle_data_sv.group[i].color;
+        div_select_bar.dataset[i].color_fill = ca_data.group[i].color;
         div_select_bar.dataset[i].enable = true;
         group_enable[i] = true;
     };
@@ -220,7 +220,7 @@ function draw_select()
     div_select_bar.options.titles[0].text_rotate = -90;
     div_select_bar.options.titles[0].font_size = "12px";
     
-    div_select_bar.options.titles[1] = new div_select_bar.title_template(style_sv_bar.title_x + " (" + bundle_data_sv.node_size_select.toLocaleString() + " [bps])");
+    div_select_bar.options.titles[1] = new div_select_bar.title_template(style_sv_bar.title_x + " (" + ca_data.node_size_select.toLocaleString() + " [bps])");
     div_select_bar.options.titles[1].orient = "bottom";
     div_select_bar.options.titles[1].wide = 10;
     div_select_bar.options.titles[1].text_anchor = "left";
@@ -236,10 +236,10 @@ function draw_select()
     scale_domain = [];
     scale_color = [];
     var max_length = 0;
-    for (var i = 0; i < bundle_data_sv.group.length; i++) {
-        scale_domain.push(bundle_data_sv.group[i].label);
-        scale_color.push(bundle_data_sv.group[i].color);
-        if (bundle_data_sv.group[i].label.length > max_length) max_length = bundle_data_sv.group[i].label.length;
+    for (var i = 0; i < ca_data.group.length; i++) {
+        scale_domain.push(ca_data.group[i].label);
+        scale_color.push(ca_data.group[i].color);
+        if (ca_data.group[i].label.length > max_length) max_length = ca_data.group[i].label.length;
     };
     
     // legend
@@ -249,9 +249,11 @@ function draw_select()
     div_legend.options.title = style_sv_bar.title_top;
     div_legend.layout.shape_sift_left = 30;
     
+    div_legend.html_id = "legend_html";
+    div_legend.svg_id = "legend_svg";
     div_legend.draw_html();
     div_legend.draw_svg(false);
-    downloader.set_event_listner (div_legend.area_svg);
+    downloader.set_event_listner (div_legend.svg_id);
 }
 
 div_select_bar.brushed = function(data) {
@@ -271,9 +273,9 @@ div_select_bar.brushed = function(data) {
         }
     }
     // hilight
-    for (var i in bundle_data_sv.index_ID) {
+    for (var i in ca_data.index_ID) {
         
-        var find = target.indexOf(bundle_data_sv.index_ID[i]);
+        var find = target.indexOf(ca_data.index_ID[i]);
             
         if (find < 0) {
             if (selection_mode() == "hilight") {
@@ -298,7 +300,7 @@ function thumb_reset() {
     
     div_select_bar.brush_reset();
 
-    for (var i = 0; i < bundle_data_sv.index_ID.length; i++) {
+    for (var i = 0; i < ca_data.index_ID.length; i++) {
         d3.select("#thumb" + i + "_li").classed("hidden", false);
         d3.select("#thumb" + i).style("background-color", "#FFFFFF");
     }
@@ -319,9 +321,9 @@ function selection_mode() {
 {
     var color_list = [];
     var label_list = [];
-    for (var i = 0; i < bundle_data_sv.genome_size.length; i++) {
-        color_list.push(bundle_data_sv.genome_size[i].color);
-        label_list.push(bundle_data_sv.genome_size[i].label);
+    for (var i = 0; i < ca_data.genome_size.length; i++) {
+        color_list.push(ca_data.genome_size[i].color);
+        label_list.push(ca_data.genome_size[i].label);
     }
     
     var arc_style_detail = {
@@ -329,17 +331,17 @@ function selection_mode() {
         fill_opacity : style_sv_detail.arc_fill_opacity,
         stroke : color_list,
         stroke_opacity : style_sv_detail.arc_stroke_opacity,
-        font_family: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+        font_family: style_general.font_family,
         text_color: style_sv_detail.arc_label_color,
         font_size: style_sv_detail.arc_label_fontsize,
         label: label_list,
     };
 
     var link_style_detail = [];
-    for (var i = 0; i < bundle_data_sv.group.length; i++) {
+    for (var i = 0; i < ca_data.group.length; i++) {
         link_style_detail.push({
     
-            stroke : bundle_data_sv.group[i].color,
+            stroke : ca_data.group[i].color,
             stroke_width : style_sv_detail.link_width,
             stroke_opacity : style_sv_detail.link_opacity,
 
@@ -347,7 +349,7 @@ function selection_mode() {
             active_stroke_width : style_sv_detail.link_select_width,
             active_stroke_opacity : style_sv_detail.link_select_opacity,
 
-            name : bundle_data_sv.group[i].name,
+            name : ca_data.group[i].name,
             enable : group_enable[i],
         })
     }
@@ -357,17 +359,17 @@ function selection_mode() {
         fill_opacity : style_sv_thumb.arc_fill_opacity,
         stroke : color_list,
         stroke_opacity : style_sv_thumb.arc_stroke_opacity,
-        //font_family: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+        //font_family: style_general.font_family,
         //text_color: style_sv_thumb.arc_label_color,
         //font_size: style_sv_thumb.arc_label_fontsize,
         //label: [],
     };
 
     var link_style_thumb = [];
-    for (var i = 0; i < bundle_data_sv.group.length; i++) {
+    for (var i = 0; i < ca_data.group.length; i++) {
         link_style_thumb.push({
     
-            stroke : bundle_data_sv.group[i].color,
+            stroke : ca_data.group[i].color,
             stroke_width : style_sv_thumb.link_width,
             stroke_opacity : style_sv_thumb.link_opacity,
 
@@ -375,7 +377,7 @@ function selection_mode() {
             //active_stroke_width : style_sv_thumb.link_select_width,
             //active_stroke_opacity : style_sv_thumb.link_select_opacity,
 
-            name : bundle_data_sv.group[i].name,
+            name : ca_data.group[i].name,
             enable : group_enable[i],
         })
     }
@@ -414,7 +416,7 @@ function draw_bandle (obj, ID)
         copy_obj(link_style_detail[i], bundles[ID].link_style[i]);
     }
     bundles[ID].enable_tooltip = true;
-    bundles[ID].draw_bundle(obj, bundle_data_sv.get_arc_data_detail(), bundle_data_sv.get_data_detail(ID), options);
+    bundles[ID].draw_bundle(obj, ca_data.get_arc_data_detail(), ca_data.get_data_detail(ID), options);
     downloader.set_event_listner (obj, true);
 }
 
@@ -441,7 +443,7 @@ function draw_bandle_thumb (iid, ID)
         thumbs[ID].link_style.push(new thumbs[ID].link_style_template());
         copy_obj(link_style_thumb[i], thumbs[ID].link_style[i]);
     }
-    thumbs[ID].draw_bundle("thumb" + iid, bundle_data_sv.get_arc_data_thumb(), bundle_data_sv.get_data_thumb(ID), options);
+    thumbs[ID].draw_bundle("thumb" + iid, ca_data.get_arc_data_thumb(), ca_data.get_data_thumb(ID), options);
     downloader.set_event_listner ("thumb" + iid, true);
 
 }
