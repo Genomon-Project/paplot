@@ -190,10 +190,15 @@ def convert_tojs(input_file, output_file, config):
     signature_list = []
     for s in range(sig_num):
         signature_list.append("signature %d" % (s+1))
-        
+    
     # each signature colors
-    sig_color_list = color.create_color_array(sig_num, ["#f39700","#6cbb5a","#e60012","#00ada9","#e85298","#d7c447","#009944","#b6007a","#00a7db","#bb641d","#0079c2","#9b7cb6","#9CAEB7"])
-
+    sig_color_list = color.create_color_array(sig_num, color.r_set2)
+    
+    # use background?
+    if tools.config_getboolean(config, "result_format_signature", "background"):
+        signature_list.append("background ")
+        sig_color_list.append(color.r_set2_gray)
+        
     # axis-y max
     sig_y_max = tools.config_getint(config, "signature", "signature_y_max")
     if (sig_y_max < 0):

@@ -224,12 +224,14 @@ def convert_tojs(input_file, output_file, config):
     for s in range(sig_num):
         signature_list.append("signature %d" % (s+1))
     
-    signature_list.append("background")
-    
     # each signature colors
-    sig_color_list = color.create_color_array(sig_num, color.metro_colors2)
-    sig_color_list.append(color.metro_color_hibiya)
+    sig_color_list = color.create_color_array(sig_num, color.r_set2)
     
+    # use background?
+    if tools.config_getboolean(config, "result_format_pmsignature", "background"):
+        signature_list.append("background ")
+        sig_color_list.append(color.r_set2_gray)
+        
     # mutations
     mutations_txt = ""
     for m in jsonData[key_mutations]:
