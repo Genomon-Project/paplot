@@ -4,7 +4,7 @@ Created on Thu May 12 12:34:57 2016
 
 @author: okada
 
-$Id: color.py 177 2016-10-24 04:23:59Z aokada $
+$Id: color.py 181 2016-12-20 07:34:35Z aokada $
 """
 
 ## colors list

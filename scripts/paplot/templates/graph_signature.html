@@ -17,8 +17,20 @@ Generated on {date} for {project} by {version}.
 {divs}
 
 <!-- spacer --><div style="float: left; height: 10px; width: 100%"></div>
-<div style="float: left;" id="div_integral"></div>
-<!-- legend --> <div style="float: left;" id='div_legend_html'></div><div style="float: left;" id='div_legend_svg'></div>
+
+<table>
+<tr>
+<td style="vertical-align: top;" ><div style="float: left;" id="div_rate"></div></td>
+<td style="vertical-align: top;><!-- legend --> <div style="float: left;" id='div_rate_legend_html'></div><div style="float: left;" id='div_rate_legend_svg'></div></td>
+</tr>
+<tr>
+<td style="vertical-align: top;><div style="float: left;" id="div_integral"></div></td>
+<td style="vertical-align: top;><!-- legend --> <div style="float: left;" id='div_integral_legend_html'></div><div style="float: left;" id='div_integral_legend_svg'></div></td>
+</tr>
+<tr>
+<td colspan=2 style="padding-top: 20px;">view mode: <select id="chart_mode"></select></td>
+</tr>
+</table>
 
 <!-- ### tooltip ### -->
 <div id="tooltip" class="hidden"></div>

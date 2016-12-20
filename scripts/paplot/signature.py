@@ -4,7 +4,7 @@ Created on Wed Mar 16 15:40:29 2016
 
 @author: okada
 
-$Id: signature.py 179 2016-11-07 03:54:23Z aokada $
+$Id: signature.py 181 2016-12-20 07:34:35Z aokada $
 """
 
 ########### js template
@@ -29,6 +29,7 @@ sig_data.Ids = [{Ids}];
 
 // [ID, signature, value]
 sig_data.mutations = [{mutations}];
+sig_data.mutation_count = [{mutation_count}];
 """
 
 js_substruction_template = "{{name: '{name}', color: '{color}', route: [{route}],}},"
@@ -86,7 +87,7 @@ sig_data.get_data_par_signature = function (signature_id) {
     return {data: sig_data.dataset_sig[signature_id], tooltip: tooltips};
 };
 
-sig_data.get_bars_data = function () {
+sig_data.get_bars_data = function (rate) {
     
     var data = [];
     var keys = [];
@@ -116,7 +117,14 @@ sig_data.get_bars_data = function () {
                 sum += data_filt[s][2];
             }
             
+            var mutation_count = 1;
+            if (rate == false) {
+                if (sig_data.mutation_count.length > 0) mutation_count = sig_data.mutation_count[i];
+            }
+            
             if (sum > 0) {
+                sum = sum*mutation_count;
+            
                 data[f].push(sum);
                 keys[f].push(sig_data.esc_Ids[i]);
                 
@@ -148,7 +156,6 @@ sig_data.get_bars_data = function () {
 };
 })();
 Object.freeze(sig_data);
-
 """
 
 ########### functions
@@ -251,7 +258,12 @@ def convert_tojs(input_file, output_file, config):
         for sub in sig:
             tmp += "[" + ",".join(map(str, sub)) + "],"
         dataset_sig += ("[" + tmp + "],")
-        
+    
+    mutation_count_txt = ""
+    if "mutation_count" in jsonData.keys():
+        for v in jsonData["mutation_count"]:
+            mutation_count_txt += "%d," % v
+    
     # output
     keys_di = {"sig":"", "route":"", "id":""}
     f = open(output_file, "w")
@@ -268,6 +280,7 @@ def convert_tojs(input_file, output_file, config):
             signature_partial = convert.pyformat_to_jstooltip_text(keys_di, config, "signature", "", "tooltip_format_signature_partial"), \
             mutation_title = convert.pyformat_to_jstooltip_text(keys_di, config, "signature", "", "tooltip_format_mutation_title"), \
             mutation_partial = convert.pyformat_to_jstooltip_text(keys_di, config, "signature", "", "tooltip_format_mutation_partial"), \
+            mutation_count = mutation_count_txt, \
             )
         + js_function)
     f.close()
