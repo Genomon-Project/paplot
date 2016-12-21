@@ -202,6 +202,10 @@ function init() {
         div_integral.tags[0].values = msig_data.Ids;
         div_integral.tags[0].note = "fix";
         
+        div_integral.tags[1] = new div_integral.tag_template("mutation_num");
+        div_integral.tags[1].values = msig_data.mutation_count;
+        div_integral.tags[1].note = "fix";
+        
         div_integral.options.resizeable_w = true;
         div_integral.options.resizeable_h = false;
         div_integral.options.multi_select = false;
@@ -296,6 +300,7 @@ function init() {
                 d3.select("#div_integral_legend_svg").classed("hidden", true);
                 d3.select("#div_integral_legend_html").classed("hidden", true);
                 chart_mode = 0;
+                set_sort_listbox(0);
             }
             else {
                 d3.select("#div_rate").classed("hidden", true);
@@ -305,8 +310,47 @@ function init() {
                 d3.select("#div_integral_legend_svg").classed("hidden", false);
                 d3.select("#div_integral_legend_html").classed("hidden", false);
                 chart_mode = 1;
+                set_sort_listbox(1);
             }
           });
+        set_sort_listbox(0);
+    }
+}
+
+function set_sort_listbox(mode) {
+    
+    var options = [];
+    
+    if (mode == 0) options = ["sampleID"];
+    else options = ["sampleID", "mutation count"];
+    
+    d3.select("#chart_sort")
+      .selectAll("option")
+      .remove();
+    
+    d3.select("#chart_sort")
+      .selectAll("option")
+      .data(options)
+      .enter()
+      .append("option")
+      .attr("value", function(d){ return d})
+      .attr("selected", function(d, i){ if(i == 0) return "selected"})
+      .text(function(d){ return d });
+    
+    d3.select("#chart_sort")
+    .on("change", function() {
+        if (this[0].selected == true) {
+            sort(["sample_ID"], [true]);
+        }
+        else {
+            sort(["mutation_num"], [false]);
+        }
+      });
+}
+
+function sort(key, asc) {
+    if (chart_mode == 1) {
+        div_integral.sort(key, asc);
     }
 }
 
