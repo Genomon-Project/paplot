@@ -185,6 +185,7 @@ def convert_tojs(params, config):
     key_Ids = tools.config_getstr(config, "result_format_signature", "key_id")
     key_signature = tools.config_getstr(config, "result_format_signature", "key_signature")
     key_mutations = tools.config_getstr(config, "result_format_signature", "key_mutation")
+    key_mutation_count = tools.config_getstr(config, "result_format_signature", "key_mutation_count")
     
     sig_num = len(jsonData[key_signature])
     
@@ -259,19 +260,16 @@ def convert_tojs(params, config):
         dataset_sig += ("[" + tmp + "],")
     
     mutation_count_txt = ""
-    if "mutation_count" in jsonData.keys():
-        for v in jsonData["mutation_count"]:
+    if (key_mutation_count != "") and (key_mutation_count in jsonData.keys()):
+        for v in jsonData[key_mutation_count]:
             mutation_count_txt += "%d," % v
     
     # output
-    if params["ellipsis"] == "":
-        sig_num_sift = 0
-        if tools.config_getboolean(config, "result_format_signature", "background"):
-            sig_num_sift = 1
-        ellipsis = "signature%d" % (sig_num + sig_num_sift)
-    else:
-        ellipsis = params["ellipsis"]
-        
+    sig_num_sift = 0
+    if tools.config_getboolean(config, "result_format_signature", "background"):
+        sig_num_sift = 1
+    ellipsis = "%s%d" % (params["ellipsis"], (sig_num + sig_num_sift))
+    
     js_file = "data_%s.js" % ellipsis
     html_file = "graph_%s.html" % ellipsis
     
