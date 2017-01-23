@@ -57,19 +57,19 @@ For example, (using sample data)
 cd {paplot install directory}
 
 # create bar graphs of qc
-paplot qc "example/qc/*.csv" ~/tmp DUMMY --config_file example/example.cfg
+paplot qc "example/qc/SAMPLE*" ./demo demo --config_file ./example/example.cfg
 
 # create bundle graphs of Structural Variation (SV)
-paplot sv "example/sv/*.txt" ~/tmp DUMMY --config_file example/example.cfg
+paplot ca "example/sv/SAMPLE*" ./demo demo --config_file ./example/example.cfg
 
 # create sample-mutation plot (Mutation Matrix)
-paplot mutation example/mutation/sample_merge.csv ~/tmp DUMMY --config_file example/example.cfg
+paplot mutation example/mutation/sample_merge.csv ./demo demo --config_file ./example/example.cfg
 
-# create signature plot (Mutation Matrix)
-paplot signature example/signature/output_data.json ./demo demo 10 --config_file ./example/example.cfg
+# create signature plot
+paplot signature "example/signature/Nik_Zainal_2012.full.*.json" ./demo demo --config_file ./example/example.cfg
 
 # create pmsignature plot (see https://github.com/friend1ws/pmsignature)
-paplot pmsignature example/pmsignature/output_data.json ./demo demo 9 --config_file ./example/example.cfg
+paplot pmsignature "example/pmsignature/Nik_Zainal_2012.ind.*.json" ./demo demo --config_file ./example/example.cfg
 ```
 
 ## 6. Description 
@@ -77,7 +77,7 @@ paplot pmsignature example/pmsignature/output_data.json ./demo demo 9 --config_f
 ```
 $ paplot -h
 usage: paplot [-h] [--version]
-               {conf,index,qc,ca,mutation,signature,pmsignature} ...
+              {conf,index,qc,ca,mutation,signature,pmsignature} ...
 
 positional arguments:
   {conf,index,qc,ca,mutation,signature,pmsignature}
@@ -99,9 +99,9 @@ optional arguments:
 ```
 $ paplot qc -h
 usage: paplot qc [-h] [--config_file CONFIG_FILE] [--title TITLE]
-                  [--ellipsis ELLIPSIS] [--overview OVERVIEW]
-                  [--remarks REMARKS]
-                  input output_dir project_name
+                 [--ellipsis ELLIPSIS] [--overview OVERVIEW]
+                 [--remarks REMARKS]
+                 input output_dir project_name
 
 positional arguments:
   input                 input files path
@@ -123,9 +123,9 @@ optional arguments:
 ```
 $ paplot ca -h
 usage: paplot ca [-h] [--config_file CONFIG_FILE] [--title TITLE]
-                  [--ellipsis ELLIPSIS] [--overview OVERVIEW]
-                  [--remarks REMARKS]
-                  input output_dir project_name
+                 [--ellipsis ELLIPSIS] [--overview OVERVIEW]
+                 [--remarks REMARKS]
+                 input output_dir project_name
 
 positional arguments:
   input                 input files path
@@ -147,9 +147,9 @@ optional arguments:
 ```
 $ paplot mutation -h
 usage: paplot mutation [-h] [--config_file CONFIG_FILE] [--title TITLE]
-                        [--ellipsis ELLIPSIS] [--overview OVERVIEW]
-                        [--remarks REMARKS]
-                        input output_dir project_name
+                       [--ellipsis ELLIPSIS] [--overview OVERVIEW]
+                       [--remarks REMARKS]
+                       input output_dir project_name
 
 positional arguments:
   input                 input files path
@@ -171,15 +171,14 @@ optional arguments:
 ```
 $ paplot signature -h
 usage: paplot signature [-h] [--config_file CONFIG_FILE] [--title TITLE]
-                         [--ellipsis ELLIPSIS] [--overview OVERVIEW]
-                         [--sub_text SUB_TEXT] [--remarks REMARKS]
-                         input output_dir project_name sig_num
+                        [--ellipsis ELLIPSIS] [--overview OVERVIEW]
+                        [--remarks REMARKS]
+                        input output_dir project_name
 
 positional arguments:
   input                 input files path
   output_dir            output file path
   project_name          project name
-  sig_num               signature number
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -188,7 +187,6 @@ optional arguments:
   --title TITLE         report's title
   --ellipsis ELLIPSIS   report file's ID
   --overview OVERVIEW   overview about report file
-  --sub_text SUB_TEXT   sub text for each signature
   --remarks REMARKS     optional text
 ```
 
@@ -199,15 +197,14 @@ About pmsignaute?, see https://github.com/friend1ws/pmsignature)
 ```
 $ paplot pmsignature -h
 usage: paplot pmsignature [-h] [--config_file CONFIG_FILE] [--title TITLE]
-                           [--ellipsis ELLIPSIS] [--overview OVERVIEW]
-                           [--sub_text SUB_TEXT] [--remarks REMARKS]
-                           input output_dir project_name sig_num
+                          [--ellipsis ELLIPSIS] [--overview OVERVIEW]
+                          [--remarks REMARKS]
+                          input output_dir project_name
 
 positional arguments:
   input                 input files path
   output_dir            output file path
   project_name          project name
-  sig_num               signature number
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -216,9 +213,7 @@ optional arguments:
   --title TITLE         report's title
   --ellipsis ELLIPSIS   report file's ID
   --overview OVERVIEW   overview about report file
-  --sub_text SUB_TEXT   sub text for each signature
   --remarks REMARKS     optional text
-
 ```
 
 ## 7. Tree of output directory
