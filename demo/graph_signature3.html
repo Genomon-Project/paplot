@@ -6,7 +6,7 @@
 </head>
 <body>
 <div class="version">
-Generated on 2016-11-07 15:54:49 for demo by paplot-0.5.0.
+Generated on 2017-01-23 17:41:54 for demo by paplot-0.5.2.
 </div>
 
 <div class="container">
@@ -19,8 +19,23 @@ Generated on 2016-11-07 15:54:49 for demo by paplot-0.5.0.
 
 
 <!-- spacer --><div style="float: left; height: 10px; width: 100%"></div>
-<div style="float: left;" id="div_integral"></div>
-<!-- legend --> <div style="float: left;" id='div_legend_html'></div><div style="float: left;" id='div_legend_svg'></div>
+
+<table>
+<tr>
+<td style="vertical-align: top;" ><div style="float: left;" id="div_rate"></div></td>
+<td style="vertical-align: top;><!-- legend --> <div style="float: left;" id='div_rate_legend_html'></div><div style="float: left;" id='div_rate_legend_svg'></div></td>
+</tr>
+<tr>
+<td style="vertical-align: top;><div style="float: left;" id="div_integral"></div></td>
+<td style="vertical-align: top;><!-- legend --> <div style="float: left;" id='div_integral_legend_html'></div><div style="float: left;" id='div_integral_legend_svg'></div></td>
+</tr>
+<tr>
+<td colspan=2 style="padding-top: 20px;">
+<p>view mode: <select id="chart_mode"></select></p>
+<p>sort by: <select id="chart_sort"></select></p>
+</td>
+</tr>
+</table>
 
 <!-- ### tooltip ### -->
 <div id="tooltip" class="hidden"></div>
@@ -34,7 +49,7 @@ Generated on 2016-11-07 15:54:49 for demo by paplot-0.5.0.
 <script type="text/javascript" src="../style/default.js"></script>
 <script type="text/javascript" src="../js/utils.js"></script>
 <script type="text/javascript" src="../js/bar.js"></script>
-<script type="text/javascript" src="./data_sig3.js"></script>
+<script type="text/javascript" src="./data_signature3.js"></script>
 <script type="text/javascript" src="../js/graph_signature.js"></script>
 
 <script type="text/javascript">

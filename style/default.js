@@ -94,6 +94,9 @@ style_signature = {
     title_integral: "Signature integral",
     title_integral_y: "membership",
     title_signature_y: "probaility",
+    title_rate: "Signature rate",
+    title_rate_y: "membership",
+    title_rate_y: "probaility",
     border_y_color: "#DDDDCC",
     border_y_opacity: 0.5,
     plot_border_y_color: "#DDDDCC",
@@ -104,6 +107,8 @@ style_signature = {
 style_pmsignature = {
     title_integral: "Signature integral",
     title_integral_y: "membership",
+    title_rate: "Signature rate",
+    title_rate_y: "membership",
     plot_border_y_color: "#DDDDCC",
     plot_border_y_opacity: 0.5,
 };
