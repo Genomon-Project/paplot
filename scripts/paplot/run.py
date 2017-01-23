@@ -124,12 +124,12 @@ def mutation_main(args):
     
     html_name = "graph_%s.html" % args.ellipsis
     params_html = {"dir": output_html_dir, \
-        "data": "data_%s.csv" % args.ellipsis, \
-        "js": "data_%s.js" % args.ellipsis, \
-        "html": html_name, \
-        "project": args.project_name, \
-        "title": args.title, \
-    }
+                "data": "data_%s.csv" % args.ellipsis, \
+                "js": "data_%s.js" % args.ellipsis, \
+                "html": html_name, \
+                "project": args.project_name, \
+                "title": args.title, \
+                }
     mut.output_html(params_html, positions, config)
     
     prep.create_index(config, tools.win_to_unix(args.output_dir), html_name, args.project_name, args.title, 
@@ -147,28 +147,27 @@ def signature_main(args):
         print ("input no file.")
         return
     
-    if args.ellipsis == "":
-        args.ellipsis = "signature%d" % args.sig_num
-    if args.sub_text == "":
-        args.sub_text = "#sig %d" % args.sig_num
-        
     # dirs
     output_html_dir = prep.create_dirs(tools.win_to_unix(args.output_dir), args.project_name, config)    
     
-    html_name = "graph_%s.html" % args.ellipsis    
-    params_html = {"dir": output_html_dir, \
-                 "data": input_list, \
-                 "js": "data_%s.js" % args.ellipsis, \
-                 "html": html_name, \
-                 "project": args.project_name, \
-                 "title": args.title, \
-                 "sig_num": args.sig_num, \
-                 }
-    signature.output_html(params_html, config)
-    
-    prep.create_index(config, tools.win_to_unix(args.output_dir), html_name, args.project_name, args.title, 
-                      overview = args.overview, sub_text = args.sub_text, composite = True, remarks = args.remarks)
-
+    for input_file in input_list:
+        params_in = {"dir": output_html_dir, \
+                    "data": input_file, \
+                    "project": args.project_name, \
+                    "title": args.title, \
+                    "ellipsis": args.ellipsis, \
+                    }
+        params_out = signature.output_html(params_in, config)
+        
+        if params_out == None:
+            continue
+        
+        sig_num_sift = 0
+        if tools.config_getboolean(config, "result_format_signature", "background"):
+            sig_num_sift = 1
+        prep.create_index(config, tools.win_to_unix(args.output_dir), params_out["html"], args.project_name, args.title, 
+                          overview = args.overview, sub_text = "#sig %d" % (params_out["sig_num"] + sig_num_sift),
+                          composite = True, remarks = args.remarks)
 
 def pmsignature_main(args):
     import paplot.pmsignature as pmsignature
@@ -180,26 +179,26 @@ def pmsignature_main(args):
     if len(input_list) == 0:
         print ("input no file.")
         return
-    
-    if args.ellipsis == "":
-        args.ellipsis = "pmsignature%d" % args.sig_num
-    if args.sub_text == "":
-        args.sub_text = "#sig %d" % args.sig_num
-        
+       
     # dirs
     output_html_dir = prep.create_dirs(tools.win_to_unix(args.output_dir), args.project_name, config)
     
-    html_name = "graph_%s.html" % args.ellipsis
-    params_html = {"dir": output_html_dir, \
-                 "data": input_list, \
-                 "js": "data_%s.js" % args.ellipsis, \
-                 "html": html_name, \
-                 "project": args.project_name, \
-                 "title": args.title, \
-                 "sig_num": args.sig_num, \
-                 }
-    pmsignature.output_html(params_html, config)
-    
-    prep.create_index(config, tools.win_to_unix(args.output_dir), html_name, args.project_name, args.title, 
-                      overview = args.overview, sub_text = args.sub_text, composite = True, remarks = args.remarks)
-                      
+    for input_file in input_list:
+        params_in = {"dir": output_html_dir, \
+                    "data": input_file, \
+                    "project": args.project_name, \
+                    "title": args.title, \
+                    "ellipsis": args.ellipsis, \
+                    }
+        params_out = pmsignature.output_html(params_in, config)
+        
+        if params_out == None:
+            continue
+
+        sig_num_sift = 0
+        if tools.config_getboolean(config, "result_format_pmsignature", "background"):
+            sig_num_sift = 1
+        prep.create_index(config, tools.win_to_unix(args.output_dir), params_out["html"], args.project_name, args.title, 
+                          overview = args.overview, sub_text = "#sig %d" % (params_out["sig_num"] + sig_num_sift), 
+                          composite = True, remarks = args.remarks)
+                          

@@ -4,7 +4,7 @@ Created on Wed Mar 16 15:40:29 2016
 
 @author: okada
 
-$Id: pmsignature.py 177 2016-10-24 04:23:59Z aokada $
+$Id: pmsignature.py 181 2016-12-20 07:34:35Z aokada $
 """
 
 ########### js template
@@ -32,6 +32,7 @@ msig_data.dataset_strand = [{dataset_strand}];
 
 // [ID, signature, value]
 msig_data.mutations = [{mutations}];
+msig_data.mutation_count = [{mutation_count}];
 """
 js_tooltip_ref_template = "ref{index}:{tooltip_format},"
 
@@ -119,7 +120,7 @@ msig_data.get_dataset = function (sig_id, label) {
     return dataset;
 };
 
-msig_data.get_bars_data = function () {
+msig_data.get_bars_data = function (rate) {
     
     var data = [];
     var keys = [];
@@ -150,7 +151,14 @@ msig_data.get_bars_data = function () {
                 sum += data_filt[s][2];
             }
             
+            var mutation_count = 1;
+            if (rate == false) {
+                if (msig_data.mutation_count.length > 0) mutation_count = msig_data.mutation_count[i];
+            }
+            
             if (sum > 0) {
+                sum = sum*mutation_count;
+                
                 data[f].push(sum);
                 keys[f].push(msig_data.esc_Ids[i]);
                 
@@ -185,15 +193,14 @@ Object.freeze(msig_data);
 """
 
 ########### functions
-def output_html(output_di, config):
-    dataset = convert_tojs(output_di["data"], output_di["dir"] + "/" + output_di["js"], config)
+def output_html(params, config):
+    dataset = convert_tojs(params, config)
     if dataset != None:
-        create_html(dataset, output_di, config)
-        return True
+        create_html(dataset, params, config)
     
-    return False
+    return dataset
     
-def convert_tojs(input_file, output_file, config):
+def convert_tojs(params, config):
 
     import json
     import paplot.subcode.tools as tools
@@ -202,9 +209,9 @@ def convert_tojs(input_file, output_file, config):
     
     # data read
     try:
-        jsonData = json.load(open(input_file[0]))
+        jsonData = json.load(open(params["data"]))
     except Exception as e:
-        print ("failure open data %s, %s" % (input_file, e.message))
+        print ("failure open data %s, %s" % (params["data"], e.message))
         return None
     
     key_Ids = tools.config_getstr(config, "result_format_pmsignature", "key_id")
@@ -212,11 +219,12 @@ def convert_tojs(input_file, output_file, config):
     key_alt = tools.config_getstr(config, "result_format_pmsignature", "key_alt")
     key_strand = tools.config_getstr(config, "result_format_pmsignature", "key_strand")
     key_mutations = tools.config_getstr(config, "result_format_pmsignature", "key_mutation")
+    key_mutation_count = tools.config_getstr(config, "result_format_pmsignature", "key_mutation_count")
     
     sig_num = len(jsonData[key_ref])
     
     if sig_num == 0:
-        print ("no data %s" % input_file)
+        print ("no data %s" % params["data"])
         return None
 
     # signature names
@@ -266,8 +274,21 @@ def convert_tojs(input_file, output_file, config):
             index = r, tooltip_format = convert.pyformat_to_jstooltip_text(keys_di, config, "pmsignature", "", "tooltip_format_ref")
         )
     
-    # output 
-    f = open(output_file, "w")
+    mutation_count_txt = ""
+    if (key_mutation_count != "") and (key_mutation_count in jsonData.keys()):
+        for v in jsonData[key_mutation_count]:
+            mutation_count_txt += "%d," % v
+        
+    # output
+    sig_num_sift = 0
+    if tools.config_getboolean(config, "result_format_pmsignature", "background"):
+        sig_num_sift = 1
+    ellipsis = "%s%d" % (params["ellipsis"], (sig_num + sig_num_sift))
+    
+    js_file = "data_%s.js" % ellipsis
+    html_file = "graph_%s.html" % ellipsis
+    
+    f = open(params["dir"] + "/" + js_file, "w")
     f.write(js_header \
         + js_dataset.format(Ids = convert.list_to_text(jsonData[key_Ids]), \
             color_A = tools.config_getstr(config, "pmsignature", "color_A", "#06B838"), \
@@ -287,13 +308,17 @@ def convert_tojs(input_file, output_file, config):
             tooltip_strand = convert.pyformat_to_jstooltip_text(keys_di, config, "pmsignature", "", "tooltip_format_strand"), \
             mutation_title = convert.pyformat_to_jstooltip_text(keys_di, config, "pmsignature", "", "tooltip_format_mutation_title"), \
             mutation_partial = convert.pyformat_to_jstooltip_text(keys_di, config, "pmsignature", "", "tooltip_format_mutation_partial"), \
+            mutation_count = mutation_count_txt, \
             )
         + js_function)
     f.close()
 
-    return {"signature_num": sig_num} 
+    return {"sig_num": sig_num,
+            "js": js_file, \
+            "html": html_file, \
+            }
 
-def create_html(dataset, output_di, config):
+def create_html(dataset, params, config):
     import os
     import paplot.subcode.tools as tools
     import paplot.prep as prep
@@ -303,7 +328,7 @@ def create_html(dataset, output_di, config):
 
     div_text = ""
     add_text = ""
-    for i in range(dataset["signature_num"]):
+    for i in range(dataset["sig_num"]):
         
         div_text += html_div_template.format(id = i)
         add_text += html_add_template.format(id = i)
@@ -312,11 +337,15 @@ def create_html(dataset, output_di, config):
     html_template = f_template.read()
     f_template.close()
     
-    f_html = open(output_di["dir"] + "/" + output_di["html"], "w")
+    sig_num_sift = 0
+    if tools.config_getboolean(config, "result_format_pmsignature", "background"):
+        sig_num_sift = 1
+        
+    f_html = open(params["dir"] + "/" + dataset["html"], "w")
     f_html.write(
-        html_template.format(project = output_di["project"], 
-            title = "%s(#sig %d)" % (output_di["title"], output_di["sig_num"]),
-            data_js = output_di["js"],
+        html_template.format(project = params["project"], 
+            title = "%s(#sig %d)" % (params["title"], dataset["sig_num"] + sig_num_sift),
+            data_js = dataset["js"],
             version = prep.version_text(),
             date = tools.now_string(),
             divs = div_text,
