@@ -129,7 +129,12 @@ def _convert_index_item(jsonData):
             if graph["composite"] == True:
                 td_text = ""
                 for item in graph["items"]:
-                    link_text = item["sub_text"] + ", No Data."
+                    link_text = item["sub_text"]
+                    if link_text == "":
+                        link_text = "No Data."
+                    else:
+                        link_text += ", No Data."
+                        
                     icon = "block.png"
                     if item["exists"]:
                         link_text = link_templete_td.format(proj = data["proj"], output_html = item["output_html"], sub_text = item["sub_text"])
@@ -224,9 +229,12 @@ def create_index(
 
     import paplot.subcode.tools as tools
     import os
-
-    jsonData = _load_metadata(output_dir, output_html, project_name, name, overview, sub_text, composite, 
-                os.path.exists(output_dir + "/" + project_name + "/" + output_html))
+    
+    html_exists = os.path.exists(output_dir + "/" + project_name + "/" + output_html)
+    if output_html == "":
+        html_exists = False
+        
+    jsonData = _load_metadata(output_dir, output_html, project_name, name, overview, sub_text, composite, html_exists)
     
     link_text = _convert_index_item(jsonData)
     

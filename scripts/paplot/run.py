@@ -162,6 +162,12 @@ def signature_main(args):
         if params_out == None:
             continue
         
+        if params_out == {}:
+            prep.create_index(config, tools.win_to_unix(args.output_dir), "", args.project_name, args.title, 
+                              overview = args.overview, sub_text = "",
+                              composite = True, remarks = args.remarks)
+            continue
+            
         sig_num_sift = 0
         if tools.config_getboolean(config, "result_format_signature", "background"):
             sig_num_sift = 1
@@ -195,6 +201,12 @@ def pmsignature_main(args):
         if params_out == None:
             continue
 
+        if params_out == {}:
+            prep.create_index(config, tools.win_to_unix(args.output_dir), "", args.project_name, args.title, 
+                              overview = args.overview, sub_text = "",
+                              composite = True, remarks = args.remarks)
+            continue
+            
         sig_num_sift = 0
         if tools.config_getboolean(config, "result_format_pmsignature", "background"):
             sig_num_sift = 1

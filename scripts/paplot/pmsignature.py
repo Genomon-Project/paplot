@@ -195,7 +195,7 @@ Object.freeze(msig_data);
 ########### functions
 def output_html(params, config):
     dataset = convert_tojs(params, config)
-    if dataset != None:
+    if dataset != None and dataset != {}:
         create_html(dataset, params, config)
     
     return dataset
@@ -225,7 +225,7 @@ def convert_tojs(params, config):
     
     if sig_num == 0:
         print ("no data %s" % params["data"])
-        return None
+        return {}
 
     # signature names
     signature_list = []
