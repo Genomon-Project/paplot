@@ -79,6 +79,8 @@ function init() {
         div_rate_legend.options.title = "signature";
         div_rate_legend.layout.padding_top = 150;
         div_rate_legend.layout.shape_sift_left = 10;
+        div_rate_legend.layout.title_font_size = Number(style_pmsignature.legend_rate_title_font_size.replace("px",""));
+        div_rate_legend.layout.text_font_size = Number(style_pmsignature.legend_rate_text_font_size.replace("px",""));
         div_rate_legend.html_id = "div_rate_legend_html";
         div_rate_legend.svg_id = "div_rate_legend_svg";
         //div_rate_legend.draw_html();
@@ -139,16 +141,16 @@ function init() {
         div_rate.options.titles[0].wide = 0;
         div_rate.options.titles[0].text_anchor = "middle";
         div_rate.options.titles[0].text_rotate = -90;
-        div_rate.options.titles[0].font_size = "12px";
-        div_rate.options.titles[0].sift_x = 8;
+        div_rate.options.titles[0].font_size = style_pmsignature.title_rate_y_font_size;
+        div_rate.options.titles[0].sift_x = Number(style_pmsignature.title_rate_y_font_size.replace("px", "")) * 0.8; //8;
         
         div_rate.options.titles[1] = new div_rate.title_template(style_pmsignature.title_rate);
         div_rate.options.titles[1].orient = "top";
         div_rate.options.titles[1].wide = 30;
         div_rate.options.titles[1].text_anchor = "left";
         div_rate.options.titles[1].text_rotate = 0;
-        div_rate.options.titles[1].font_size = "16px";
-        div_rate.options.titles[1].sift_x = 8;
+        div_rate.options.titles[1].font_size = style_pmsignature.title_rate_font_size;
+        div_rate.options.titles[1].sift_x = Number(style_pmsignature.title_rate_font_size.replace("px", "")) * 0.8; //8;
         
         // for debug
         if (_DEBUG == true) {
@@ -178,6 +180,8 @@ function init() {
         div_integral_legend.options.title = "signature";
         div_integral_legend.layout.padding_top = 150;
         div_integral_legend.layout.shape_sift_left = 10;
+        div_integral_legend.layout.title_font_size = Number(style_pmsignature.legend_integral_title_font_size.replace("px",""));
+        div_integral_legend.layout.text_font_size = Number(style_pmsignature.legend_integral_text_font_size.replace("px",""));
         div_integral_legend.html_id = "div_integral_legend_html";
         div_integral_legend.svg_id = "div_integral_legend_svg";
         //div_integral_legend.draw_html();
@@ -242,16 +246,16 @@ function init() {
         div_integral.options.titles[0].wide = 0;
         div_integral.options.titles[0].text_anchor = "middle";
         div_integral.options.titles[0].text_rotate = -90;
-        div_integral.options.titles[0].font_size = "12px";
-        div_integral.options.titles[0].sift_x = 8;
+        div_integral.options.titles[0].font_size = style_pmsignature.title_integral_y_font_size; //"12px";
+        div_integral.options.titles[0].sift_x = Number(style_pmsignature.title_integral_y_font_size.replace("px", "")) * 0.8; //8;
         
         div_integral.options.titles[1] = new div_integral.title_template(style_pmsignature.title_integral);
         div_integral.options.titles[1].orient = "top";
         div_integral.options.titles[1].wide = 30;
         div_integral.options.titles[1].text_anchor = "left";
         div_integral.options.titles[1].text_rotate = 0;
-        div_integral.options.titles[1].font_size = "16px";
-        div_integral.options.titles[1].sift_x = 8;
+        div_integral.options.titles[1].font_size = style_pmsignature.title_integral_font_size; //"16px";
+        div_integral.options.titles[1].sift_x = Number(style_pmsignature.title_integral_font_size.replace("px", "")) * 0.8; //8;
         
         // for debug
         if (_DEBUG == true) {
@@ -377,7 +381,7 @@ function draw_pmsignature(name, signature_id) {
             msig_data.label_colors.A, msig_data.label_colors.C, msig_data.label_colors.G, msig_data.label_colors.T,
             msig_data.label_colors.A, msig_data.label_colors.C, msig_data.label_colors.G, msig_data.label_colors.T,];
         div_pm1.signature_rects[0].label.text = ["A","C","G","T","A","C","G","T","A","C","G","T","A","C","G","T"];
-        div_pm1.signature_rects[0].label.font_size = "10px";
+        div_pm1.signature_rects[0].label.font_size = style_pmsignature.signature_alt_font_size;
     }
     
     // Ref
@@ -397,7 +401,7 @@ function draw_pmsignature(name, signature_id) {
         div_pm1.signature_rects[i+1].reduce_rate = msig_data.ref_reduce_rate[i];
         div_pm1.signature_rects[i+1].options.colorset = [msig_data.label_colors.A, msig_data.label_colors.C, msig_data.label_colors.G, msig_data.label_colors.T];
         div_pm1.signature_rects[i+1].label.text = ["A","C","G","T"];
-        div_pm1.signature_rects[i+1].label.font_size = "10px";
+        div_pm1.signature_rects[i+1].label.font_size = style_pmsignature.signature_ref_font_size;
     }
     
     // strand
@@ -406,7 +410,7 @@ function draw_pmsignature(name, signature_id) {
         div_pm1.strand.data = dataset_strand.data;
         div_pm1.strand.colorset = [msig_data.label_colors.plus, msig_data.label_colors.minus];
         div_pm1.strand.tooltips = dataset_strand.tooltip;
-        div_pm1.strand.font_size = "10px";
+        div_pm1.strand.font_size = style_pmsignature.signature_strand_font_size;
     }
 
     // border
@@ -427,7 +431,7 @@ function draw_pmsignature(name, signature_id) {
     div_pm1.options.titles[0].wide = 30;
     div_pm1.options.titles[0].text_anchor = "left";
     div_pm1.options.titles[0].text_rotate = 0;
-    div_pm1.options.titles[0].font_size = "12px";
+    div_pm1.options.titles[0].font_size = style_pmsignature.signature_title_font_size;
     
     // other options
     div_pm1.options.resizeable_w = true;
