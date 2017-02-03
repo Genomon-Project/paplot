@@ -83,6 +83,8 @@ function init() {
         div_rate_legend.options.title = "signature";
         div_rate_legend.layout.padding_top = 150;
         div_rate_legend.layout.shape_sift_left = 10;
+        div_rate_legend.layout.title_font_size = Number(style_signature.legend_rate_title_font_size.replace("px",""));
+        div_rate_legend.layout.text_font_size = Number(style_signature.legend_rate_text_font_size.replace("px",""));
         
         div_rate_legend.html_id = "div_rate_legend_html";
         div_rate_legend.svg_id = "div_rate_legend_svg";
@@ -144,16 +146,16 @@ function init() {
         div_rate.options.titles[0].wide = 0;
         div_rate.options.titles[0].text_anchor = "middle";
         div_rate.options.titles[0].text_rotate = -90;
-        div_rate.options.titles[0].font_size = "12px";
-        div_rate.options.titles[0].sift_x = 8;
+        div_rate.options.titles[0].font_size = style_signature.title_rate_y_font_size; //"12px";
+        div_rate.options.titles[0].sift_x = Number(style_signature.title_rate_y_font_size.replace("px", "")) * 0.8; //8;
         
         div_rate.options.titles[1] = new div_rate.title_template(style_signature.title_rate);
         div_rate.options.titles[1].orient = "top";
         div_rate.options.titles[1].wide = 30;
         div_rate.options.titles[1].text_anchor = "left";
         div_rate.options.titles[1].text_rotate = 0;
-        div_rate.options.titles[1].font_size = "16px";
-        div_rate.options.titles[1].sift_x = 8;
+        div_rate.options.titles[1].font_size = style_signature.title_rate_font_size; //"16px";
+        div_rate.options.titles[1].sift_x = Number(style_signature.title_rate_font_size.replace("px", "")) * 0.8; //8;
         
         // for debug
         if (_DEBUG == true) {
@@ -182,6 +184,8 @@ function init() {
         div_integral_legend.options.title = "signature";
         div_integral_legend.layout.padding_top = 150;
         div_integral_legend.layout.shape_sift_left = 10;
+        div_integral_legend.layout.title_font_size = Number(style_signature.legend_integral_title_font_size.replace("px",""));
+        div_integral_legend.layout.text_font_size = Number(style_signature.legend_integral_text_font_size.replace("px",""));
         
         div_integral_legend.html_id = "div_integral_legend_html";
         div_integral_legend.svg_id = "div_integral_legend_svg";
@@ -247,16 +251,16 @@ function init() {
         div_integral.options.titles[0].wide = 0;
         div_integral.options.titles[0].text_anchor = "middle";
         div_integral.options.titles[0].text_rotate = -90;
-        div_integral.options.titles[0].font_size = "12px";
-        div_integral.options.titles[0].sift_x = 8;
+        div_integral.options.titles[0].font_size = style_signature.title_integral_y_font_size; //"12px";
+        div_integral.options.titles[0].sift_x = Number(style_signature.title_integral_y_font_size.replace("px", "")) * 0.8; //8;
         
         div_integral.options.titles[1] = new div_integral.title_template(style_signature.title_integral);
         div_integral.options.titles[1].orient = "top";
         div_integral.options.titles[1].wide = 30;
         div_integral.options.titles[1].text_anchor = "left";
         div_integral.options.titles[1].text_rotate = 0;
-        div_integral.options.titles[1].font_size = "16px";
-        div_integral.options.titles[1].sift_x = 8;
+        div_integral.options.titles[1].font_size = style_signature.title_integral_font_size; //"16px";
+        div_integral.options.titles[1].sift_x = Number(style_signature.title_integral_font_size.replace("px", "")) * 0.8; //8;
         
         // for debug
         if (_DEBUG == true) {
@@ -392,9 +396,9 @@ function draw_signature(name, signature_id, change_id) {
         .attr({
             'text-color': "#000",
             'text-anchor': "start",
-            'font-size': "12px",
+            'font-size': style_signature.signature_title_font_size, //"12px",
             'font-family': style_general.font_family,
-            'transform': 'translate(' + SIGNATURE_AXIS_YW + ',' + 12 + ')',
+            'transform': 'translate(' + SIGNATURE_AXIS_YW + ',' + style_signature.signature_title_font_size.replace("px", "") + ')',
         });
     
     // append main svg
@@ -429,6 +433,7 @@ function draw_signature(name, signature_id, change_id) {
     div_legend.layout.shape_sift_left = SIGNATURE_AXIS_YW + div_legend.layout.shape_padding/2;
     div_legend.layout.rect_width = (SIGNATURE_W - SIGNATURE_AXIS_YW)/change_list.length - div_legend.layout.shape_padding;
     div_legend.layout.rect_height = 10;
+    div_legend.layout.text_font_size = Number(style_signature.signature_title_x_font_size.replace("px",""));
     div_legend.draw_svg(true);
 
     // each plot
@@ -493,12 +498,12 @@ function draw_signature(name, signature_id, change_id) {
         
         // title
         if (c == 0) {
-            bar.options.titles[0] = new bar.title_template(style_signature.title_signature_y);
+            bar.options.titles[0] = new bar.title_template(style_signature.signature_title_y);
             bar.options.titles[0].orient = "left";
             bar.options.titles[0].wide = SIGNATURE_AXIS_YW;
             bar.options.titles[0].text_anchor = "middle";
             bar.options.titles[0].text_rotate = -90;
-            bar.options.titles[0].font_size = "12px";
+            bar.options.titles[0].font_size = style_signature.signature_title_y_font_size; //"12px";
         }
         
         bar.draw();

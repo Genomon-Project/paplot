@@ -179,8 +179,8 @@ function init() {
             bar.options.titles[0].wide = 0;
             bar.options.titles[0].text_anchor = "middle";
             bar.options.titles[0].text_rotate = -90;
-            bar.options.titles[0].font_size = "12px";
-            bar.options.titles[0].sift_x = 8;
+            bar.options.titles[0].font_size = style_qc.title_y_font_size; //"12px";
+            bar.options.titles[0].sift_x = Number(style_qc.title_y_font_size.replace("px", "")) * 0.8; //8;
         }
         // for debug
         if (_DEBUG == true) {
@@ -204,7 +204,8 @@ function init() {
         legend.colors = info.color;
         legend.options.title = info.title;
         legend.layout.shape_sift_left = 70;
-        
+        legend.layout.title_font_size = Number(style_qc.legend_title_font_size.replace("px",""));
+        legend.layout.text_font_size = Number(style_qc.legend_text_font_size.replace("px",""));
         legend.svg_id = legends[i].chart_id;
         legend.draw_svg(true);
         downloader.set_event_listner (legends[i].chart_id);

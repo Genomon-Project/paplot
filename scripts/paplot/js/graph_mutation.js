@@ -29,7 +29,7 @@ var genes_length = 0;
 
 // figure options
 var BAR_TOP_AXIS_Y = 50;
-var BAR_LEFT_AXIS_Y = 40;
+var BAR_LEFT_AXIS_Y = (Number(style_mut.title_gene_y1_font_size.replace("px", ""))+Number(style_mut.title_gene_y2_font_size.replace("px", ""))) * 2//40;
 var MULTI_SELECT = false;
 var SPIN_WAIT = 200;
 
@@ -805,8 +805,10 @@ function init() {
     div_legend.items   = mut_data.funcs;
     div_legend.colors  = mut_data.func_colors_n;
     
-    div_legend.options.title = style_mut.func_title;
+    div_legend.options.title = style_mut.legend_title;
     div_legend.layout.shape_sift_left = 10;
+    div_legend.layout.title_font_size = style_mut.legend_title_font_size;
+    div_legend.layout.text_font_size = style_mut.legend_text_font_size;
     
     div_legend.html_id = "legend_html";
     div_legend.svg_id = "legend_svg";
@@ -877,13 +879,14 @@ function init() {
     div_mut_bar_top.options.titles[0].wide = 30;
     div_mut_bar_top.options.titles[0].text_anchor = "middle";
     div_mut_bar_top.options.titles[0].text_rotate = 0;
+    div_mut_bar_top.options.titles[0].font_size = style_mut.title_sample_font_size;
     div_mut_bar_top.options.titles[1] = new div_mut_bar_top.title_template(style_mut.title_sample_y);
     div_mut_bar_top.options.titles[1].orient = "left";
     div_mut_bar_top.options.titles[1].wide = 0;
     div_mut_bar_top.options.titles[1].text_anchor = "middle";
     div_mut_bar_top.options.titles[1].text_rotate = -90;
-    div_mut_bar_top.options.titles[1].font_size = "12px";
-    div_mut_bar_top.options.titles[1].sift_x = 8;
+    div_mut_bar_top.options.titles[1].font_size = style_mut.title_sample_y_font_size; //"12px";
+    div_mut_bar_top.options.titles[1].sift_x = Number(style_mut.title_sample_y_font_size.replace("px", "")) * 0.8; //8;
     
     //div_mut_bar_top.draw();
     
@@ -933,7 +936,7 @@ function init() {
     div_mut_bar_left.options.grid_xs[0].labels = dataset_gene.total_names;
     div_mut_bar_left.options.grid_xs[0].keys = dataset_gene.total_keys;
     div_mut_bar_left.options.grid_xs[0].wide = 80;
-    div_mut_bar_left.options.grid_xs[0].font_size = "9px";
+    div_mut_bar_left.options.grid_xs[0].font_size = style_mut.gene_text_font_size;//"9px";
     div_mut_bar_left.options.grid_xs[0].sift_y = 4;
     div_mut_bar_left.options.grid_xs[0].border_color = style_mut.horizon_border_x_color;
     div_mut_bar_left.options.grid_xs[0].border_width = style_mut.horizon_border_x_width;
@@ -946,20 +949,21 @@ function init() {
     div_mut_bar_left.options.titles[0].wide = 30;
     div_mut_bar_left.options.titles[0].text_anchor = "middle";
     div_mut_bar_left.options.titles[0].text_rotate = -90;
+    div_mut_bar_left.options.titles[0].font_size = style_mut.title_gene_font_size;
     div_mut_bar_left.options.titles[1] = new div_mut_bar_left.title_template(style_mut.title_gene_y1);
     div_mut_bar_left.options.titles[1].orient = "bottom";
     div_mut_bar_left.options.titles[1].wide = 0;
     div_mut_bar_left.options.titles[1].text_anchor = "middle";
     div_mut_bar_left.options.titles[1].text_rotate = 0;
-    div_mut_bar_left.options.titles[1].font_size = "12px";
-    div_mut_bar_left.options.titles[1].sift_y = -20;
+    div_mut_bar_left.options.titles[1].font_size = style_mut.title_gene_y1_font_size; //"12px";
+    div_mut_bar_left.options.titles[1].sift_y = Number(style_mut.title_gene_y1_font_size.replace("px", "")) * (-0.2) -Number(style_mut.title_gene_y2_font_size.replace("px", "")); //-20;
     div_mut_bar_left.options.titles[2] = new div_mut_bar_left.title_template(style_mut.title_gene_y2);
     div_mut_bar_left.options.titles[2].orient = "bottom";
     div_mut_bar_left.options.titles[2].wide = 0;
     div_mut_bar_left.options.titles[2].text_anchor = "middle";
     div_mut_bar_left.options.titles[2].text_rotate = 0;
-    div_mut_bar_left.options.titles[2].font_size = "12px";
-    div_mut_bar_left.options.titles[2].sift_y = -8;
+    div_mut_bar_left.options.titles[2].font_size = style_mut.title_gene_y2_font_size; //"12px";
+    div_mut_bar_left.options.titles[2].sift_y = Number(style_mut.title_gene_y2_font_size.replace("px", "")) * (-0.2); //-8;
     
     //div_mut_bar_left.draw();
     
@@ -1157,6 +1161,8 @@ function sub_plot(sub) {
     div_sub_legend.options.svg_size = [0, 50];
     div_sub_legend.layout.padding_left = 30;
     div_sub_legend.layout.padding_top = 10;
+    div_sub_legend.layout.title_font_size = Number(style_mut.legend_title_font_size.replace("px", ""));
+    div_sub_legend.layout.text_font_size = Number(style_mut.legend_text_font_size.replace("px", ""));
     div_sub_legend.options.horizon = true;
     
     div_sub_legend.svg_id = "div_" + sub.name + "_l_svg"
