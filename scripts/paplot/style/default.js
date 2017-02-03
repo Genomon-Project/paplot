@@ -136,7 +136,7 @@ style_signature = {
     signature_title_font_size: "12px",
     signature_title_y: "probaility",
     signature_title_y_font_size: "12px",
-    signature_title_x_font_size: "12"px
+    signature_title_x_font_size: "12px",
     border_y_color: "#DDDDCC",
     border_y_opacity: 0.5,
 };
