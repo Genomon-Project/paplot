@@ -9,14 +9,23 @@ style_qc = {
     brush_border_y_opacity: 0.5,
     plot_border_y_color: "#DDDDCC",
     plot_border_y_opacity: 0.2,
+    title_y_font_size: "12px",
+    legend_title_font_size: "16px",
+    legend_text_font_size: "12px",
 };
 
 // style of genome-wide bar plot
 style_sv_bar = {
     // title's text options
-    title_top: "Genome-wide CAs identify",
     title_y: "samples with CA breakp.",
+    title_y_font_size: "12px",
+
     title_x: "Chromosome",
+    title_x_font_size: "14px",
+    
+    legend_title: "Genome-wide CAs identify",
+    legend_title_font_size: "16px",
+    legend_text_font_size: "12px",
     
     border_x_main_color: "#E0E0E0",
     border_x_main_width: "1px",
@@ -68,22 +77,34 @@ style_sv_detail = {
 style_mut = {
     // title's text options
     title_sample: "Sample",
+    title_sample_font_size: "14px",
     title_sample_y: "Number of mutation",
+    title_sample_y_font_size: "12px",
     virtical_border_x_color: "#CCCCEE",
     virtical_border_x_width: "1px",
     virtical_border_y_color: "#DDDDCC",
     virtical_border_y_opacity: 0.5,
     
     title_gene: "Genes",
-    title_gene_y1: "% Samples",
-    title_gene_y2: "with mutation",
+    title_gene_font_size: "14px",
+    title_gene_y1: "% Samplesg",
+    title_gene_y2: "with mutationg",
+    title_gene_y1_font_size: "12px",
+    title_gene_y2_font_size: "12px",
     horizon_border_x_color: "#CCCCEE",
     horizon_border_x_width: "1px",
     horizon_border_y_color: "#DDDDCC",
     horizon_border_y_opacity: 0.5,
     
-    func_title: "functions",
+    // legend
+    legend_title: "functions",
+    legend_title_font_size: "16px",
+    legend_text_font_size: "12px",
     
+    // gene
+    gene_text_font_size: "9px",
+    
+    // subplot
     sub_border_color: "#FFFFFF",
     sub_border_width: "1px",
     
@@ -91,25 +112,61 @@ style_mut = {
 
 // style of signature
 style_signature = {
+    // stack-integral
     title_integral: "Signature integral",
+    title_integral_font_size: "16px",
     title_integral_y: "membership",
-    title_signature_y: "probaility",
+    title_integral_y_font_size: "12px",
+    legend_integral_title_font_size: "16px",
+    legend_integral_text_font_size: "12px",
+    
+    // stack-rate
     title_rate: "Signature rate",
+    title_rate_font_size: "16px",
     title_rate_y: "membership",
-    title_rate_y: "probaility",
-    border_y_color: "#DDDDCC",
-    border_y_opacity: 0.5,
+    title_rate_y_font_size: "12px",
+    legend_rate_title_font_size: "16px",
+    legend_rate_text_font_size: "12px",
+    
+    //stack-common
     plot_border_y_color: "#DDDDCC",
     plot_border_y_opacity: 0.5,
+    
+    // signature
+    signature_title_font_size: "12px",
+    signature_title_y: "probaility",
+    signature_title_y_font_size: "12px",
+    signature_title_x_font_size: "12px",
+    border_y_color: "#DDDDCC",
+    border_y_opacity: 0.5,
 };
 
 // style of pmsignature
 style_pmsignature = {
+    // stack-integral
     title_integral: "Signature integral",
+    title_integral_font_size: "16px",
     title_integral_y: "membership",
+    title_integral_y_font_size: "12px",
+    legend_integral_title_font_size: "16px",
+    legend_integral_text_font_size: "12px",
+    
+    // stack-rate
     title_rate: "Signature rate",
+    title_rate_font_size: "16px",
     title_rate_y: "membership",
+    title_rate_y_font_size: "12px",
+    legend_rate_title_font_size: "16px",
+    legend_rate_text_font_size: "12px",
+    
+    //stack-common
     plot_border_y_color: "#DDDDCC",
     plot_border_y_opacity: 0.5,
+    
+    // signature
+    signature_alt_font_size: "10px",
+    signature_ref_font_size: "10px",
+    signature_strand_font_size: "10px",
+    signature_title_font_size: "12px",
 };
 })();
