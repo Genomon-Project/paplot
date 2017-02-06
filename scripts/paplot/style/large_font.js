@@ -17,7 +17,7 @@ style_qc = {
 // style of genome-wide bar plot
 style_sv_bar = {
     // title's text options
-    title_y: "samples with CA breakp.",
+    title_y: "number",
     title_y_font_size: "18px", //"12px",
 
     title_x: "Chromosome",
@@ -33,6 +33,8 @@ style_sv_bar = {
     border_x_sub_width: "1px",
     border_y_color: "#DDDDCC",
     border_y_opacity: 0.5,
+    
+    axis_x_font_size: "12px", //"9px",
 };
 
 // style of thumbnails

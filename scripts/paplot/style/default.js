@@ -33,6 +33,8 @@ style_sv_bar = {
     border_x_sub_width: "1px",
     border_y_color: "#DDDDCC",
     border_y_opacity: 0.5,
+    
+    axis_x_font_size: "9px",
 };
 
 // style of thumbnails

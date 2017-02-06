@@ -207,7 +207,7 @@ function draw_select()
     div_select_bar.options.grid_xs[1].keys = bar_dataset.all_key;
     div_select_bar.options.grid_xs[1].labels = chromos;
     div_select_bar.options.grid_xs[1].wide = 40;
-    div_select_bar.options.grid_xs[1].font_size = "9px";
+    div_select_bar.options.grid_xs[1].font_size = style_sv_bar.axis_x_font_size;
     div_select_bar.options.grid_xs[1].sift_y = 10;
     div_select_bar.options.grid_xs[1].border_color = style_sv_bar.border_x_sub_color;
     div_select_bar.options.grid_xs[1].border_width = style_sv_bar.border_x_sub_width;
