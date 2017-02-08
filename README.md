@@ -20,7 +20,7 @@ http://paplot-doc.readthedocs.org/en/latest/
 
 Japanese:
 
-http://paplot-jp.readthedocs.org/ja/latest/
+http://paplot-doc.readthedocs.org/ja/latest/
 
 
 -------------------------------------------------------------------------
@@ -221,19 +221,19 @@ optional arguments:
 <pre>
 {output_dir}
   |
-  ├ {project_name}
-  |  └ (data files and html files)
+  |- {project_name}
+  |    |- (data files and html files)
   |
-  ├ js
-  |  └ (paplot's js files)
+  |- js
+  |    |- (paplot's js files)
   |
-  ├  lib
-  |  └ (3rd-party's libraries)
+  |- lib
+  |    |- (3rd-party's libraries)
   |
-  ├ style
-  |  └ default.js
+  |- style
+  |    |- default.js
   |
-  └  index.html        <--------- open your browser
+  |- index.html        <--------- open your browser
 
 </pre>
 

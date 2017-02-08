@@ -89,7 +89,7 @@ style_mut = {
     
     title_gene: "Genes",
     title_gene_font_size: "14px",
-    title_gene_y1: "% Samplesg",
+    title_gene_y1: "% Samples",
     title_gene_y2: "with mutationg",
     title_gene_y1_font_size: "12px",
     title_gene_y2_font_size: "12px",
