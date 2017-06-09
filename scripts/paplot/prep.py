@@ -4,7 +4,7 @@ Created on Wed Dec 02 17:43:52 2015
 
 @author: okada
 
-$Id: prep.py 179 2016-11-07 03:54:23Z aokada $
+$Id: prep.py 189 2017-01-25 06:47:57Z aokada $
 """
 
 def copy_dir_lib(dst):

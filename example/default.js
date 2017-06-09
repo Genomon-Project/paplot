@@ -17,7 +17,7 @@ style_qc = {
 // style of genome-wide bar plot
 style_sv_bar = {
     // title's text options
-    title_y: "samples with CA breakp.",
+    title_y: "mutations with CA breakp.",
     title_y_font_size: "12px",
 
     title_x: "Chromosome",
@@ -89,8 +89,8 @@ style_mut = {
     
     title_gene: "Genes",
     title_gene_font_size: "14px",
-    title_gene_y1: "% Samplesg",
-    title_gene_y2: "with mutationg",
+    title_gene_y1: "% Samples",
+    title_gene_y2: "with mutations",
     title_gene_y1_font_size: "12px",
     title_gene_y2_font_size: "12px",
     horizon_border_x_color: "#CCCCEE",

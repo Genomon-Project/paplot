@@ -4,7 +4,7 @@ Created on Thu May 12 12:34:57 2016
 
 @author: okada
 
-$Id: convert.py 177 2016-10-24 04:23:59Z aokada $
+$Id: convert.py 203 2017-06-09 05:54:22Z aokada $
 """
 import paplot.subcode.tools as tools
 
@@ -71,21 +71,21 @@ def group_list(colmun, mode, name, config):
     funcs = list(set(funcs))
     funcs.sort() 
     
-    color_n_list = {};
+    color_list = {};
     for f in tools.config_getstr(config, mode, "%s_colors" % name).split(","):
         if len(f) == 0: continue
         cols = text_to_list(f, ":")
         if len(cols) >= 2:
-            color_n_list[cols[0]] = color.name_to_value(cols[1])
+            color_list[cols[0]] = color.name_to_value(cols[1])
     
-    color_n_list = color.create_color_dict(funcs, color_n_list, color.metro_colors) 
+    color_list = color.create_color_dict(funcs, color_list, color.metro_colors)
     
     # dict to value
-    colors_n = []    
+    colors = []    
     for key in funcs:
-        colors_n.append(color_n_list[key])
+        colors.append(color_list[key])
         
-    return [funcs, colors_n]
+    return [funcs, colors]
 
 def pyformat_to_jstooltip_text(positions, config, section_fmt, section_col, item_startwith):
 
@@ -153,7 +153,7 @@ def pyformat_to_jstooltip_text(positions, config, section_fmt, section_col, item
                 keys_list.extend(sub_keys)
         
         if len(formt) > 0:
-            tooltip_detail_text += tooltip_detail_templete.format(label = formt, type="fix", keys="", ext="")
+            tooltip_detail_text += tooltip_detail_templete.format(label=formt, type="fix", keys="", ext="")
             
         tooltip_fomat_text += "[" + tooltip_detail_text + "],"
 
