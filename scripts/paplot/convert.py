@@ -41,10 +41,10 @@ def group_list(colmun, mode, name, config):
     
     option_input = ""
 
-    if mode == "mut":
+    if mode == "mutation":
         option_input = "result_format_mutation"
-    elif mode == "sv":
-        option_input = "result_format_sv"
+    elif mode == "ca":
+        option_input = "result_format_ca"
     else:
         return []
     

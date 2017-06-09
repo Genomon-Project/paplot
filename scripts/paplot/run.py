@@ -102,7 +102,7 @@ def ca_main(args):
     
     
 def mutation_main(args):
-    import paplot.mut as mut
+    import paplot.mutation as mut
     
     # config
     [config, conf_file] = tools.load_config(tools.win_to_unix(args.config_file))
