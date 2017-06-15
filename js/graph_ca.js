@@ -48,6 +48,9 @@ function push_export() {
         thumb_height = Number(d3.select("#thumb" + i + "_li").style("height").replace("px", ""));
         thumb_title_height = thumb_height - thumb_width;
         thumb_title_fontsize = Number(d3.select("#thumb" + i + "_li").style("font-size").replace("px", ""));
+        if (thumb_title_height < thumb_title_fontsize) {
+            thumb_title_height = thumb_title_fontsize;
+        }
         break;
     }
     
@@ -94,7 +97,7 @@ function push_export() {
         
         //title
         svgText += downloader.virtual_svg_text(ca_data.index_ID[i], thumb_title_height, thumb_width, sift_x, sift_y, thumb_title_fontsize, true);
-        
+
         // bundle
         svgText += downloader.svg_text("thumb" + i, sift_x, sift_y + thumb_title_height);
         
@@ -204,7 +207,7 @@ function draw_select()
     div_select_bar.options.grid_xs[1].keys = bar_dataset.all_key;
     div_select_bar.options.grid_xs[1].labels = chromos;
     div_select_bar.options.grid_xs[1].wide = 40;
-    div_select_bar.options.grid_xs[1].font_size = "9px";
+    div_select_bar.options.grid_xs[1].font_size = style_sv_bar.axis_x_font_size;
     div_select_bar.options.grid_xs[1].sift_y = 10;
     div_select_bar.options.grid_xs[1].border_color = style_sv_bar.border_x_sub_color;
     div_select_bar.options.grid_xs[1].border_width = style_sv_bar.border_x_sub_width;
@@ -218,14 +221,14 @@ function draw_select()
     div_select_bar.options.titles[0].wide = 40;
     div_select_bar.options.titles[0].text_anchor = "middle";
     div_select_bar.options.titles[0].text_rotate = -90;
-    div_select_bar.options.titles[0].font_size = "12px";
+    div_select_bar.options.titles[0].font_size = style_sv_bar.title_y_font_size;//"12px";
     
     div_select_bar.options.titles[1] = new div_select_bar.title_template(style_sv_bar.title_x + " (" + ca_data.node_size_select.toLocaleString() + " [bps])");
     div_select_bar.options.titles[1].orient = "bottom";
     div_select_bar.options.titles[1].wide = 10;
     div_select_bar.options.titles[1].text_anchor = "left";
     div_select_bar.options.titles[1].text_rotate = 0;
-    div_select_bar.options.titles[1].font_size = "14px";
+    div_select_bar.options.titles[1].font_size = style_sv_bar.title_x_font_size;//"14px";
     
     div_select_bar.draw();
     div_select_bar.sort(["pos"], [true]);
@@ -246,9 +249,11 @@ function draw_select()
     div_legend.items   = scale_domain;
     div_legend.colors  = scale_color;
     
-    div_legend.options.title = style_sv_bar.title_top;
+    div_legend.options.title = style_sv_bar.legend_title;
     div_legend.layout.shape_sift_left = 30;
-    
+    div_legend.layout.title_font_size = Number(style_sv_bar.legend_title_font_size.replace("px",""));
+    div_legend.layout.text_font_size = Number(style_sv_bar.legend_text_font_size.replace("px",""));
+        
     div_legend.html_id = "legend_html";
     div_legend.svg_id = "legend_svg";
     div_legend.draw_html();

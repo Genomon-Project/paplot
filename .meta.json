@@ -1,0 +1,299 @@
+[
+  {
+    "graphs": [
+      {
+        "composite": false, 
+        "overview": "Minimum configuration.", 
+        "name": "minimal", 
+        "items": [
+          {
+            "sub_text": "", 
+            "output_html": "graph_minimal.html", 
+            "exists": true
+          }
+        ]
+      }, 
+      {
+        "composite": false, 
+        "overview": "Add optional data for tooltip.", 
+        "name": "optional-data", 
+        "items": [
+          {
+            "sub_text": "", 
+            "output_html": "graph_option.html", 
+            "exists": true
+          }
+        ]
+      }, 
+      {
+        "composite": false, 
+        "overview": "Add subplot.", 
+        "name": "subplot", 
+        "items": [
+          {
+            "sub_text": "", 
+            "output_html": "graph_subplot.html", 
+            "exists": true
+          }
+        ]
+      }
+    ], 
+    "proj": "mutation"
+  }, 
+  {
+    "graphs": [
+      {
+        "composite": false, 
+        "overview": "Minimum configuration.", 
+        "name": "minimal", 
+        "items": [
+          {
+            "sub_text": "", 
+            "output_html": "graph_minimal.html", 
+            "exists": true
+          }
+        ]
+      }, 
+      {
+        "composite": false, 
+        "overview": "Add multi plots.", 
+        "name": "multi plot", 
+        "items": [
+          {
+            "sub_text": "", 
+            "output_html": "graph_multi_plot.html", 
+            "exists": true
+          }
+        ]
+      }, 
+      {
+        "composite": false, 
+        "overview": "Add Brush.", 
+        "name": "brush", 
+        "items": [
+          {
+            "sub_text": "", 
+            "output_html": "graph_brush.html", 
+            "exists": true
+          }
+        ]
+      }
+    ], 
+    "proj": "qc"
+  }, 
+  {
+    "graphs": [
+      {
+        "composite": false, 
+        "overview": "Minimum configuration.", 
+        "name": "minimal", 
+        "items": [
+          {
+            "sub_text": "", 
+            "output_html": "graph_minimal.html", 
+            "exists": true
+          }
+        ]
+      }, 
+      {
+        "composite": false, 
+        "overview": "Add optional data for tooltip.", 
+        "name": "optional-data", 
+        "items": [
+          {
+            "sub_text": "", 
+            "output_html": "graph_option.html", 
+            "exists": true
+          }
+        ]
+      }, 
+      {
+        "composite": false, 
+        "overview": "Add grouping infomation", 
+        "name": "grouping", 
+        "items": [
+          {
+            "sub_text": "", 
+            "output_html": "graph_group.html", 
+            "exists": true
+          }
+        ]
+      }
+    ], 
+    "proj": "ca"
+  }, 
+  {
+    "graphs": [
+      {
+        "composite": true, 
+        "overview": "Minimum configuration.", 
+        "name": "minimal", 
+        "items": [
+          {
+            "sub_text": "#sig 2", 
+            "output_html": "graph_signature_minimal2.html", 
+            "exists": true
+          }
+        ]
+      }, 
+      {
+        "composite": true, 
+        "overview": "Multiple classification.", 
+        "name": "multi-class", 
+        "items": [
+          {
+            "sub_text": "#sig 2", 
+            "output_html": "graph_multi_class2.html", 
+            "exists": true
+          }, 
+          {
+            "sub_text": "#sig 3", 
+            "output_html": "graph_multi_class3.html", 
+            "exists": true
+          }, 
+          {
+            "sub_text": "#sig 4", 
+            "output_html": "graph_multi_class4.html", 
+            "exists": true
+          }, 
+          {
+            "sub_text": "#sig 5", 
+            "output_html": "graph_multi_class5.html", 
+            "exists": true
+          }, 
+          {
+            "sub_text": "#sig 6", 
+            "output_html": "graph_multi_class6.html", 
+            "exists": true
+          }
+        ]
+      }, 
+      {
+        "composite": true, 
+        "overview": "Add integral bar plot.", 
+        "name": "integral bar", 
+        "items": [
+          {
+            "sub_text": "#sig 2", 
+            "output_html": "graph_integral2.html", 
+            "exists": true
+          }, 
+          {
+            "sub_text": "#sig 3", 
+            "output_html": "graph_integral3.html", 
+            "exists": true
+          }, 
+          {
+            "sub_text": "#sig 4", 
+            "output_html": "graph_integral4.html", 
+            "exists": true
+          }, 
+          {
+            "sub_text": "#sig 5", 
+            "output_html": "graph_integral5.html", 
+            "exists": true
+          }, 
+          {
+            "sub_text": "#sig 6", 
+            "output_html": "graph_integral6.html", 
+            "exists": true
+          }
+        ]
+      }
+    ], 
+    "proj": "signature"
+  }, 
+  {
+    "graphs": [
+      {
+        "composite": true, 
+        "overview": "Minimum configuration.", 
+        "name": "minimal", 
+        "items": [
+          {
+            "sub_text": "#sig 2", 
+            "output_html": "graph_pmsignature_minimal2.html", 
+            "exists": true
+          }
+        ]
+      }, 
+      {
+        "composite": true, 
+        "overview": "Multiple classification.", 
+        "name": "multi-class", 
+        "items": [
+          {
+            "sub_text": "#sig 2", 
+            "output_html": "graph_multi_class2.html", 
+            "exists": true
+          }, 
+          {
+            "sub_text": "#sig 3", 
+            "output_html": "graph_multi_class3.html", 
+            "exists": true
+          }, 
+          {
+            "sub_text": "#sig 4", 
+            "output_html": "graph_multi_class4.html", 
+            "exists": true
+          }, 
+          {
+            "sub_text": "#sig 5", 
+            "output_html": "graph_multi_class5.html", 
+            "exists": true
+          }, 
+          {
+            "sub_text": "#sig 6", 
+            "output_html": "graph_multi_class6.html", 
+            "exists": true
+          }
+        ]
+      }, 
+      {
+        "composite": true, 
+        "overview": "Add integral bar plot.", 
+        "name": "integral bar", 
+        "items": [
+          {
+            "sub_text": "#sig 2", 
+            "output_html": "graph_integral2.html", 
+            "exists": true
+          }, 
+          {
+            "sub_text": "#sig 3", 
+            "output_html": "graph_integral3.html", 
+            "exists": true
+          }, 
+          {
+            "sub_text": "#sig 4", 
+            "output_html": "graph_integral4.html", 
+            "exists": true
+          }, 
+          {
+            "sub_text": "#sig 5", 
+            "output_html": "graph_integral5.html", 
+            "exists": true
+          }, 
+          {
+            "sub_text": "#sig 6", 
+            "output_html": "graph_integral6.html", 
+            "exists": true
+          }
+        ]
+      }, 
+      {
+        "composite": true, 
+        "overview": "Run pmsignature Without background.", 
+        "name": "without background", 
+        "items": [
+          {
+            "sub_text": "#sig 1", 
+            "output_html": "graph_nobackground1.html", 
+            "exists": true
+          }
+        ]
+      }
+    ], 
+    "proj": "pmsignature"
+  }
+]
