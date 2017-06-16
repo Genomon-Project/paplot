@@ -29,18 +29,24 @@
         {
             content: '\f019' ;
         }
+        .fb-arrows-h:before
+        {
+            content: '\f07e' ;
+        }
         .fb-file:before
         {
             content: '\f0f6' ;
         }
         .fb {
             color: #000088; //#556b2f;
-            padding-right: 5px ;
-            padding-left: 5px ;
+            padding-right: 2px ;
+            padding-left: 2px ;
+        }
+        a.top {
+            padding-left: 20px;
         }
         a.fb {
             text-decoration: none;
-            padding-left: 10px ;
         }
     </style>
 </head>
@@ -50,95 +56,272 @@ Generated on 2017-06-15 14:37:48 by paplot-0.5.4.
 </div>
 
 <div class="container">
+<a class='fb fb-arrows-h' href="./index.html">English</a>
 <h1>paplot example</h1>
-<p style="margin-top: 30px;">
-paplotによる出力サンプル集です。<br>
-タイトルをクリックするとpaplotにより出力したレポートを表示します。<br>
-右側のアイコン<font class='fb fb-dw'></font>をクリックするとpaplotを実行したサンプルデータとpaplotのconfigファイルをダウンロードできます。</p>
+<p style="margin-top: 30px;">paplotによる出力サンプル集です。<p>
+<p>タイトルをクリックするとpaplotにより出力したレポートを表示します。<br>
+右側のアイコン<font class='fb fb-file'></font>をクリックするとpaplotを実行したサンプルデータとpaplotのconfigファイルを見ることができます。<br>
+<font class='fb fb-dw'></font>をクリックするとまとめてダウンロードできます。</p>
 
 <h2>mutation</h2>
+
 <table style="margin-left:40px;">
-<tr><td><img src='layout/bar_chart_1.png'></td><td class='title'><a class='plot' href='mutation/graph_minimal.html' target=_blank>最小構成</a></td><td class='text'>...最低限必要な情報のみでレポート作成<a class='fb fb-dw' href="dataset/mutation_minimal.zip"></a><a class='fb fb-dw' href="dataset/mutation_noheader.zip">(ヘッダなし)</a></td></tr>
-<tr><td><img src='layout/bar_chart_1.png'></td><td class='title'><a class='plot' href='mutation/graph_option.html' target=_blank>情報追加</a></td><td class='text'>...マウスオーバーで表示する情報を追加<a class='fb fb-dw' href="dataset/mutation_option.zip"></a></td></tr>
-<tr><td><img src='layout/bar_chart_1.png'></td><td class='title'><a class='plot' href='mutation/graph_subplot.html' target=_blank>サブプロット</a></td><td class='text'>...クリニカル情報等をサブプロットとして追加<a class='fb fb-dw' href="dataset/mutation_subplot.zip"></a></td></tr>
-</table><h2>qc</h2>
+  <tr>
+    <td><img src='layout/bar_chart_1.png'></td>
+    <td class='title'><a class='plot' href='mutation/graph_minimal.html' target=_blank>最小構成</a></td>
+    <td class='text'>...最低限必要な情報のみでレポート作成
+      <a class='fb fb-file top' href="https://github.com/Genomon-Project/paplot/blob/master/example/mutation_minimal" target="_mutation_minimal"></a>
+      <a class='fb fb-dw' href="https://github.com/Genomon-Project/paplot/blob/master/example/mutation_minimal.zip?raw=true"></a>
+    </td>
+  </tr>
+  
+  <tr>
+    <td><img src='layout/bar_chart_1.png'></td>
+    <td class='title'><a class='plot' href='mutation/graph_option.html' target=_blank>情報追加</a></td>
+    <td class='text'>...マウスオーバーで表示する情報を追加
+      <a class='fb fb-file top' href="https://github.com/Genomon-Project/paplot/blob/master/example/mutation_option" target="_mutation_option"></a>
+      <a class='fb fb-dw' href="https://github.com/Genomon-Project/paplot/blob/master/example/mutation_option.zip?raw=true"></a>
+    </td>
+  </tr>
+  
+  <tr>
+    <td><img src='layout/bar_chart_1.png'></td>
+    <td class='title'><a class='plot' href='mutation/graph_subplot.html' target=_blank>サブプロット</a></td>
+    <td class='text'>...クリニカル情報等をサブプロットとして追加
+      <a class='fb fb-file top' href="https://github.com/Genomon-Project/paplot/blob/master/example/mutation_subplot" target="_mutation_subplot"></a>
+      <a class='fb fb-dw' href="https://github.com/Genomon-Project/paplot/blob/master/example/mutation_subplot.zip?raw=true"></a>
+    </td>
+  </tr>
+</table>
+
+<h2>qc</h2>
+
 <table style="margin-left:40px;">
-<tr><td><img src='layout/bar_chart_1.png'></td><td class='title'><a class='plot' href='qc/graph_minimal.html' target=_blank>最小構成</a></td><td class='text'>...depth-averageのみでレポート作成<a class='fb fb-dw' href="dataset/qc_minimal.zip"></a><a class='fb fb-dw' href="dataset/qc_noheader.zip">(ヘッダなし)</a></td></tr>
-<tr><td><img src='layout/bar_chart_1.png'></td><td class='title'><a class='plot' href='qc/graph_multi_plot.html' target=_blank>複数グラフ</a></td><td class='text'>...レポートに複数グラフを追加<a class='fb fb-dw' href="dataset/qc_multi_plot.zip"></a></td></tr>
-<tr><td><img src='layout/bar_chart_1.png'></td><td class='title'><a class='plot' href='qc/graph_brush.html' target=_blank>データ選択</a></td><td class='text'>...データ範囲の選択表示機能を追加<a class='fb fb-dw' href="dataset/qc_brush.zip"></a></td></tr>
-</table><h2>ca</h2>
+  <tr>
+    <td><img src='layout/bar_chart_1.png'></td>
+    <td class='title'><a class='plot' href='qc/graph_minimal.html' target=_blank>最小構成</a></td>
+    <td class='text'>...depth-averageのみでレポート作成
+      <a class='fb fb-file top' href="https://github.com/Genomon-Project/paplot/blob/master/example/qc_minimal" target="_qc_minimal"></a>
+      <a class='fb fb-dw' href="https://github.com/Genomon-Project/paplot/blob/master/example/qc_minimal.zip?raw=true"></a>
+    </td>
+  </tr>
+  
+  <tr>
+    <td><img src='layout/bar_chart_1.png'></td>
+    <td class='title'><a class='plot' href='qc/graph_multi_plot.html' target=_blank>複数グラフ</a></td>
+    <td class='text'>...レポートに複数グラフを追加
+      <a class='fb fb-file top' href="https://github.com/Genomon-Project/paplot/blob/master/example/qc_multi_plot" target="_qc_multi_plot"></a>
+      <a class='fb fb-dw' href="https://github.com/Genomon-Project/paplot/blob/master/example/qc_multi_plot.zip?raw=true"></a>
+    </td>
+  </tr>
+  
+  <tr>
+    <td><img src='layout/bar_chart_1.png'></td>
+    <td class='title'><a class='plot' href='qc/graph_brush.html' target=_blank>データ選択</a></td>
+    <td class='text'>...データ範囲の選択表示機能を追加
+      <a class='fb fb-file top' href="https://github.com/Genomon-Project/paplot/blob/master/example/qc_brush" target="_qc_brush"></a>
+      <a class='fb fb-dw' href="https://github.com/Genomon-Project/paplot/blob/master/example/qc_brush.zip?raw=true"></a>
+    </td>
+  </tr>
+</table>
+
+<h2>ca</h2>
+
 <table style="margin-left:40px;">
-<tr><td><img src='layout/bar_chart_1.png'></td><td class='title'><a class='plot' href='ca/graph_minimal.html' target=_blank>最小構成</a></td><td class='text'>...最低限必要な情報のみでレポート作成<a class='fb fb-dw' href="dataset/ca_minimal.zip"></a><a class='fb fb-dw' href="dataset/ca_noheader.zip">(ヘッダなし)</a></td></tr>
-<tr><td><img src='layout/bar_chart_1.png'></td><td class='title'><a class='plot' href='ca/graph_option.html' target=_blank>情報追加</a></td><td class='text'>...マウスオーバーで表示する情報を追加<a class='fb fb-dw' href="dataset/ca_option.zip"></a></td></tr>
-<tr><td><img src='layout/bar_chart_1.png'></td><td class='title'><a class='plot' href='ca/graph_group.html' target=_blank>グルーピング</a></td><td class='text'>...リンクにグループを設定<a class='fb fb-dw' href="dataset/ca_group.zip"></a></td></tr>
-</table><h2>signature</h2>
+  <tr>
+    <td><img src='layout/bar_chart_1.png'></td>
+    <td class='title'><a class='plot' href='ca/graph_minimal.html' target=_blank>最小構成</a></td>
+    <td class='text'>...最低限必要な情報のみでレポート作成
+      <a class='fb fb-file top' href="https://github.com/Genomon-Project/paplot/blob/master/example/ca_minimal" target="_ca_minimal"></a>
+      <a class='fb fb-dw' href="https://github.com/Genomon-Project/paplot/blob/master/example/ca_minimal.zip?raw=true"></a>
+    </td>
+  </tr>
+  
+  <tr>
+    <td><img src='layout/bar_chart_1.png'></td>
+    <td class='title'><a class='plot' href='ca/graph_option.html' target=_blank>情報追加</a></td>
+    <td class='text'>...マウスオーバーで表示する情報を追加
+      <a class='fb fb-file top' href="https://github.com/Genomon-Project/paplot/blob/master/example/ca_option" target="_ca_option"></a>
+      <a class='fb fb-dw' href="https://github.com/Genomon-Project/paplot/blob/master/example/ca_option.zip?raw=true"></a>
+    </td>
+  </tr>
+  
+  <tr>
+    <td><img src='layout/bar_chart_1.png'></td>
+    <td class='title'><a class='plot' href='ca/graph_group.html' target=_blank>グルーピング</a></td>
+    <td class='text'>...リンクにグループを設定
+      <a class='fb fb-file top' href="https://github.com/Genomon-Project/paplot/blob/master/example/ca_group" target="_ca_group"></a>
+      <a class='fb fb-dw' href="https://github.com/Genomon-Project/paplot/blob/master/example/ca_group.zip?raw=true"></a>
+    </td>
+  </tr>
+</table>
+
+<h2>signature</h2>
+
 <table style="margin-left:40px;">
-<tr><td><img src="layout/folder.png"></td><td class="title">最小構成</td><td class="text">...sigunature数を2に設定してレポート作成<a class='fb fb-dw' href="dataset/signature_minimal.zip"></a></td></tr>
-    <tr><td colspan=3>
-    <table style="margin-left:40px;"><tr>
-        <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='signature/graph_signature_minimal2.html' target=_blank>#sig 2</a></td>
-    </tr></table>
-    </td></tr><tr><td><img src="layout/folder.png"></td><td class="title">複数タイプのsignature</td><td class="text">...sigunature数を2,3,4,5,6に設定してレポート作成<a class='fb fb-dw' href="dataset/signature_multi_class.zip"></a></td></tr>
-    <tr><td colspan=3>
-    <table style="margin-left:40px;"><tr>
-        <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='signature/graph_multi_class2.html' target=_blank>#sig 2</a></td>
-        <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='signature/graph_multi_class3.html' target=_blank>#sig 3</a></td>
-        <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='signature/graph_multi_class4.html' target=_blank>#sig 4</a></td>
-        <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='signature/graph_multi_class5.html' target=_blank>#sig 5</a></td>
-        <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='signature/graph_multi_class6.html' target=_blank>#sig 6</a></td>
-    </tr></table>
-    </td></tr><tr><td><img src="layout/folder.png"></td><td class="title">積算グラフ</td><td class="text">...レポートに変異の内訳グラフを追加<a class='fb fb-dw' href="dataset/signature_integral.zip"></a></td></tr>
-    <tr><td colspan=3>
-    <table style="margin-left:40px;"><tr>
-        <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='signature/graph_integral2.html' target=_blank>#sig 2</a></td>
-        <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='signature/graph_integral3.html' target=_blank>#sig 3</a></td>
-        <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='signature/graph_integral4.html' target=_blank>#sig 4</a></td>
-        <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='signature/graph_integral5.html' target=_blank>#sig 5</a></td>
-        <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='signature/graph_integral6.html' target=_blank>#sig 6</a></td>
-    </tr></table>
-    </td></tr>
-</table><h2>pmsignature</h2>
+  <tr>
+    <td><img src="layout/folder.png"></td>
+    <td class="title">最小構成</td>
+    <td class="text">...sigunature数を2に設定してレポート作成
+      <a class='fb fb-file top' href="https://github.com/Genomon-Project/paplot/blob/master/example/signature_minimal" target="_signature_minimal"></a>
+      <a class='fb fb-dw' href="https://github.com/Genomon-Project/paplot/blob/master/example/signature_minimal.zip?raw=true"></a>
+    </td>
+  </tr>
+
+  <tr>
+    <td colspan=3>
+      <table style="margin-left:40px;">
+        <tr>
+          <td><img src='layout/bar_chart_1.png'></td>
+          <td class='text'><a class='plot' href='signature/graph_signature_minimal2.html' target=_blank>#sig 2</a></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  
+  <tr>
+    <td><img src="layout/folder.png"></td>
+    <td class="title">複数タイプのsignature</td>
+    <td class="text">...sigunature数を2,3,4,5,6に設定してレポート作成
+      <a class='fb fb-file top' href="https://github.com/Genomon-Project/paplot/blob/master/example/signature_multi_class" target="_signature_multi_class"></a>
+      <a class='fb fb-dw' href="https://github.com/Genomon-Project/paplot/blob/master/example/signature_multi_class.zip?raw=true"></a>
+    </td>
+  </tr>
+
+  <tr>
+    <td colspan=3>
+      <table style="margin-left:40px;">
+        <tr>
+          <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='signature/graph_multi_class2.html' target=_blank>#sig 2</a></td>
+          <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='signature/graph_multi_class3.html' target=_blank>#sig 3</a></td>
+          <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='signature/graph_multi_class4.html' target=_blank>#sig 4</a></td>
+          <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='signature/graph_multi_class5.html' target=_blank>#sig 5</a></td>
+          <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='signature/graph_multi_class6.html' target=_blank>#sig 6</a></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+
+  <tr>
+    <td><img src="layout/folder.png"></td>
+    <td class="title">積算グラフ</td>
+    <td class="text">...レポートに変異の内訳グラフを追加
+      <a class='fb fb-file top' href="https://github.com/Genomon-Project/paplot/blob/master/example/signature_integral" target="_signature_integral"></a>
+      <a class='fb fb-dw' href="https://github.com/Genomon-Project/paplot/blob/master/example/signature_integral.zip?raw=true"></a>
+    </td>
+  </tr>
+    
+  <tr>
+    <td colspan=3>
+      <table style="margin-left:40px;">
+        <tr>
+          <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='signature/graph_integral2.html' target=_blank>#sig 2</a></td>
+          <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='signature/graph_integral3.html' target=_blank>#sig 3</a></td>
+          <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='signature/graph_integral4.html' target=_blank>#sig 4</a></td>
+          <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='signature/graph_integral5.html' target=_blank>#sig 5</a></td>
+          <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='signature/graph_integral6.html' target=_blank>#sig 6</a></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+
+<h2>pmsignature</h2>
+
 <p>※backgroundを設定しているため、実際に出力されるpmsignatureは1少ない数になります</p>
+
 <table style="margin-left:40px;">
-<tr><td><img src="layout/folder.png"></td><td class="title">最小構成</td><td class="text">...pmsigunature数を2に設定してレポート作成<a class='fb fb-dw' href="dataset/pmsignature_minimal.zip"></a></td></tr>
-    <tr><td colspan=3>
-    <table style="margin-left:40px;"><tr>
-        <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='pmsignature/graph_pmsignature_minimal2.html' target=_blank>#sig 2</a></td>
-    </tr></table>
-    </td></tr><tr><td><img src="layout/folder.png"></td><td class="title">複数タイプのsignature</td><td class="text">...pmsigunature数を2,3,4,5,6に設定してレポート作成<a class='fb fb-dw' href="dataset/pmsignature_multi_class.zip"></a></td></tr>
-    <tr><td colspan=3>
-    <table style="margin-left:40px;"><tr>
-        <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='pmsignature/graph_multi_class2.html' target=_blank>#sig 2</a></td>
-        <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='pmsignature/graph_multi_class3.html' target=_blank>#sig 3</a></td>
-        <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='pmsignature/graph_multi_class4.html' target=_blank>#sig 4</a></td>
-        <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='pmsignature/graph_multi_class5.html' target=_blank>#sig 5</a></td>
-        <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='pmsignature/graph_multi_class6.html' target=_blank>#sig 6</a></td>
-    </tr></table>
-    </td></tr><tr><td><img src="layout/folder.png"></td><td class="title">積算グラフ</td><td class="text">...レポートに変異の内訳グラフを追加<a class='fb fb-dw' href="dataset/pmsignature_integral.zip"></a></td></tr>
-    <tr><td colspan=3>
-    <table style="margin-left:40px;"><tr>
-        <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='pmsignature/graph_integral2.html' target=_blank>#sig 2</a></td>
-        <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='pmsignature/graph_integral3.html' target=_blank>#sig 3</a></td>
-        <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='pmsignature/graph_integral4.html' target=_blank>#sig 4</a></td>
-        <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='pmsignature/graph_integral5.html' target=_blank>#sig 5</a></td>
-        <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='pmsignature/graph_integral6.html' target=_blank>#sig 6</a></td>
-    </tr></table>
-    </td></tr><tr><td><img src="layout/folder.png"></td><td class="title">backgroundなし</td><td class="text">...backgroundなしでpmsignatureを実行<br>※実際に出力されるpmsignatureは設定どおりの数 (ここでは2) になります<a class='fb fb-dw' href="dataset/pmsignature_nobackground.zip"></a></td></tr>
-    <tr><td colspan=3>
-    <table style="margin-left:40px;"><tr>
-        <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='pmsignature/graph_nobackground2.html' target=_blank>#sig 2</a></td>
-    </tr></table>
-    </td></tr>
+  <tr>
+    <td><img src="layout/folder.png"></td><td class="title">最小構成</td>
+    <td class="text">...pmsigunature数を2に設定してレポート作成
+      <a class='fb fb-file top' href="https://github.com/Genomon-Project/paplot/blob/master/example/pmsignature_minimal" target="_pmsignature_minimal"></a>
+      <a class='fb fb-dw' href="https://github.com/Genomon-Project/paplot/blob/master/example/pmsignature_minimal.zip?raw=true"></a>
+    </td>
+  </tr>
+  <tr>
+    <td colspan=3>
+      <table style="margin-left:40px;">
+        <tr>
+          <td><img src='layout/bar_chart_1.png'></td>
+          <td class='text'><a class='plot' href='pmsignature/graph_pmsignature_minimal2.html' target=_blank>#sig 2</a></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+
+  <tr>
+    <td><img src="layout/folder.png"></td>
+    <td class="title">複数タイプのsignature</td>
+    <td class="text">...pmsigunature数を2,3,4,5,6に設定してレポート作成
+      <a class='fb fb-file top' href="https://github.com/Genomon-Project/paplot/blob/master/example/pmsignature_multi_class" target="_pmsignature_multi_class"></a>
+      <a class='fb fb-dw' href="https://github.com/Genomon-Project/paplot/blob/master/example/pmsignature_multi_class.zip?raw=true"></a>
+    </td>
+  </tr>
+
+  <tr>
+    <td colspan=3>
+      <table style="margin-left:40px;">
+        <tr>
+          <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='pmsignature/graph_multi_class2.html' target=_blank>#sig 2</a></td>
+          <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='pmsignature/graph_multi_class3.html' target=_blank>#sig 3</a></td>
+          <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='pmsignature/graph_multi_class4.html' target=_blank>#sig 4</a></td>
+          <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='pmsignature/graph_multi_class5.html' target=_blank>#sig 5</a></td>
+          <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='pmsignature/graph_multi_class6.html' target=_blank>#sig 6</a></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+
+  <tr>
+    <td><img src="layout/folder.png"></td>
+    <td class="title">積算グラフ</td>
+    <td class="text">...レポートに変異の内訳グラフを追加
+      <a class='fb fb-file top' href="https://github.com/Genomon-Project/paplot/blob/master/example/pmsignature_integral" target="_pmsignature_integral"></a>
+      <a class='fb fb-dw' href="https://github.com/Genomon-Project/paplot/blob/master/example/pmsignature_integral.zip?raw=true"></a>
+    </td>
+  </tr>
+  <tr>
+    <td colspan=3>
+      <table style="margin-left:40px;">
+        <tr>
+          <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='pmsignature/graph_integral2.html' target=_blank>#sig 2</a></td>
+          <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='pmsignature/graph_integral3.html' target=_blank>#sig 3</a></td>
+          <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='pmsignature/graph_integral4.html' target=_blank>#sig 4</a></td>
+          <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='pmsignature/graph_integral5.html' target=_blank>#sig 5</a></td>
+          <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='pmsignature/graph_integral6.html' target=_blank>#sig 6</a></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+
+  <tr>
+    <td><img src="layout/folder.png"></td>
+    <td class="title">backgroundなし</td>
+    <td class="text">...backgroundなしでpmsignatureを実行<br>※実際に出力されるpmsignatureは設定どおりの数 (ここでは2) になります
+      <a class='fb fb-file top' href="https://github.com/Genomon-Project/paplot/blob/master/example/pmsignature_nobackground" target="_pmsignature_nobackground"></a>
+      <a class='fb fb-dw' href="https://github.com/Genomon-Project/paplot/blob/master/example/pmsignature_nobackground.zip?raw=true"></a>
+    </td>
+  </tr>
+
+  <tr>
+    <td colspan=3>
+      <table style="margin-left:40px;">
+        <tr>
+          <td><img src='layout/bar_chart_1.png'></td>
+          <td class='text'><a class='plot' href='pmsignature/graph_nobackground2.html' target=_blank>#sig 2</a></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
 </table>
 
 <p style="margin-top: 100px;">
 
 </p>
-<p style="margin-top: 50px;">For this documentation, the tutorial starts here.</p>
+<p style="margin-top: 50px;">paplotに関するドキュメントは以下を参照ください。</p>
 <ul>
-<li>[Japanese]&nbsp;&nbsp;&nbsp;<a href="http://paplot-jp.readthedocs.org/">http://paplot-jp.readthedocs.org/</a> </li>
+<li>[日本語]&nbsp;&nbsp;&nbsp;<a href="http://paplot-jp.readthedocs.org/">http://paplot-jp.readthedocs.org/</a> </li>
 </ul>
-
 </div>
 </body>
 </html>
