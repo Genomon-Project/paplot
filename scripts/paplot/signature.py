@@ -25,11 +25,11 @@ sig_data.dataset_sig = [{dataset_sig}];
 sig_data.dataset_sig_max = {dataset_sig_max};
 sig_data.route_id = [{route_id}];
 sig_data.substitution = [{substruction}];
-sig_data.Ids = [{Ids}];
 
 // [ID, signature, value]
 sig_data.mutations = [{mutations}];
 sig_data.mutation_count = [{mutation_count}];
+sig_data.Ids = [{Ids}];
 """
 
 js_substruction_template = "{{name: '{name}', color: '{color}', route: [{route}],}},"
@@ -158,6 +158,25 @@ sig_data.get_bars_data = function (rate) {
 Object.freeze(sig_data);
 """
 
+########### HTML template
+html_integral_template = """<table>
+<tr>
+<td style="vertical-align: top;" ><div style="float: left;" id="div_rate"></div></td>
+<td style="vertical-align: top;><!-- legend --> <div style="float: left;" id='div_rate_legend_html'></div><div style="float: left;" id='div_rate_legend_svg'></div></td>
+</tr>
+<tr>
+<td style="vertical-align: top;><div style="float: left;" id="div_integral"></div></td>
+<td style="vertical-align: top;><!-- legend --> <div style="float: left;" id='div_integral_legend_html'></div><div style="float: left;" id='div_integral_legend_svg'></div></td>
+</tr>
+<tr>
+<td colspan=2 style="padding-top: 20px;">
+<p>view mode: <select id="chart_mode"></select></p>
+<p>sort by: <select id="chart_sort"></select></p>
+</td>
+</tr>
+</table>
+"""
+
 ########### functions
 def output_html(params, config):
     dataset = convert_tojs(params, config)
@@ -245,11 +264,17 @@ def convert_tojs(params, config):
             route.append("p".join(r[0:int(log/2)]) + "p" + sub["ref"] + "p" + "p".join(r[int(log/2):]))
         
         substruction += js_substruction_template.format(name = sub["name"], color = sub["color"], route = convert.list_to_text(route))
-
+    
+    # Id list
+    id_txt = ""
+    if key_Ids in jsonData:
+        id_txt = convert.list_to_text(jsonData[key_Ids])
+            
     # mutations
     mutations_txt = ""
-    for m in jsonData[key_mutations]:
-        mutations_txt += "[%d,%d,%f]," % (m[0],m[1],m[2])
+    if key_mutations in jsonData:
+        for m in jsonData[key_mutations]:
+            mutations_txt += "[%d,%d,%f]," % (m[0],m[1],m[2])
     
     # signature
     dataset_sig = ""
@@ -258,7 +283,7 @@ def convert_tojs(params, config):
         for sub in sig:
             tmp += "[" + ",".join(map(str, sub)) + "],"
         dataset_sig += ("[" + tmp + "],")
-    
+        
     mutation_count_txt = ""
     if (key_mutation_count != "") and (key_mutation_count in jsonData.keys()):
         for v in jsonData[key_mutation_count]:
@@ -276,7 +301,7 @@ def convert_tojs(params, config):
     keys_di = {"sig":"", "route":"", "id":""}
     f = open(params["dir"] + "/" + js_file, "w")
     f.write(js_header \
-        + js_dataset.format(Ids = convert.list_to_text(jsonData[key_Ids]), \
+        + js_dataset.format(Ids = id_txt, \
             signatures = convert.list_to_text(signature_list), \
             colors = convert.list_to_text(sig_color_list), \
             dataset_sig_max = sig_y_max, \
@@ -293,9 +318,14 @@ def convert_tojs(params, config):
         + js_function)
     f.close()
 
+    integral = True
+    if key_Ids == "" or key_mutations == "" or key_mutation_count == "":
+        integral = False
+    
     return {"sig_num": sig_num,
-            "js": js_file, \
-            "html": html_file, \
+            "js": js_file,
+            "html": html_file,
+            "intergral": integral,
             } 
 
 def create_html(dataset, params, config):
@@ -309,10 +339,13 @@ def create_html(dataset, params, config):
     div_text = ""
     add_text = ""
     for i in range(dataset["sig_num"]):
-        
         div_text += html_div_template.format(id = i)
         add_text += html_add_template.format(id = i)
-
+    
+    integral_text = ""
+    if dataset["intergral"] == True:
+        integral_text = html_integral_template
+    
     f_template = open(os.path.dirname(os.path.abspath(__file__)) + "/templates/graph_signature.html")
     html_template = f_template.read()
     f_template.close()
@@ -330,6 +363,7 @@ def create_html(dataset, params, config):
             date = tools.now_string(),
             divs = div_text,
             add_divs = add_text,
+            integral = integral_text,
             style = "../style/%s" % os.path.basename(tools.config_getpath(config, "style", "path", "default.js")),
         ))
     f_html.close()

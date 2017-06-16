@@ -265,7 +265,7 @@ def with_header(files, ids, output_file, mode, config, extract = False):
     return positions
 
 def with_noheader(files, ids, output_file, mode, config, extract = False):
-    
+
     import os
 
     if len(files) == 0:
@@ -325,7 +325,7 @@ def with_noheader(files, ids, output_file, mode, config, extract = False):
                 if add_id == True:
                     titles.append("id")
                     
-                for i in range(len(data)):
+                for i in range(1, len(data)+1):
                     if extract == True:
                         if i in usecols:
                             titles.append("v%d" % i)
@@ -339,12 +339,12 @@ def with_noheader(files, ids, output_file, mode, config, extract = False):
             if add_id == True:
                 cat_data.append(ids[idx])
                 
-            for i in range(len(data)):
+            for i in range(1, len(data)+1):
                 if extract == True:
                     if i in usecols:
-                        cat_data.append(data[i])
+                        cat_data.append(data[i-1])
                 else:
-                    cat_data.append(data[i])
+                    cat_data.append(data[i-1])
             
             lines.append(option["sept_out"].join(cat_data) + "\n")
             lines_count += 1
@@ -371,7 +371,7 @@ def with_noheader(files, ids, output_file, mode, config, extract = False):
         
     if ("id" in positions["option"]) == False:
         positions["option"]["id"] = "id"
-        
+
     return positions
 
 def position_to_dict(position):
