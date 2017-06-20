@@ -24,7 +24,7 @@ parser result files created by genomon (SV, mutaion-call and so on)""",
       package_dir = {'': 'scripts'},
       packages=['paplot', 'paplot.subcode'],
       scripts=['paplot'],
-      data_files=[('config', ['paplot.cfg']), ('config', ['genome/hg19.csv']), ('example', ['example/mutation/sample_summary.csv'])],
+      data_files=[('config', ['paplot.cfg']), ('config', ['genome/hg19.csv'])],
       include_package_data=True,
       zip_safe=False,
       install_requires=[
