@@ -33,6 +33,12 @@ js_links_2 = "];"
 links_template = '["{ID}","{Chr1:0>2}",{pos1},"{Chr2:0>2}",{pos2},{inner_flg},{group_id},[{tooltip}]],'
 #links_template = '[{ID},{func},{gene},{num},[{tooltip}]],'
 
+js_selection = """
+ca_data.select_value = [{value}];
+ca_data.select_key = [{key}];
+ca_data.select_item = [{item}];
+"""
+
 js_function = """
 var node_name = function(Chr, index, leveling) {
     if (leveling == null) {
@@ -203,48 +209,22 @@ var key_to_index = function (list, key) {
 ca_data.get_select = function () {
     var node_size = ca_data.node_size_select;
     
-    var link = [];
-    for (var i = 0; i< ca_data.group.length; i++) {
-        link[i] = {};
-    }
-    for (var i = 0; i < ca_data.links.length; i++) {
-        
-        var bp1 = node_name(ca_data.links[i][1], Math.floor(ca_data.links[i][2]/node_size), true);
-        var bp2 = node_name(ca_data.links[i][3], Math.floor(ca_data.links[i][4]/node_size), true);
-        
-        var group = ca_data.links[i][6];
-        
-        // add bp1
-        if (link[group][bp1] == undefined) {
-            link[group][bp1] = [];
-        }
-        link[group][bp1].push(ca_data.links[i][0]);
-        
-        // add bp2
-        if (bp1 != bp2) {
-            if (link[group][bp2] == undefined) {
-                link[group][bp2] = [];
-            }
-            link[group][bp2].push(ca_data.links[i][0]);
+    var key = [];
+    for (var i = 0; i < ca_data.select_key.length; i++) {
+        key[i] = [];
+        for (var j = 0; j < ca_data.select_key[i].length; j++) {
+            key[i][j] = node_name(("0" + ca_data.select_key[i][j][0]).substr(-2), ("0" + ca_data.select_key[i][j][1]).substr(-2), true);
         }
     }
     
     var item = [];
-    var value = [];
-    var key = [];
-    for (var g = 0; g < ca_data.group.length; g++) {
-        item[g] = [];
-        value[g] = [];
-        key[g] = [];
-        for (var i in link[g]) {
-            // delete duplication
-            var sort = link[g][i].filter(function (x, y, self) {
-                return self.indexOf(x) === y;
-             });
-            //item[g][i] = sort;
-            value[g].push(link[g][i].length);
-            key[g].push(i);
-            item[g].push(sort);
+    for (var i = 0; i < ca_data.select_item.length; i++) {
+        item[i] = [];
+        for (var j = 0; j < ca_data.select_item[i].length; j++) {
+            item[i][j] = [];
+            for (var k = 0; k < ca_data.select_item[i][j].length; k++) {
+                item[i][j][k] = ca_data.index_ID[ca_data.select_item[i][j][k]];
+            }
         }
     }
     
@@ -258,7 +238,7 @@ ca_data.get_select = function () {
         }
     }
     
-    return {value:value, key:key, item:item, all_key:all_key};
+    return {value:ca_data.select_value, key:key, item:item, all_key:all_key};
 };
 })();
 Object.freeze(ca_data);
@@ -268,6 +248,8 @@ Object.freeze(ca_data);
 
 li_template = '<li class="thumb" id="thumb{id}_li"><strong>{title}<br></strong><div id="thumb{id}" onclick="show_float(event,\'{id}\',\'{title}\')"></div></li>\n'
 call_template = 'draw_bandle_thumb("{id}", "{title}");\n'
+call_later_header = "var wait = 1000;\nvar inerval = 100;\n"
+call_later_template = 'setTimeout(function() {{draw_bandle_thumb("{id}", "{title}");}}, wait); wait +=inerval;\n'
 detail_template = """<div class="float_frame" id="float{id}"><table><tr><td class="float_header" id="float{id}_t"><strong>{title}</strong></td><td><input type="button" value="X" onclick="hide_float('#float{id}')" margin="0"></td></tr><tr><td colspan="2" class="float_svg" id="map{id}"></td></tr></table><div class="float_handle" id="float{id}_h" onmousedown="mouse_down(event, '#float{id}')" onmousemove="mouse_move(event, '#float{id}')" onmouseup="mouse_up(event, '#float{id}')" onmouseout="mouse_out('#float{id}')"></div></div>
 """
 ########### functions
@@ -393,6 +375,8 @@ def convert_tojs(input_file, output_file, positions, config):
     import paplot.subcode.tools as tools
     import paplot.convert as convert
     
+    import math
+    
     genome_size = load_genome_size(config)
 
     if len(genome_size) == 0:
@@ -459,13 +443,16 @@ def convert_tojs(input_file, output_file, positions, config):
     option_keys.remove("break2")
     if "group" in option_keys:
         option_keys.remove("group")
-            
+    
+    # node_size
+    node_size_select = tools.config_getint(config, "ca", "selector_split_size", 5000000)
+      
     f = open(output_file, "w")
 
     f.write(js_header \
         + js_dataset.format(node_size_detail = calc_node_size(genome_size, 500), \
             node_size_thumb = calc_node_size(genome_size, 250), \
-            node_size_select = tools.config_getint(config, "ca", "selector_split_size", 5000000),\
+            node_size_select = node_size_select,\
             genome_size = genome, \
             IDs = convert.list_to_text(Ids), \
             group = group_text, \
@@ -474,8 +461,10 @@ def convert_tojs(input_file, output_file, positions, config):
             ))
             
     # write links
+    data_links = []
+    
     f.write(js_links_1)
-
+    
     for row in df.data:
         iid = row[df.name_to_index(cols_di["id"])]
         if iid == "": continue
@@ -519,7 +508,9 @@ def convert_tojs(input_file, output_file, positions, config):
                 group_id = 0
             else:
                 group_id = 1
-                
+        
+        data_links.append([iid, index1, pos1, index2, pos2, group_id])
+        
         f.write(links_template.format(ID = iid, \
             Chr1=index1, pos1=pos1, Chr2=index2, pos2=pos2, \
             inner_flg = inner_flg, \
@@ -527,6 +518,65 @@ def convert_tojs(input_file, output_file, positions, config):
             tooltip = "[" + convert.list_to_text(tooltip_items) + "],"))
 
     f.write(js_links_2)
+
+    # integral bar item
+    link = []
+    for g in range(len(groups)):
+        link.append({})
+        
+    for l in data_links:
+        
+        bp1 = "root.{Chr:0>2}.{Chr:0>2}_{Pos:0>3}".format(Chr = l[1], Pos = int(math.floor(l[2]/node_size_select)))
+        bp2 = "root.{Chr:0>2}.{Chr:0>2}_{Pos:0>3}".format(Chr = l[3], Pos = int(math.floor(l[4]/node_size_select)))
+        
+        group = l[5]
+        #print group
+        # add bp1
+        if not bp1 in link[group]:
+            link[group][bp1] = []
+        link[group][bp1].append(l[0])
+        
+        # add bp2
+        if bp1 != bp2:
+            if not bp2 in link[group]:
+                link[group][bp2] = []
+            link[group][bp2].append(l[0])
+            
+    select_item_text = ""
+    select_value_text = ""
+    select_key_text = ""
+    
+    for g in range(len(groups)):
+        items = []
+        values = []
+        keys = []
+        
+        for i in link[g]:
+            
+            values.append(len(link[g][i]))
+            
+            # split key to chr and pos
+            parts = i.split(".")[2].split("_")
+            keys.append([int(parts[0]), int(parts[1])])
+            
+            # delete duplication
+            sort = sorted(list(set(link[g][i])))
+            
+            temp = []
+            for t in sort:
+                temp.append(Ids.index(t))
+            items.append(temp)
+
+        select_value_text += "[%s]," % (",".join(map(str,values)).replace(" ", ""))
+        select_key_text += "[%s]," % (",".join(map(str,keys)).replace(" ", ""))
+        select_item_text += "[%s]," % (",".join(map(str,items)).replace(" ", ""))
+        
+    f.write(js_selection.format(
+        value = select_value_text,
+        key = select_key_text,
+        item = select_item_text
+    ))
+    
     f.write(js_function)
     f.close()
     
@@ -541,8 +591,13 @@ def create_html(dataset, output_di, config):
     detail_txt = ""
     for i in range(len(dataset["id_list"])):
         div_txt += li_template.format(id = str(i), title = dataset["id_list"][i])
-        call_txt += call_template.format(id = str(i), title = dataset["id_list"][i])
         detail_txt += detail_template.format(id = str(i), title = dataset["id_list"][i])
+        if i >= 50:
+            if i == 50:
+                call_txt += call_later_header
+            call_txt += call_later_template.format(id = str(i), title = dataset["id_list"][i])
+        else:
+            call_txt += call_template.format(id = str(i), title = dataset["id_list"][i])
         
     f_template = open(os.path.dirname(os.path.abspath(__file__)) + "/templates/graph_ca.html")
     html_template = f_template.read()
