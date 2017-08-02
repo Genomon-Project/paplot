@@ -409,7 +409,7 @@ def convert_tojs(input_file, output_file, positions, config):
     # data read
     try:
         df = data_frame.load_file(input_file, header = 1, \
-            sept = tools.config_getstr(config, "merge_format_ca", "sept"), \
+            sept = tools.config_getstr(config, "result_format_ca", "sept"), \
             comment = tools.config_getstr(config, "result_format_ca", "comment") \
             )
     except Exception as e:

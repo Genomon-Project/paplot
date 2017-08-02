@@ -9,19 +9,6 @@ $Id: merge.py 177 2016-10-24 04:23:59Z aokada $
 
 from . import tools
 
-def _split_char(mode, config):
-    [section_in, section_out] = tools.get_section(mode)
-    sept_in = config.get(section_in, "sept")
-    sept_out= config.get(section_out, "sept")
-    
-    if sept_in == sept_out:
-        return ["", ""]
-        
-    if sept_in == ";" and sept_out == ",":
-            return [",", " "]
-        
-    return [",", ";"]
-    
 def load_potisions(mode, config):
 
     [section_in, section_out] = tools.get_section(mode)
@@ -65,10 +52,9 @@ def _load_option(mode, config):
     lack = tools.config_getstr(config, section_out, "lack_column_complement")
     suffix = tools.config_getstr(config, section_in, "suffix")
     suffix_filt = tools.config_getstr(config, section_in, "suffix_filt")
-    sept_out = config.get(section_out, "sept").replace("\\t", "\t").replace("\\n", "\n").replace("\\r", "\r")
     
     # return option dict
-    return {"header": header, "sept": sept, "comment": comment, "lack": lack, "suffix": suffix, "suffix_filt": suffix_filt, "sept_out":sept_out}
+    return {"header": header, "sept": sept, "comment": comment, "lack": lack, "suffix": suffix, "suffix_filt": suffix_filt}
     
 def _merge_metadata(files, option):
 
@@ -127,7 +113,6 @@ def _merge_title(files, mode, option, config):
         return []
         
     # titles
-    [rep1, rep2] = _split_char(mode, config)
     merged_title = []
     for file_path in files:
         title = []
@@ -140,7 +125,7 @@ def _merge_title(files, mode, option, config):
             if len(option["comment"]) > 0 and line.find(option["comment"]) == 0:
                 continue
                 
-            title = line.replace(rep1, rep2).split(option["sept"])
+            title = line.split(option["sept"])
             break
         
         for col in title:
@@ -204,13 +189,11 @@ def with_header(files, ids, output_file, mode, config, extract = False):
         positions["option"]["id"] = "id"
     if (positions["option"]["id"] in titles) == False:
         titles.insert(0, positions["option"]["id"])
-
-    [rep1, rep2] = _split_char(mode, config)
     
     # write meta-data to file
     f = open(output_file + ".tmp", mode = "w")
     f.write(meta_text)
-    f.write(option["sept_out"].join(titles))
+    f.write(option["sept"].join(titles))
     f.write("\n")
     
     for idx in range(len(files)):
@@ -228,7 +211,6 @@ def with_header(files, ids, output_file, mode, config, extract = False):
             if len(option["comment"]) > 0 and line.find(option["comment"]) == 0:
                 continue
             
-            line = line.replace(rep1, rep2) 
             if len(header) == 0:
                 header = line.split(option["sept"])
                 mapper = calc_map(header, titles)
@@ -245,7 +227,7 @@ def with_header(files, ids, output_file, mode, config, extract = False):
                 else:
                     sort_data.append(data[mapper[i]])
             
-            lines.append(option["sept_out"].join(sort_data) + "\n")
+            lines.append(option["sept"].join(sort_data) + "\n")
             lines_count += 1
             
             if (lines_count > 10000):
@@ -295,8 +277,7 @@ def with_noheader(files, ids, output_file, mode, config, extract = False):
     add_id = False
     if ("id" in positions["option"]) == False:
         add_id = True
-            
-    [rep1, rep2] = _split_char(mode, config)
+    
     
     # write meta-data to file
     f = open(output_file + ".tmp", mode = "w")
@@ -316,8 +297,6 @@ def with_noheader(files, ids, output_file, mode, config, extract = False):
             if len(option["comment"]) > 0 and line.find(option["comment"]) == 0:
                 continue
             
-            line = line.replace(rep1, rep2)
-            
             data = line.split(option["sept"])
             
             # header
@@ -332,7 +311,7 @@ def with_noheader(files, ids, output_file, mode, config, extract = False):
                     else:
                         titles.append("v%d" % i)
 
-                lines.append(option["sept_out"].join(titles) + "\n")
+                lines.append(option["sept"].join(titles) + "\n")
                 
             # add id
             cat_data = []
@@ -346,7 +325,7 @@ def with_noheader(files, ids, output_file, mode, config, extract = False):
                 else:
                     cat_data.append(data[i-1])
             
-            lines.append(option["sept_out"].join(cat_data) + "\n")
+            lines.append(option["sept"].join(cat_data) + "\n")
             lines_count += 1
             
             if (lines_count > 10000):

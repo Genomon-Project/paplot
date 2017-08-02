@@ -505,17 +505,12 @@ js_set_sub_select = """
     }}"""
     
 ########### functions
-           
 def genes_list(colmun, colmun_f, colmun_id, funcs, Ids, config):
     
     import paplot.subcode.tools as tools
     import paplot.convert as convert
     
     sept = tools.config_getstr(config, "result_format_mutation", "sept_gene")
-    use_gene_rate = config.getfloat("mutation", "use_gene_rate")
-    
-    limited_list = convert.text_to_list(tools.config_getstr(config, "mutation", "limited_genes"), ",")
-    nouse_list = convert.text_to_list(tools.config_getstr(config, "mutation", "nouse_genes"), ",")
     
     genes_di = {}
     ids_di = {}
@@ -542,12 +537,21 @@ def genes_list(colmun, colmun_f, colmun_id, funcs, Ids, config):
             genes_di.update({gene: value})
             
     # gene list
+    use_gene_rate = config.getfloat("mutation", "use_gene_rate")
+    limited_list = convert.text_to_list(tools.config_getstr(config, "mutation", "limited_genes"), ",")
+    nouse_list = convert.text_to_list(tools.config_getstr(config, "mutation", "nouse_genes"), ",")
+    
     genes = []
     for key in genes_di:
         if len(limited_list) > 0:
-            if (key in limited_list) == False: continue   
-        if key in nouse_list: continue
-        if genes_di[key] < float(len(Ids))*use_gene_rate: continue
+            #if (key in limited_list) == False:
+            if convert.fnmatch_list(key, limited_list) == False:
+                continue   
+        #if key in nouse_list:
+        if convert.fnmatch_list(key, nouse_list):
+            continue
+        if genes_di[key] < float(len(Ids))*use_gene_rate:
+            continue
 
         genes.append(key)
 
@@ -574,7 +578,7 @@ def convert_tojs(input_file, output_file, positions, config):
     # data read
     try:
         df = data_frame.load_file(input_file, header = 1, \
-            sept = tools.config_getstr(config, "merge_format_mutation", "sept"), \
+            sept = tools.config_getstr(config, "result_format_mutation", "sept"), \
             comment = tools.config_getstr(config, "result_format_mutation", "comment") \
             )
     except Exception as e:
@@ -588,11 +592,10 @@ def convert_tojs(input_file, output_file, positions, config):
     # func replace 
     for f in range(len(df.data)):
         func_pos = df.name_to_index(cols_di["func"])
-        func = df.data[f][func_pos]
-        df.data[f][func_pos] = func.replace(" ", "_")
-        if func == "":
+        
+        if df.data[f][func_pos] == "":
             df.data[f][func_pos] = "_blank_"
-
+            
     [funcs, colors_n] = convert.group_list(df.column(cols_di["func"]), "mutation", "func", config)
 
     # ID list
@@ -603,6 +606,7 @@ def convert_tojs(input_file, output_file, positions, config):
     Ids = list(set(Ids))
     Ids.sort()
     
+    # gene list
     genes = genes_list(df.column(cols_di["gene"]), \
                         df.column(cols_di["func"]), \
                         df.column(cols_di["id"]), \
@@ -612,23 +616,10 @@ def convert_tojs(input_file, output_file, positions, config):
     option_keys.remove("id")
     option_keys.remove("func")
     option_keys.remove("gene")
-    
-    f = open(output_file, "w")
-    f.write(js_header \
-        + js_dataset.format(Ids = convert.list_to_text(Ids), \
-            genes = convert.list_to_text(genes), \
-            funcs = convert.list_to_text(funcs), \
-            func_colors_n = convert.list_to_text(colors_n), \
-            mutation_header = convert.list_to_text(option_keys), \
-            checker_title = convert.pyformat_to_jstooltip_text(cols_di, config, "mutation", "result_format_mutation", "tooltip_format_checker_title"), \
-            checker_partial = convert.pyformat_to_jstooltip_text(cols_di, config, "mutation", "result_format_mutation", "tooltip_format_checker_partial"), \
-            gene_title = convert.pyformat_to_jstooltip_text(cols_di, config, "mutation", "result_format_mutation", "tooltip_format_gene_title"), \
-            gene_partial = convert.pyformat_to_jstooltip_text(cols_di, config, "mutation", "result_format_mutation", "tooltip_format_gene_partial"), \
-            id_title = convert.pyformat_to_jstooltip_text(cols_di, config, "mutation", "result_format_mutation", "tooltip_format_id_title"), \
-            id_partial = convert.pyformat_to_jstooltip_text(cols_di, config, "mutation", "result_format_mutation", "tooltip_format_id_partial"), \
-            ))
             
     # mutation list
+    f = open(output_file, "w")
+    f.write(js_header)
     f.write(js_mutations_1)
 
     mutations = {}
@@ -642,8 +633,8 @@ def convert_tojs(input_file, output_file, positions, config):
             tooltips[iid] = {}
                 
         func_split = convert.text_to_list(row[df.name_to_index(cols_di["func"])], \
-                                tools.config_getstr(config, "result_format_mutation", "sept_func"))
-                                
+            tools.config_getstr(config, "result_format_mutation", "sept_func"))
+        
         tooltip_items = []
         for k in range(len(option_keys)):
             key = option_keys[k]
@@ -656,7 +647,8 @@ def convert_tojs(input_file, output_file, positions, config):
                 tooltips[iid][func] = {}
 
             gene_split = convert.text_to_list(row[df.name_to_index(cols_di["gene"])], \
-                                tools.config_getstr(config, "result_format_mutation", "sept_gene"))
+                tools.config_getstr(config, "result_format_mutation", "sept_gene"))
+                
             for gene in gene_split:
                 if (gene in mutations[iid][func]) == False:
                     mutations[iid][func][gene] = 1
@@ -690,7 +682,23 @@ def convert_tojs(input_file, output_file, positions, config):
                     
     f.write(js_mutations_2.format(mutations_sum = mutations_sum))
     
-    dataset = {"func":funcs, "color":colors_n}
+    # write id, func, gene ... list
+    f.write(js_dataset.format(
+        Ids = convert.list_to_text(Ids), \
+        genes = convert.list_to_text(convert.list_prohibition(genes)), \
+        funcs = convert.list_to_text(convert.list_prohibition(funcs)), \
+        func_colors_n = convert.list_to_text(colors_n), \
+        mutation_header = convert.list_to_text(option_keys), \
+        checker_title = convert.pyformat_to_jstooltip_text(cols_di, config, "mutation", "result_format_mutation", "tooltip_format_checker_title"), \
+        checker_partial = convert.pyformat_to_jstooltip_text(cols_di, config, "mutation", "result_format_mutation", "tooltip_format_checker_partial"), \
+        gene_title = convert.pyformat_to_jstooltip_text(cols_di, config, "mutation", "result_format_mutation", "tooltip_format_gene_title"), \
+        gene_partial = convert.pyformat_to_jstooltip_text(cols_di, config, "mutation", "result_format_mutation", "tooltip_format_gene_partial"), \
+        id_title = convert.pyformat_to_jstooltip_text(cols_di, config, "mutation", "result_format_mutation", "tooltip_format_id_title"), \
+        id_partial = convert.pyformat_to_jstooltip_text(cols_di, config, "mutation", "result_format_mutation", "tooltip_format_id_partial"), \
+    ))
+    
+#    dataset = {"func":funcs, "color":colors_n}
+    dataset = {}
     
     ##### subdata #####
     f.write(js_subdata_1)

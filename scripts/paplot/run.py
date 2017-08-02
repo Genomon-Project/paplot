@@ -7,6 +7,7 @@ Created on Wed Dec 02 17:43:52 2015
 $Id: run.py 179 2016-11-07 03:54:23Z aokada $
 """
 
+import os
 import paplot.subcode.tools as tools
 import paplot.subcode.merge as merge
 import paplot.prep as prep
@@ -24,8 +25,6 @@ def index_main(args):
     [config, conf_file] = tools.load_config(tools.win_to_unix(args.config_file))
         
     # dirs
-    import os
-    
     output_dir = os.path.abspath(args.output_dir)
     if (os.path.exists(output_dir) == False):
         os.makedirs(output_dir)
@@ -48,14 +47,15 @@ def qc_main(args):
     
     # dirs
     output_html_dir = prep.create_dirs(tools.win_to_unix(args.output_dir), args.project_name, config)
-    positions = merge.merge_result(input_list, id_list, output_html_dir + ("/data_%s.csv" % args.ellipsis), "qc", config, extract = True)
+    output_data = "data_%s%s" % (args.ellipsis, os.path.splitext(input_list[0])[1])
+    positions = merge.merge_result(input_list, id_list, output_html_dir + "/" + output_data, "qc", config, extract = True)
     if positions == {}:
         print ("merge.merge_result: input file is invalid.")
         return
     
     html_name = "graph_%s.html" % args.ellipsis
     params_html = {"dir": output_html_dir, \
-                 "data": "data_%s.csv" % args.ellipsis, \
+                 "data": output_data, \
                  "js": "data_%s.js" % args.ellipsis, \
                  "html": html_name, \
                  "project": args.project_name, \
@@ -82,14 +82,15 @@ def ca_main(args):
     
     # dirs
     output_html_dir = prep.create_dirs(tools.win_to_unix(args.output_dir), args.project_name, config)
-    positions = merge.merge_result(input_list, id_list, output_html_dir + ("/data_%s.csv" % args.ellipsis), "ca", config, extract = True)
+    output_data = "data_%s%s" % (args.ellipsis, os.path.splitext(input_list[0])[1])
+    positions = merge.merge_result(input_list, id_list, output_html_dir + "/" + output_data, "ca", config, extract = True)
     if positions == {}:
         print ("merge.merge_result: input file is invalid.")
         return
     
     html_name = "graph_%s.html" % args.ellipsis
     params_html = {"dir": output_html_dir, \
-                 "data": "data_%s.csv" % args.ellipsis, \
+                 "data": output_data, \
                  "js": "data_%s.js" % args.ellipsis, \
                  "html": html_name, \
                  "project": args.project_name, \
@@ -117,14 +118,15 @@ def mutation_main(args):
     
     # dirs
     output_html_dir = prep.create_dirs(tools.win_to_unix(args.output_dir), args.project_name, config)
-    positions = merge.merge_result(input_list, id_list, output_html_dir + ("/data_%s.csv" % args.ellipsis), "mutation", config, extract = True)
+    output_data = "data_%s%s" % (args.ellipsis, os.path.splitext(input_list[0])[1])
+    positions = merge.merge_result(input_list, id_list, output_html_dir + "/" + output_data, "mutation", config, extract = True)
     if positions == {}:
         print ("merge.merge_result: input file is invalid.")
         return
     
     html_name = "graph_%s.html" % args.ellipsis
     params_html = {"dir": output_html_dir, \
-                "data": "data_%s.csv" % args.ellipsis, \
+                "data": output_data, \
                 "js": "data_%s.js" % args.ellipsis, \
                 "html": html_name, \
                 "project": args.project_name, \

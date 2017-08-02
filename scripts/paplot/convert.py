@@ -8,6 +8,22 @@ $Id: convert.py 203 2017-06-09 05:54:22Z aokada $
 """
 import paplot.subcode.tools as tools
 
+def prohibition(text):
+    import re
+    new_text = re.sub(r'[\'"/;:\[\] ]', "_", text)
+    if re.match(r'^[0-9]', new_text):
+        new_text = "_" + new_text
+    
+    return new_text
+
+def list_prohibition(li):
+
+    li_p = []
+    for item in li:
+        li_p.append(prohibition(item))
+
+    return li_p
+
 def value_to_index(li, value, default):
     for i in range(len(li)):
         if li[i] == value:
@@ -33,8 +49,14 @@ def text_to_list(text, sep):
         if value != "":
             li.append(value)
     return li
- 
 
+def fnmatch_list(target, li):
+    import fnmatch
+    for value in li:
+        if fnmatch.fnmatch(target, value):
+            return True
+    return False
+        
 def group_list(colmun, mode, name, config):
 
     import paplot.color as color
@@ -51,7 +73,7 @@ def group_list(colmun, mode, name, config):
     sept = tools.config_getstr(config, option_input, "sept_%s" % name)
     limited_list = text_to_list(tools.config_getstr(config, mode, "limited_%ss" % name), ",")
     nouse_list = text_to_list(tools.config_getstr(config, mode, "nouse_%ss" % name), ",")
-    
+
     funcs = []
     for row in colmun:
         splt = []
@@ -61,10 +83,17 @@ def group_list(colmun, mode, name, config):
         for func in splt:
             func = func.strip()
             
-            if func == "": continue
+            if func == "":
+                continue
+            
             if len(limited_list) > 0:
-                if (func in limited_list) == False: continue   
-            if func in nouse_list: continue
+                #if (func in limited_list) == False:
+                if fnmatch_list(func, limited_list) == False:
+                    continue
+
+            #if func in nouse_list:
+            if fnmatch_list(func, nouse_list):
+                continue
             funcs.append(func)
             
     # sort list
