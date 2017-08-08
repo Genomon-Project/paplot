@@ -1,4 +1,4 @@
-ID,Chr,Start,End,Ref,Alt,func,gene
+Sample,Chr,Start,End,Ref,Alt,MutationType,Gene
 SAMPLE00,chr10,8114472,8114474,A,C,intronic,GATA3
 SAMPLE00,chr13,28644892,28644901,G,-,intronic,FLT3
 SAMPLE00,chr13,28664636,28664638,-,G,intronic,FLT3

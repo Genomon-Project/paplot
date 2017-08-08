@@ -1,4 +1,4 @@
-func,gene
+MutationType,Gene
 downstream,CDKN2A
 UTR3,GATA3
 intronic,KDM6A

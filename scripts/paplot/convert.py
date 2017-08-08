@@ -71,8 +71,8 @@ def group_list(colmun, mode, name, config):
         return []
     
     sept = tools.config_getstr(config, option_input, "sept_%s" % name)
-    limited_list = text_to_list(tools.config_getstr(config, mode, "limited_%ss" % name), ",")
-    nouse_list = text_to_list(tools.config_getstr(config, mode, "nouse_%ss" % name), ",")
+    limited_list = text_to_list(tools.config_getstr(config, mode, "limited_%s" % name), ",")
+    nouse_list = text_to_list(tools.config_getstr(config, mode, "nouse_%s" % name), ",")
 
     funcs = []
     for row in colmun:
@@ -101,7 +101,7 @@ def group_list(colmun, mode, name, config):
     funcs.sort() 
     
     color_list = {};
-    for f in tools.config_getstr(config, mode, "%s_colors" % name).split(","):
+    for f in tools.config_getstr(config, mode, "%s_color" % name).split(","):
         if len(f) == 0: continue
         cols = text_to_list(f, ":")
         if len(cols) >= 2:

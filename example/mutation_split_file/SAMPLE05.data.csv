@@ -1,4 +1,4 @@
-func,gene
+MutationType,Gene
 exonic,GATA3
 intronic,PTEN
 intronic,KRAS

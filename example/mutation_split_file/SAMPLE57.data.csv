@@ -1,4 +1,4 @@
-func,gene
+MutationType,Gene
 exonic,BRE
 intronic,TP53
 intronic,PIK3CA

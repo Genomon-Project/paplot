@@ -1,4 +1,4 @@
-ID,func,gene
+Sample,MutationType,Gene
 SAMPLE00,intronic,GATA3
 SAMPLE00,intronic,FLT3
 SAMPLE00,intronic,FLT3

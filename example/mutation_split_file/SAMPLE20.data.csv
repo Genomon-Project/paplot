@@ -1,4 +1,4 @@
-func,gene
+MutationType,Gene
 intronic,CASP8
 exonic,ANK3
 intronic,STK11

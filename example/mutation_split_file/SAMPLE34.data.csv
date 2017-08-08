@@ -1,4 +1,4 @@
-func,gene
+MutationType,Gene
 intronic,CDKN2A
 ncRNA_exonic,MYB
 intronic,IDH1

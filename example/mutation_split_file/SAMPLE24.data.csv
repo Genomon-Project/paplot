@@ -1,4 +1,4 @@
-func,gene
+MutationType,Gene
 exonic,PIK3CA
 intronic,SETD2
 exonic,APC

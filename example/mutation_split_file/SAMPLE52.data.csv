@@ -1,4 +1,4 @@
-func,gene
+MutationType,Gene
 intronic,PTEN
 exonic,BRAF
 exonic,NF1

@@ -1,4 +1,4 @@
-func,gene
+MutationType,Gene
 ncRNA_exonic,RUNX1
 intronic,FLT3
 exonic,NRAS

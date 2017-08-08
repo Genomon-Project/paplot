@@ -248,8 +248,8 @@ Object.freeze(ca_data);
 
 li_template = '<li class="thumb" id="thumb{id}_li"><strong>{title}<br></strong><div id="thumb{id}" onclick="show_float(event,\'{id}\',\'{title}\')"></div></li>\n'
 call_template = 'draw_bandle_thumb("{id}", "{title}");\n'
-call_later_header = "var wait = 1000;\nvar inerval = 100;\n"
-call_later_template = 'setTimeout(function() {{draw_bandle_thumb("{id}", "{title}");}}, wait); wait +=inerval;\n'
+#call_later_header = "var wait = 1000;\nvar inerval = 100;\n"
+#call_later_template = 'setTimeout(function() {{draw_bandle_thumb("{id}", "{title}");}}, wait); wait +=inerval;\n'
 detail_template = """<div class="float_frame" id="float{id}"><table><tr><td class="float_header" id="float{id}_t"><strong>{title}</strong></td><td><input type="button" value="X" onclick="hide_float('#float{id}')" margin="0"></td></tr><tr><td colspan="2" class="float_svg" id="map{id}"></td></tr></table><div class="float_handle" id="float{id}_h" onmousedown="mouse_down(event, '#float{id}')" onmousemove="mouse_move(event, '#float{id}')" onmouseup="mouse_up(event, '#float{id}')" onmouseout="mouse_out('#float{id}')"></div></div>
 """
 ########### functions
@@ -592,12 +592,13 @@ def create_html(dataset, output_di, config):
     for i in range(len(dataset["id_list"])):
         div_txt += li_template.format(id = str(i), title = dataset["id_list"][i])
         detail_txt += detail_template.format(id = str(i), title = dataset["id_list"][i])
-        if i >= 50:
-            if i == 50:
-                call_txt += call_later_header
-            call_txt += call_later_template.format(id = str(i), title = dataset["id_list"][i])
-        else:
-            call_txt += call_template.format(id = str(i), title = dataset["id_list"][i])
+        call_txt += call_template.format(id = str(i), title = dataset["id_list"][i])
+#        if i >= 50:
+#            if i == 50:
+#                call_txt += call_later_header
+#            call_txt += call_later_template.format(id = str(i), title = dataset["id_list"][i])
+#        else:
+#            call_txt += call_template.format(id = str(i), title = dataset["id_list"][i])
         
     f_template = open(os.path.dirname(os.path.abspath(__file__)) + "/templates/graph_ca.html")
     html_template = f_template.read()

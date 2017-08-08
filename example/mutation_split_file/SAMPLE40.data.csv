@@ -1,4 +1,4 @@
-func,gene
+MutationType,Gene
 ncRNA_splicing,STK19
 intronic,CDKN2A
 exonic,TP53

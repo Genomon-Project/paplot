@@ -1,4 +1,4 @@
-func,gene
+MutationType,Gene
 exonic,NPM1
 downstream,AXIN2
 intronic,U2AF1

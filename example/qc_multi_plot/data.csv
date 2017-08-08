@@ -1,4 +1,4 @@
-ID,average_depth,read_length_r1,read_length_r2,total_reads,mapped_reads,mean_insert_size,duplicate_reads,2x_rt,10x_rt,20x_rt,30x_rt
+Sample,AverageDepth,ReadLengthR1,ReadLengthR2,TotalReads,MappedReads,MeanInsertSize,DuplicateReads,2xRatio,10xRatio,20xRatio,30xRatio
 SAMPLE1,70.0474,265,270,94315157,56262203,343.92,7964009,0.9796,0.7680,0.6844,0.6747
 SAMPLE2,65.7578,140,200,50340277,33860998,351.23,5297450,0.8489,0.7725,0.7655,0.6131
 SAMPLE3,63.3750,120,175,90635480,88010999,496.34,8347508,0.9814,0.8236,0.6045,0.5889

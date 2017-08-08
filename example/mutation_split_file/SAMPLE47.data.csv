@@ -1,4 +1,4 @@
-func,gene
+MutationType,Gene
 intronic,RUNX1
 ncRNA_splicing,SETD2
 exonic,SETD2

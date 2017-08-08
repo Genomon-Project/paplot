@@ -1,4 +1,4 @@
-func,gene
+MutationType,Gene
 intronic,FLT3
 intronic,VHL
 exonic,APC

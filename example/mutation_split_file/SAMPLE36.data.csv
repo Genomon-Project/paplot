@@ -1,4 +1,4 @@
-func,gene
+MutationType,Gene
 intronic,FGFBP1
 intronic,BRAF
 exonic,IDH2

@@ -204,8 +204,8 @@ html_integral_template = """<table>
 </tr>
 <tr>
 <td colspan=2 style="padding-top: 20px;">
-<p>view mode: <select id="chart_mode"></select></p>
-<p>sort by: <select id="chart_sort"></select></p>
+<p>View mode: <select id="chart_mode"></select></p>
+<p>Sort by: <select id="chart_sort"></select></p>
 </td>
 </tr>
 </table>
@@ -249,14 +249,14 @@ def convert_tojs(params, config):
     # signature names
     signature_list = []
     for s in range(sig_num):
-        signature_list.append("signature %d" % (s+1))
+        signature_list.append("Signature %d" % (s+1))
     
     # each signature colors
     sig_color_list = color.create_color_array(sig_num, color.r_set2)
     
     # use background?
     if tools.config_getboolean(config, "result_format_pmsignature", "background"):
-        signature_list.append("background ")
+        signature_list.append("Background ")
         sig_color_list.append(color.r_set2_gray)
     
     # Id list

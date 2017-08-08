@@ -1,4 +1,4 @@
-func,gene
+MutationType,Gene
 intronic,NRAS
 exonic,WT1
 intronic,BRAF

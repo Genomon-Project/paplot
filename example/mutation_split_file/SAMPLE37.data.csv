@@ -1,4 +1,4 @@
-func,gene
+MutationType,Gene
 splicing,APC
 intronic,KRAS
 intronic,PPP2R1A

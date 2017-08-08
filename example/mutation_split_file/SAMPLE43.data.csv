@@ -1,4 +1,4 @@
-func,gene
+MutationType,Gene
 exonic,KDM5C
 intronic,NRAS
 downstream,APC

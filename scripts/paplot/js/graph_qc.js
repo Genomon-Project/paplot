@@ -213,7 +213,7 @@ function init() {
     
     sort("sample_ID", true);
     
-    listbox_items = [["sample_ID", "sample ID"]];
+    listbox_items = [["sample_ID", "Sample ID"]];
     for (var i = 0; i < tag_data.length; i++) {
         listbox_items.push([tag_data[i].id, tag_data[i].title]);
     }

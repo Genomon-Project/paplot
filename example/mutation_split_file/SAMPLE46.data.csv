@@ -1,4 +1,4 @@
-func,gene
+MutationType,Gene
 intronic,EP300
 intronic,AKT1
 exonic,MAP3K1

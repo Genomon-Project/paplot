@@ -1,4 +1,4 @@
-func,gene
+MutationType,Gene
 intronic,CASP8
 intronic,FLT3
 exonic,ARID1A

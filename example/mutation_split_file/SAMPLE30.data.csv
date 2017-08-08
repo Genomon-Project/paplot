@@ -1,4 +1,4 @@
-func,gene
+MutationType,Gene
 exonic,TP53
 intronic,NOTCH1
 intronic,BRE

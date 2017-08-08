@@ -1,4 +1,4 @@
-func,gene
+MutationType,Gene
 exonic,HRAS
 exonic,GATA3
 intronic,HRAS

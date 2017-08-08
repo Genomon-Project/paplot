@@ -1,4 +1,4 @@
-func,gene
+MutationType,Gene
 exonic,BRAF
 intronic,PIK3R1
 intronic,MAP2K4

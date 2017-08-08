@@ -1,4 +1,4 @@
-func,gene
+MutationType,Gene
 ncRNA_exonic,APC
 exonic,PBRM1
 intergenic,CDKN2A

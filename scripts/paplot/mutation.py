@@ -43,7 +43,7 @@ function calc_option(format, pos, sum, value) {
     var func = pos[1];
     var gene = pos[2];
     
-    var obj = {id: mut_data.Ids[id], func: mut_data.funcs[func], gene: mut_data.genes[gene],
+    var obj = {id: mut_data.Ids[id], group: mut_data.funcs[func], gene: mut_data.genes[gene],
         '#number_gene': mut_data.genes.length, 
         '#number_id': mut_data.Ids.length, 
         '#number_mutaion_all': mut_data.mutations.length, 
@@ -488,7 +488,7 @@ subplot_template = """
 <tr>
 <td><div id="div_sub{i}_t" class="subplot_title"><b>{title}</b>
       <section>
-        <input type="radio" name="optSub{i}" value="0" id="xSub{i}_0" onclick="sort_sub({i}, 0)" checked /><label for="xSub{i}_0" class="radio">none</label>
+        <input type="radio" name="optSub{i}" value="0" id="xSub{i}_0" onclick="sort_sub({i}, 0)" checked /><label for="xSub{i}_0" class="radio">None</label>
         <input type="radio" name="optSub{i}" value="1" id="xSub{i}_1" onclick="sort_sub({i}, 1)" />        <label for="xSub{i}_1" class="radio">ASC </label>
         <input type="radio" name="optSub{i}" value="2" id="xSub{i}_2" onclick="sort_sub({i}, 2)" />        <label for="xSub{i}_2" class="radio">DESC</label>
       </section>
@@ -538,8 +538,8 @@ def genes_list(colmun, colmun_f, colmun_id, funcs, Ids, config):
             
     # gene list
     use_gene_rate = config.getfloat("mutation", "use_gene_rate")
-    limited_list = convert.text_to_list(tools.config_getstr(config, "mutation", "limited_genes"), ",")
-    nouse_list = convert.text_to_list(tools.config_getstr(config, "mutation", "nouse_genes"), ",")
+    limited_list = convert.text_to_list(tools.config_getstr(config, "mutation", "limited_gene"), ",")
+    nouse_list = convert.text_to_list(tools.config_getstr(config, "mutation", "nouse_gene"), ",")
     
     genes = []
     for key in genes_di:
@@ -591,12 +591,12 @@ def convert_tojs(input_file, output_file, positions, config):
 
     # func replace 
     for f in range(len(df.data)):
-        func_pos = df.name_to_index(cols_di["func"])
+        func_pos = df.name_to_index(cols_di["group"])
         
         if df.data[f][func_pos] == "":
             df.data[f][func_pos] = "_blank_"
             
-    [funcs, colors_n] = convert.group_list(df.column(cols_di["func"]), "mutation", "func", config)
+    [funcs, colors_n] = convert.group_list(df.column(cols_di["group"]), "mutation", "group", config)
 
     # ID list
     Ids = []
@@ -608,13 +608,13 @@ def convert_tojs(input_file, output_file, positions, config):
     
     # gene list
     genes = genes_list(df.column(cols_di["gene"]), \
-                        df.column(cols_di["func"]), \
+                        df.column(cols_di["group"]), \
                         df.column(cols_di["id"]), \
                         funcs, Ids, config)    
 
     option_keys = tools.dict_keys(cols_di)
     option_keys.remove("id")
-    option_keys.remove("func")
+    option_keys.remove("group")
     option_keys.remove("gene")
             
     # mutation list
@@ -632,8 +632,8 @@ def convert_tojs(input_file, output_file, positions, config):
             mutations[iid] = {}
             tooltips[iid] = {}
                 
-        func_split = convert.text_to_list(row[df.name_to_index(cols_di["func"])], \
-            tools.config_getstr(config, "result_format_mutation", "sept_func"))
+        func_split = convert.text_to_list(row[df.name_to_index(cols_di["group"])], \
+            tools.config_getstr(config, "result_format_mutation", "sept_group"))
         
         tooltip_items = []
         for k in range(len(option_keys)):

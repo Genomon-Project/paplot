@@ -1,4 +1,4 @@
-func,gene
+MutationType,Gene
 ncRNA_exonic,HRAS
 UTR5,KDM5C
 intronic,TP53

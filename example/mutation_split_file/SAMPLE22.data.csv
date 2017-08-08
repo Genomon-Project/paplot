@@ -1,4 +1,4 @@
-func,gene
+MutationType,Gene
 intronic,CTCF
 intronic,ARHGAP35
 ncRNA_splicing,CDH1

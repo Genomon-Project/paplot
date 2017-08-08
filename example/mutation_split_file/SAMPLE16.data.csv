@@ -1,4 +1,4 @@
-func,gene
+MutationType,Gene
 intronic,IDH1
 intronic,PDCD2L
 exonic,KRAS

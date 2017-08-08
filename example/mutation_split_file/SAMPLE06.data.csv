@@ -1,4 +1,4 @@
-func,gene
+MutationType,Gene
 intronic,PIK3CA
 intronic,BRAF
 exonic,CDH1

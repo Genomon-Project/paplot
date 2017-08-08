@@ -1,4 +1,4 @@
-func,gene
+MutationType,Gene
 upstream,APC
 intronic,TP53
 intronic,CBFB

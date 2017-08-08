@@ -271,7 +271,7 @@ def create_html(dataset, output_di, config):
 #        chart_txt += html_chart_template.format(chart_id = dataset["plots"][i])
         js_txt += html_js_template.format(i = str(i), chart_id = dataset["plots"][i])
         if dataset["plots"][i] == "chart_brush":
-            chart_txt += '<p class="muted pull-left" style="margin-right: 15px;">select a range to zoom in</p>\n'
+            chart_txt += '<p class="muted pull-left" style="margin-right: 15px;">Select a range to zoom in</p>\n'
             js_txt += html_js_brushed_template.format(i = str(i))
         chart_txt += html_chart_template.format(chart_id = dataset["plots"][i])
         
