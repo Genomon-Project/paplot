@@ -4,7 +4,7 @@ Created on Wed Dec 02 17:43:52 2015
 
 @author: okada
 
-$Id: tools.py 177 2016-10-24 04:23:59Z aokada $
+$Id: tools.py 204 2017-08-02 08:23:55Z aokada $
 """
    
 def config_getboolean(config, section, item):

@@ -4,7 +4,7 @@ Created on Wed Dec 02 17:43:52 2015
 
 @author: okada
 
-$Id: qc.py 177 2016-10-24 04:23:59Z aokada $
+$Id: qc.py 205 2017-08-08 06:25:59Z aokada $
 """
 
 ########### js template
