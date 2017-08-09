@@ -133,7 +133,7 @@ def pyformat_to_jstooltip_text(positions, config, section_fmt, section_col, item
         formt = tools.config_getstr(config, section_fmt, option)
         key_text_list = re_compile.findall(formt)
         tooltip_detail_text = ""
-        
+
         for key_text in key_text_list:
             start = formt.find(key_text)
             
@@ -141,6 +141,7 @@ def pyformat_to_jstooltip_text(positions, config, section_fmt, section_col, item
             if start > 0:
                 tooltip_detail_text += tooltip_detail_templete.format(label = formt[0:start], type="fix", keys="", ext="")
             
+            key_text = key_text.lower()
             formt = formt[start+len(key_text):]
             
             label_text = key_text.replace(" ", "").replace("{", "").replace("}", "")
@@ -170,6 +171,7 @@ def pyformat_to_jstooltip_text(positions, config, section_fmt, section_col, item
             
             check = True
             for sub_key in list(set(sub_keys)):
+                
                 if not sub_key in positions.keys():
                     if not sub_key.startswith("#"):
                         print("[WARNING] key:{key} is not defined.".format(key = sub_key))
@@ -183,14 +185,14 @@ def pyformat_to_jstooltip_text(positions, config, section_fmt, section_col, item
         
         if len(formt) > 0:
             tooltip_detail_text += tooltip_detail_templete.format(label=formt, type="fix", keys="", ext="")
-            
+        
         tooltip_fomat_text += "[" + tooltip_detail_text + "],"
 
     key_text = ""
     keys_dup = list(set(keys_list))
     keys_dup.sort()
     for key in keys_dup:
-        key_text += "{" + key + "} "
+        key_text += "{" + key.lower() + "} "
         
     return tooltip_templete.format(formats = tooltip_fomat_text, keys = key_text)
 

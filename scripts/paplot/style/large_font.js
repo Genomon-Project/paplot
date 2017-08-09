@@ -115,17 +115,17 @@ style_mut = {
 // style of signature
 style_signature = {
     // stack-integral
-    title_integral: "Signature integral",
+    title_integral: "Signature contribution",
     title_integral_font_size: "20px", //"16px",
-    title_integral_y: "Membership",
+    title_integral_y: "Count",
     title_integral_y_font_size: "18px", //"12px",
     legend_integral_title_font_size: "20px", //"16px",
     legend_integral_text_font_size: "18px", //"12px",
     
     // stack-rate
-    title_rate: "Signature rate",
+    title_rate: "Signature contribution",
     title_rate_font_size: "20px", //"16px",
-    title_rate_y: "Membership",
+    title_rate_y: "Rate",
     title_rate_y_font_size: "18px", //"12px",
     legend_rate_title_font_size: "20px", //"16px",
     legend_rate_text_font_size: "18px", //"12px",
@@ -146,17 +146,17 @@ style_signature = {
 // style of pmsignature
 style_pmsignature = {
     // stack-integral
-    title_integral: "Signature integral",
+    title_integral: "Signature contribution",
     title_integral_font_size: "20px", //"16px",
-    title_integral_y: "Membership",
+    title_integral_y: "Count",
     title_integral_y_font_size: "18px", //"12px",
     legend_integral_title_font_size: "20px", //"16px",
     legend_integral_text_font_size: "18px", //"12px",
     
     // stack-rate
-    title_rate: "Signature rate",
+    title_rate: "Signature contribution",
     title_rate_font_size: "20px", //"16px",
-    title_rate_y: "Membership",
+    title_rate_y: "Rate",
     title_rate_y_font_size: "18px", //"12px",
     legend_rate_title_font_size: "20px", //"16px",
     legend_rate_text_font_size: "18px", //"12px",

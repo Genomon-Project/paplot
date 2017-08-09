@@ -299,7 +299,7 @@ function init() {
         }
         // list box
         {
-            var options = ["Rate", "Integral"];
+            var options = ["Rate", "Count"];
             
             if (sig_data.mutation_count.length == 0) options = ["Rate"];
             
@@ -345,7 +345,7 @@ function set_sort_listbox(mode) {
     var options = [];
     
     if (mode == 0) options = ["SampleID"];
-    else options = ["SampleID", "Mutation count"];
+    else options = ["Sample ID", "Mutation count"];
     
     d3.select("#chart_sort")
       .selectAll("option")
