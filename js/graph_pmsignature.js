@@ -90,7 +90,7 @@ function init() {
             var div_rate_legend = new legend();
             div_rate_legend.items =  msig_data.signatures;
             div_rate_legend.colors = msig_data.sig_colors;
-            div_rate_legend.options.title = "signature";
+            div_rate_legend.options.title = "Signature";
             div_rate_legend.layout.padding_top = 150;
             div_rate_legend.layout.shape_sift_left = 10;
             div_rate_legend.layout.title_font_size = Number(style_pmsignature.legend_rate_title_font_size.replace("px",""));
@@ -191,7 +191,7 @@ function init() {
             var div_integral_legend = new legend();
             div_integral_legend.items =  msig_data.signatures;
             div_integral_legend.colors = msig_data.sig_colors;
-            div_integral_legend.options.title = "signature";
+            div_integral_legend.options.title = "Signature";
             div_integral_legend.layout.padding_top = 150;
             div_integral_legend.layout.shape_sift_left = 10;
             div_integral_legend.layout.title_font_size = Number(style_pmsignature.legend_integral_title_font_size.replace("px",""));
@@ -295,9 +295,9 @@ function init() {
         
         // list box
         {
-            var options = ["rate", "integral"];
+            var options = ["Rate", "Count"];
             
-            if (msig_data.mutation_count.length == 0) options = ["rate"];
+            if (msig_data.mutation_count.length == 0) options = ["Rate"];
             
             d3.select("#chart_mode")
               .selectAll("option")
@@ -340,8 +340,8 @@ function set_sort_listbox(mode) {
     
     var options = [];
     
-    if (mode == 0) options = ["sampleID"];
-    else options = ["sampleID", "mutation count"];
+    if (mode == 0) options = ["SampleID"];
+    else options = ["Sample ID", "Mutation count"];
     
     d3.select("#chart_sort")
       .selectAll("option")

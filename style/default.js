@@ -17,7 +17,7 @@ style_qc = {
 // style of genome-wide bar plot
 style_sv_bar = {
     // title's text options
-    title_y: "mutations with CA breakp.",
+    title_y: "Mutations with CA breakp.",
     title_y_font_size: "12px",
 
     title_x: "Chromosome",
@@ -99,7 +99,7 @@ style_mut = {
     horizon_border_y_opacity: 0.5,
     
     // legend
-    legend_title: "functions",
+    legend_title: "Mutation type",
     legend_title_font_size: "16px",
     legend_text_font_size: "12px",
     
@@ -115,17 +115,17 @@ style_mut = {
 // style of signature
 style_signature = {
     // stack-integral
-    title_integral: "Signature integral",
+    title_integral: "Signature contribution",
     title_integral_font_size: "16px",
-    title_integral_y: "membership",
+    title_integral_y: "Count",
     title_integral_y_font_size: "12px",
     legend_integral_title_font_size: "16px",
     legend_integral_text_font_size: "12px",
     
     // stack-rate
-    title_rate: "Signature rate",
+    title_rate: "Signature contribution",
     title_rate_font_size: "16px",
-    title_rate_y: "membership",
+    title_rate_y: "Rate",
     title_rate_y_font_size: "12px",
     legend_rate_title_font_size: "16px",
     legend_rate_text_font_size: "12px",
@@ -136,7 +136,7 @@ style_signature = {
     
     // signature
     signature_title_font_size: "12px",
-    signature_title_y: "probaility",
+    signature_title_y: "Probaility",
     signature_title_y_font_size: "12px",
     signature_title_x_font_size: "12px",
     border_y_color: "#DDDDCC",
@@ -146,17 +146,17 @@ style_signature = {
 // style of pmsignature
 style_pmsignature = {
     // stack-integral
-    title_integral: "Signature integral",
+    title_integral: "Signature contribution",
     title_integral_font_size: "16px",
-    title_integral_y: "membership",
+    title_integral_y: "Count",
     title_integral_y_font_size: "12px",
     legend_integral_title_font_size: "16px",
     legend_integral_text_font_size: "12px",
     
     // stack-rate
-    title_rate: "Signature rate",
+    title_rate: "Signature contribution",
     title_rate_font_size: "16px",
-    title_rate_y: "membership",
+    title_rate_y: "Rate",
     title_rate_y_font_size: "12px",
     legend_rate_title_font_size: "16px",
     legend_rate_text_font_size: "12px",

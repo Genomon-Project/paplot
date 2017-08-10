@@ -542,7 +542,7 @@ function sort_reset(axis) {
         div_mut_bar_top.sort(sort_state.x.name_list, sort_state.x.asc_list);
         div_mut_checker.sort(sort_state.x.name_list, sort_state.x.asc_list, "x");
         
-        d3.select("#sort_x_text").text("sample_ID(ASC)");
+        d3.select("#sort_x_text").text("sample ID (ASC)");
         
         d3.select("#xID_0").property("checked", true);
         d3.select("#xNum_0").property("checked", true);
@@ -561,7 +561,7 @@ function sort_reset(axis) {
         sort_state.y.asc_list = [].concat(SORT_STATE_DEFAULT_Y.asc_list);
         sort_state.y.state = "default";
         
-        d3.select("#sort_y_text").text("number_of_mutations(DESC)");
+        d3.select("#sort_y_text").text("Number of mutations (DESC)");
         d3.select("#yNum_0").property("checked", true);
         d3.select("#yGene_0").property("checked", true);
 

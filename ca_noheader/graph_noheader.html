@@ -1,0 +1,88 @@
+<html lang="en">
+<head>
+  <title>CA graphs - ca_noheader</title>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+  
+  <link rel="stylesheet" type="text/css" href="../layout/paplot.css"/>
+</head>
+<body>
+
+<div class="version">
+Generated on 2017-08-10 14:19:35 for ca_noheader by paplot-0.5.4.
+</div>
+
+<div class="container">
+  <h2 id="title">CA graphs - ca_noheader</h2>
+
+  <p>Style of selected graphs<br>
+  <input type="radio" name="q2" value="hilight" onclick="thumb_reset()" checked> Hilight selected graphs
+  <input type="radio" name="q2" value="hide" onclick="thumb_reset()"> Hide non-selected graphs
+  </p>
+  <p><input type="button" value="Reset" onclick="thumb_reset()"></p>
+
+<!-- save image --><button type="button" onclick="push_export()" id="dw_btn" style="margin-bottom: 20px;"><img src="../layout/download.png" style="margin-right: 5px;">Export</button><div id="btn"></div>
+<!-- legend --> <div id='legend_html'></div><div id='legend_svg'></div>
+
+<div id="selector"></div>
+
+<!-- ### tumbnails ### -->
+<div>
+<ul>
+<li class="thumb" id="thumb0_li"><strong>SAMPLE1<br></strong><div id="thumb0" onclick="show_float(event,'0','SAMPLE1')"></div></li>
+<li class="thumb" id="thumb1_li"><strong>SAMPLE10<br></strong><div id="thumb1" onclick="show_float(event,'1','SAMPLE10')"></div></li>
+<li class="thumb" id="thumb2_li"><strong>SAMPLE2<br></strong><div id="thumb2" onclick="show_float(event,'2','SAMPLE2')"></div></li>
+<li class="thumb" id="thumb3_li"><strong>SAMPLE3<br></strong><div id="thumb3" onclick="show_float(event,'3','SAMPLE3')"></div></li>
+<li class="thumb" id="thumb4_li"><strong>SAMPLE4<br></strong><div id="thumb4" onclick="show_float(event,'4','SAMPLE4')"></div></li>
+<li class="thumb" id="thumb5_li"><strong>SAMPLE5<br></strong><div id="thumb5" onclick="show_float(event,'5','SAMPLE5')"></div></li>
+<li class="thumb" id="thumb6_li"><strong>SAMPLE6<br></strong><div id="thumb6" onclick="show_float(event,'6','SAMPLE6')"></div></li>
+<li class="thumb" id="thumb7_li"><strong>SAMPLE7<br></strong><div id="thumb7" onclick="show_float(event,'7','SAMPLE7')"></div></li>
+<li class="thumb" id="thumb8_li"><strong>SAMPLE8<br></strong><div id="thumb8" onclick="show_float(event,'8','SAMPLE8')"></div></li>
+<li class="thumb" id="thumb9_li"><strong>SAMPLE9<br></strong><div id="thumb9" onclick="show_float(event,'9','SAMPLE9')"></div></li>
+
+</ul>
+</div>
+
+</div>
+
+<!-- ### details ### -->
+<div class="float_frame" id="float0"><table><tr><td class="float_header" id="float0_t"><strong>SAMPLE1</strong></td><td><input type="button" value="X" onclick="hide_float('#float0')" margin="0"></td></tr><tr><td colspan="2" class="float_svg" id="map0"></td></tr></table><div class="float_handle" id="float0_h" onmousedown="mouse_down(event, '#float0')" onmousemove="mouse_move(event, '#float0')" onmouseup="mouse_up(event, '#float0')" onmouseout="mouse_out('#float0')"></div></div>
+<div class="float_frame" id="float1"><table><tr><td class="float_header" id="float1_t"><strong>SAMPLE10</strong></td><td><input type="button" value="X" onclick="hide_float('#float1')" margin="0"></td></tr><tr><td colspan="2" class="float_svg" id="map1"></td></tr></table><div class="float_handle" id="float1_h" onmousedown="mouse_down(event, '#float1')" onmousemove="mouse_move(event, '#float1')" onmouseup="mouse_up(event, '#float1')" onmouseout="mouse_out('#float1')"></div></div>
+<div class="float_frame" id="float2"><table><tr><td class="float_header" id="float2_t"><strong>SAMPLE2</strong></td><td><input type="button" value="X" onclick="hide_float('#float2')" margin="0"></td></tr><tr><td colspan="2" class="float_svg" id="map2"></td></tr></table><div class="float_handle" id="float2_h" onmousedown="mouse_down(event, '#float2')" onmousemove="mouse_move(event, '#float2')" onmouseup="mouse_up(event, '#float2')" onmouseout="mouse_out('#float2')"></div></div>
+<div class="float_frame" id="float3"><table><tr><td class="float_header" id="float3_t"><strong>SAMPLE3</strong></td><td><input type="button" value="X" onclick="hide_float('#float3')" margin="0"></td></tr><tr><td colspan="2" class="float_svg" id="map3"></td></tr></table><div class="float_handle" id="float3_h" onmousedown="mouse_down(event, '#float3')" onmousemove="mouse_move(event, '#float3')" onmouseup="mouse_up(event, '#float3')" onmouseout="mouse_out('#float3')"></div></div>
+<div class="float_frame" id="float4"><table><tr><td class="float_header" id="float4_t"><strong>SAMPLE4</strong></td><td><input type="button" value="X" onclick="hide_float('#float4')" margin="0"></td></tr><tr><td colspan="2" class="float_svg" id="map4"></td></tr></table><div class="float_handle" id="float4_h" onmousedown="mouse_down(event, '#float4')" onmousemove="mouse_move(event, '#float4')" onmouseup="mouse_up(event, '#float4')" onmouseout="mouse_out('#float4')"></div></div>
+<div class="float_frame" id="float5"><table><tr><td class="float_header" id="float5_t"><strong>SAMPLE5</strong></td><td><input type="button" value="X" onclick="hide_float('#float5')" margin="0"></td></tr><tr><td colspan="2" class="float_svg" id="map5"></td></tr></table><div class="float_handle" id="float5_h" onmousedown="mouse_down(event, '#float5')" onmousemove="mouse_move(event, '#float5')" onmouseup="mouse_up(event, '#float5')" onmouseout="mouse_out('#float5')"></div></div>
+<div class="float_frame" id="float6"><table><tr><td class="float_header" id="float6_t"><strong>SAMPLE6</strong></td><td><input type="button" value="X" onclick="hide_float('#float6')" margin="0"></td></tr><tr><td colspan="2" class="float_svg" id="map6"></td></tr></table><div class="float_handle" id="float6_h" onmousedown="mouse_down(event, '#float6')" onmousemove="mouse_move(event, '#float6')" onmouseup="mouse_up(event, '#float6')" onmouseout="mouse_out('#float6')"></div></div>
+<div class="float_frame" id="float7"><table><tr><td class="float_header" id="float7_t"><strong>SAMPLE7</strong></td><td><input type="button" value="X" onclick="hide_float('#float7')" margin="0"></td></tr><tr><td colspan="2" class="float_svg" id="map7"></td></tr></table><div class="float_handle" id="float7_h" onmousedown="mouse_down(event, '#float7')" onmousemove="mouse_move(event, '#float7')" onmouseup="mouse_up(event, '#float7')" onmouseout="mouse_out('#float7')"></div></div>
+<div class="float_frame" id="float8"><table><tr><td class="float_header" id="float8_t"><strong>SAMPLE8</strong></td><td><input type="button" value="X" onclick="hide_float('#float8')" margin="0"></td></tr><tr><td colspan="2" class="float_svg" id="map8"></td></tr></table><div class="float_handle" id="float8_h" onmousedown="mouse_down(event, '#float8')" onmousemove="mouse_move(event, '#float8')" onmouseup="mouse_up(event, '#float8')" onmouseout="mouse_out('#float8')"></div></div>
+<div class="float_frame" id="float9"><table><tr><td class="float_header" id="float9_t"><strong>SAMPLE9</strong></td><td><input type="button" value="X" onclick="hide_float('#float9')" margin="0"></td></tr><tr><td colspan="2" class="float_svg" id="map9"></td></tr></table><div class="float_handle" id="float9_h" onmousedown="mouse_down(event, '#float9')" onmousemove="mouse_move(event, '#float9')" onmouseup="mouse_up(event, '#float9')" onmouseout="mouse_out('#float9')"></div></div>
+
+
+<!-- ### tooltip ### -->
+<div id="tooltip" class="hidden"></div>
+<!-- canvas for save image -->
+<canvas id="dw_canvas" class="hidden"></canvas>
+
+<script type="text/javascript" src="../lib/d3_v3.5.13/d3.min.js"></script>
+<script type="text/javascript" src="../lib/d3-legend_v1.10.0/d3-legend.min.js"></script>
+<script type="text/javascript" src="../style/default.js"></script>
+<script type="text/javascript" src="../js/utils.js"></script>
+<script type="text/javascript" src="../js/bundle.js"></script>
+<script type="text/javascript" src="../js/bar.js"></script>
+<script type="text/javascript" src="./data_noheader.js"></script>
+<script type="text/javascript" src="../js/graph_ca.js"></script>
+<script>
+draw_select();
+draw_bandle_thumb("0", "SAMPLE1");
+draw_bandle_thumb("1", "SAMPLE10");
+draw_bandle_thumb("2", "SAMPLE2");
+draw_bandle_thumb("3", "SAMPLE3");
+draw_bandle_thumb("4", "SAMPLE4");
+draw_bandle_thumb("5", "SAMPLE5");
+draw_bandle_thumb("6", "SAMPLE6");
+draw_bandle_thumb("7", "SAMPLE7");
+draw_bandle_thumb("8", "SAMPLE8");
+draw_bandle_thumb("9", "SAMPLE9");
+
+</script>
+</body>
+</html>

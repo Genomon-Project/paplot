@@ -8,6 +8,12 @@
         p {
            font-size: 14px;
         }
+        hr {
+          border-top: 1px dashed #8c8b8b;
+          margin-top: 50px;
+          margin-bottom: 50px;
+          width: 90%
+        }
         td {
             font-size: 14px;
             height: 40px;
@@ -37,6 +43,10 @@
         {
             content: '\f0f6' ;
         }
+        .fb-info:before
+        {
+            content: '\f05a' ;
+        }
         .fb {
             color: #000088; //#556b2f;
             padding-right: 2px ;
@@ -61,12 +71,13 @@ Generated on 2017-06-15 14:37:48 by paplot-0.5.4.
 <p style="margin-top: 30px;">This is the summary documentation of the analysis results.<p>
 <p>Clicking on the link below, you can see each graph.</p>
 
-<h2>mutation</h2>
+<hr>
+<h2>Mutation Matrix Report</h2>
 
 <table style="margin-left:40px;">
   <tr>
     <td><img src='layout/bar_chart_1.png'></td>
-    <td class='title'><a class='plot' href='mutation/graph_minimal.html' target=_blank>minimal</a></td>
+    <td class='title'><a class='plot' href='mutation_minimal/graph_minimal.html' target=_blank>minimal</a></td>
     <td class='text'>...Minimum configuration
       <a class='fb fb-file top' href="https://github.com/Genomon-Project/paplot/blob/master/example/mutation_minimal" target="_mutation_minimal"></a>
       <a class='fb fb-dw' href="https://github.com/Genomon-Project/paplot/blob/master/example/mutation_minimal.zip?raw=true"></a>
@@ -75,7 +86,7 @@ Generated on 2017-06-15 14:37:48 by paplot-0.5.4.
   
   <tr>
     <td><img src='layout/bar_chart_1.png'></td>
-    <td class='title'><a class='plot' href='mutation/graph_option.html' target=_blank>tooltip</a></td>
+    <td class='title'><a class='plot' href='mutation_option/graph_option.html' target=_blank>tooltip</a></td>
     <td class='text'>...Add optional data for tooltip.
       <a class='fb fb-file top' href="https://github.com/Genomon-Project/paplot/blob/master/example/mutation_option" target="_mutation_option"></a>
       <a class='fb fb-dw' href="https://github.com/Genomon-Project/paplot/blob/master/example/mutation_option.zip?raw=true"></a>
@@ -84,7 +95,7 @@ Generated on 2017-06-15 14:37:48 by paplot-0.5.4.
   
   <tr>
     <td><img src='layout/bar_chart_1.png'></td>
-    <td class='title'><a class='plot' href='mutation/graph_subplot.html' target=_blank>subplot</a></td>
+    <td class='title'><a class='plot' href='mutation_subplot/graph_subplot.html' target=_blank>subplot</a></td>
     <td class='text'>....Add subplot for example clinical infomation.
       <a class='fb fb-file top' href="https://github.com/Genomon-Project/paplot/blob/master/example/mutation_subplot" target="_mutation_subplot"></a>
       <a class='fb fb-dw' href="https://github.com/Genomon-Project/paplot/blob/master/example/mutation_subplot.zip?raw=true"></a>
@@ -92,21 +103,32 @@ Generated on 2017-06-15 14:37:48 by paplot-0.5.4.
   </tr>
 </table>
 
-<h2>qc</h2>
+<hr>
+<h2>QC Report</h2>
 
 <table style="margin-left:40px;">
   <tr>
     <td><img src='layout/bar_chart_1.png'></td>
-    <td class='title'><a class='plot' href='qc/graph_minimal.html' target=_blank>minimal</a></td>
+    <td class='title'><a class='plot' href='qc_minimal/graph_minimal.html' target=_blank>minimal</a></td>
     <td class='text'>...Report with only depth-average.
       <a class='fb fb-file top' href="https://github.com/Genomon-Project/paplot/blob/master/example/qc_minimal" target="_qc_minimal"></a>
       <a class='fb fb-dw' href="https://github.com/Genomon-Project/paplot/blob/master/example/qc_minimal.zip?raw=true"></a>
     </td>
   </tr>
-  
+
   <tr>
     <td><img src='layout/bar_chart_1.png'></td>
-    <td class='title'><a class='plot' href='qc/graph_multi_plot.html' target=_blank>multi plot</a></td>
+    <td class='title'><a class='plot' href='qc_stack/graph_stack.html' target=_blank>積み上げグラフ</a></td>
+    <td class='text'>...レポートに積み上げグラフを追加
+      <a class='fb fb-file top' href="https://github.com/Genomon-Project/paplot/blob/master/example/qc_stack" target="_qc_multi_plot"></a>
+      <a class='fb fb-dw' href="https://github.com/Genomon-Project/paplot/blob/master/example/qc_stack.zip?raw=true"></a>
+      <a class='fb fb-info top' href="http://paplot-doc.readthedocs.io/ja/develop/dataformat.html#qc-stack" target="_data_qc-mplot">解説</a>
+    </td>
+  </tr>
+
+  <tr>
+    <td><img src='layout/bar_chart_1.png'></td>
+    <td class='title'><a class='plot' href='qc_multi_plot/graph_multi_plot.html' target=_blank>multi plot</a></td>
     <td class='text'>...Add multi plot.
       <a class='fb fb-file top' href="https://github.com/Genomon-Project/paplot/blob/master/example/qc_multi_plot" target="_qc_multi_plot"></a>
       <a class='fb fb-dw' href="https://github.com/Genomon-Project/paplot/blob/master/example/qc_multi_plot.zip?raw=true"></a>
@@ -115,7 +137,7 @@ Generated on 2017-06-15 14:37:48 by paplot-0.5.4.
   
   <tr>
     <td><img src='layout/bar_chart_1.png'></td>
-    <td class='title'><a class='plot' href='qc/graph_brush.html' target=_blank>brush</a></td>
+    <td class='title'><a class='plot' href='qc_brush/graph_brush.html' target=_blank>brush</a></td>
     <td class='text'>...Add select data range
       <a class='fb fb-file top' href="https://github.com/Genomon-Project/paplot/blob/master/example/qc_brush" target="_qc_brush"></a>
       <a class='fb fb-dw' href="https://github.com/Genomon-Project/paplot/blob/master/example/qc_brush.zip?raw=true"></a>
@@ -123,12 +145,13 @@ Generated on 2017-06-15 14:37:48 by paplot-0.5.4.
   </tr>
 </table>
 
-<h2>ca</h2>
+<hr>
+<h2>Chromosomal Aberration Report</h2>
 
 <table style="margin-left:40px;">
   <tr>
     <td><img src='layout/bar_chart_1.png'></td>
-    <td class='title'><a class='plot' href='ca/graph_minimal.html' target=_blank>minimal</a></td>
+    <td class='title'><a class='plot' href='ca_minimal/graph_minimal.html' target=_blank>minimal</a></td>
     <td class='text'>...Minimum configuration
       <a class='fb fb-file top' href="https://github.com/Genomon-Project/paplot/blob/master/example/ca_minimal" target="_ca_minimal"></a>
       <a class='fb fb-dw' href="https://github.com/Genomon-Project/paplot/blob/master/example/ca_minimal.zip?raw=true"></a>
@@ -137,7 +160,7 @@ Generated on 2017-06-15 14:37:48 by paplot-0.5.4.
   
   <tr>
     <td><img src='layout/bar_chart_1.png'></td>
-    <td class='title'><a class='plot' href='ca/graph_group.html' target=_blank>grouping</a></td>
+    <td class='title'><a class='plot' href='ca_group/graph_group.html' target=_blank>grouping</a></td>
     <td class='text'>...Add grouping to links
       <a class='fb fb-file top' href="https://github.com/Genomon-Project/paplot/blob/master/example/ca_group" target="_ca_group"></a>
       <a class='fb fb-dw' href="https://github.com/Genomon-Project/paplot/blob/master/example/ca_group.zip?raw=true"></a>
@@ -146,7 +169,7 @@ Generated on 2017-06-15 14:37:48 by paplot-0.5.4.
 
   <tr>
     <td><img src='layout/bar_chart_1.png'></td>
-    <td class='title'><a class='plot' href='ca/graph_option.html' target=_blank>tooltip</a></td>
+    <td class='title'><a class='plot' href='ca_option/graph_option.html' target=_blank>tooltip</a></td>
     <td class='text'>...Add optional data for tooltip.
       <a class='fb fb-file top' href="https://github.com/Genomon-Project/paplot/blob/master/example/ca_option" target="_ca_option"></a>
       <a class='fb fb-dw' href="https://github.com/Genomon-Project/paplot/blob/master/example/ca_option.zip?raw=true"></a>
@@ -154,7 +177,8 @@ Generated on 2017-06-15 14:37:48 by paplot-0.5.4.
   </tr>
 </table>
 
-<h2>signature</h2>
+<hr>
+<h2>Mutaitonal Signature Report</h2>
 
 <table style="margin-left:40px;">
   <tr>
@@ -171,7 +195,7 @@ Generated on 2017-06-15 14:37:48 by paplot-0.5.4.
       <table style="margin-left:40px;">
         <tr>
           <td><img src='layout/bar_chart_1.png'></td>
-          <td class='text'><a class='plot' href='signature/graph_signature_minimal2.html' target=_blank>#sig 2</a></td>
+          <td class='text'><a class='plot' href='signature_minimal/graph_signature_minimal2.html' target=_blank>#sig 2</a></td>
         </tr>
       </table>
     </td>
@@ -190,11 +214,11 @@ Generated on 2017-06-15 14:37:48 by paplot-0.5.4.
     <td colspan=3>
       <table style="margin-left:40px;">
         <tr>
-          <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='signature/graph_multi_class2.html' target=_blank>#sig 2</a></td>
-          <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='signature/graph_multi_class3.html' target=_blank>#sig 3</a></td>
-          <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='signature/graph_multi_class4.html' target=_blank>#sig 4</a></td>
-          <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='signature/graph_multi_class5.html' target=_blank>#sig 5</a></td>
-          <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='signature/graph_multi_class6.html' target=_blank>#sig 6</a></td>
+          <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='signature_multi_class/graph_multi_class2.html' target=_blank>#sig 2</a></td>
+          <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='signature_multi_class/graph_multi_class3.html' target=_blank>#sig 3</a></td>
+          <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='signature_multi_class/graph_multi_class4.html' target=_blank>#sig 4</a></td>
+          <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='signature_multi_class/graph_multi_class5.html' target=_blank>#sig 5</a></td>
+          <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='signature_multi_class/graph_multi_class6.html' target=_blank>#sig 6</a></td>
         </tr>
       </table>
     </td>
@@ -213,18 +237,19 @@ Generated on 2017-06-15 14:37:48 by paplot-0.5.4.
     <td colspan=3>
       <table style="margin-left:40px;">
         <tr>
-          <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='signature/graph_integral2.html' target=_blank>#sig 2</a></td>
-          <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='signature/graph_integral3.html' target=_blank>#sig 3</a></td>
-          <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='signature/graph_integral4.html' target=_blank>#sig 4</a></td>
-          <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='signature/graph_integral5.html' target=_blank>#sig 5</a></td>
-          <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='signature/graph_integral6.html' target=_blank>#sig 6</a></td>
+          <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='signature_integral/graph_integral2.html' target=_blank>#sig 2</a></td>
+          <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='signature_integral/graph_integral3.html' target=_blank>#sig 3</a></td>
+          <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='signature_integral/graph_integral4.html' target=_blank>#sig 4</a></td>
+          <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='signature_integral/graph_integral5.html' target=_blank>#sig 5</a></td>
+          <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='signature_integral/graph_integral6.html' target=_blank>#sig 6</a></td>
         </tr>
       </table>
     </td>
   </tr>
 </table>
 
-<h2>pmsignature</h2>
+<hr>
+<h2>pmsignature Report</h2>
 
 <p>※Since background is set, the number of actually output pmsignature is 1 less.</p>
 
@@ -241,7 +266,7 @@ Generated on 2017-06-15 14:37:48 by paplot-0.5.4.
       <table style="margin-left:40px;">
         <tr>
           <td><img src='layout/bar_chart_1.png'></td>
-          <td class='text'><a class='plot' href='pmsignature/graph_pmsignature_minimal2.html' target=_blank>#sig 2</a></td>
+          <td class='text'><a class='plot' href='pmsignature_minimal/graph_pmsignature_minimal2.html' target=_blank>#sig 2</a></td>
         </tr>
       </table>
     </td>
@@ -260,11 +285,11 @@ Generated on 2017-06-15 14:37:48 by paplot-0.5.4.
     <td colspan=3>
       <table style="margin-left:40px;">
         <tr>
-          <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='pmsignature/graph_multi_class2.html' target=_blank>#sig 2</a></td>
-          <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='pmsignature/graph_multi_class3.html' target=_blank>#sig 3</a></td>
-          <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='pmsignature/graph_multi_class4.html' target=_blank>#sig 4</a></td>
-          <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='pmsignature/graph_multi_class5.html' target=_blank>#sig 5</a></td>
-          <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='pmsignature/graph_multi_class6.html' target=_blank>#sig 6</a></td>
+          <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='pmsignature_multi_class/graph_multi_class2.html' target=_blank>#sig 2</a></td>
+          <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='pmsignature_multi_class/graph_multi_class3.html' target=_blank>#sig 3</a></td>
+          <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='pmsignature_multi_class/graph_multi_class4.html' target=_blank>#sig 4</a></td>
+          <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='pmsignature_multi_class/graph_multi_class5.html' target=_blank>#sig 5</a></td>
+          <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='pmsignature_multi_class/graph_multi_class6.html' target=_blank>#sig 6</a></td>
         </tr>
       </table>
     </td>
@@ -282,11 +307,11 @@ Generated on 2017-06-15 14:37:48 by paplot-0.5.4.
     <td colspan=3>
       <table style="margin-left:40px;">
         <tr>
-          <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='pmsignature/graph_integral2.html' target=_blank>#sig 2</a></td>
-          <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='pmsignature/graph_integral3.html' target=_blank>#sig 3</a></td>
-          <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='pmsignature/graph_integral4.html' target=_blank>#sig 4</a></td>
-          <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='pmsignature/graph_integral5.html' target=_blank>#sig 5</a></td>
-          <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='pmsignature/graph_integral6.html' target=_blank>#sig 6</a></td>
+          <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='pmsignature_integral/graph_integral2.html' target=_blank>#sig 2</a></td>
+          <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='pmsignature_integral/graph_integral3.html' target=_blank>#sig 3</a></td>
+          <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='pmsignature_integral/graph_integral4.html' target=_blank>#sig 4</a></td>
+          <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='pmsignature_integral/graph_integral5.html' target=_blank>#sig 5</a></td>
+          <td><img src='layout/bar_chart_1.png'></td><td class='text'><a class='plot' href='pmsignature_integral/graph_integral6.html' target=_blank>#sig 6</a></td>
         </tr>
       </table>
     </td>
@@ -306,7 +331,7 @@ Generated on 2017-06-15 14:37:48 by paplot-0.5.4.
       <table style="margin-left:40px;">
         <tr>
           <td><img src='layout/bar_chart_1.png'></td>
-          <td class='text'><a class='plot' href='pmsignature/graph_nobackground2.html' target=_blank>#sig 2</a></td>
+          <td class='text'><a class='plot' href='pmsignature_nobackground/graph_nobackground2.html' target=_blank>#sig 2</a></td>
         </tr>
       </table>
     </td>

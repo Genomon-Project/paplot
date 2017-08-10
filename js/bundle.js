@@ -263,7 +263,7 @@ p.draw_bundle = function(obj, arc_data, data, options)
                 // add text to tooltip
                 var texts = link_data[group_id];
                 var result = getLinkData_values(texts, d.source.start, d.target.start);
-                d3.select("#tooltip").append("p").attr("id",  "text").append("pre").text("link detail");
+                d3.select("#tooltip").append("p").attr("id",  "text").append("pre").text("Link detail");
                 for (var i = 0; i<result.length; i++) {
                     d3.select("#tooltip")
                         .append("p")
