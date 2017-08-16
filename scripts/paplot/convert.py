@@ -4,7 +4,7 @@ Created on Thu May 12 12:34:57 2016
 
 @author: okada
 
-$Id: convert.py 205 2017-08-08 06:25:59Z aokada $
+$Id: convert.py 208 2017-08-16 06:16:25Z aokada $
 """
 import paplot.subcode.tools as tools
 
