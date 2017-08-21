@@ -8,7 +8,7 @@ paplot mutation mutation_noheader/data.csv ./demo mutation_noheader --ellipsis n
 # qc
 paplot qc qc_minimal/data.csv    ./demo qc_minimal    --ellipsis minimal    --config_file ./qc_minimal/paplot.cfg
 paplot qc qc_stack/data.csv      ./demo qc_stack      --ellipsis stack      --config_file ./qc_stack/paplot.cfg
-paplot qc qc_multi_plot/data.csv ./demo qc_multi_plot --ellipsis multi_plot --config_file ./qc_multi_plot/paplot.cfg
+paplot qc qc_variation/data.csv  ./demo qc_variation  --ellipsis variation  --config_file ./qc_variation/paplot.cfg
 paplot qc qc_brush/data.csv      ./demo qc_brush      --ellipsis brush      --config_file ./qc_brush/paplot.cfg
 paplot qc qc_noheader/data.csv   ./demo qc_noheader   --ellipsis noheader   --config_file ./qc_noheader/paplot.cfg
 
