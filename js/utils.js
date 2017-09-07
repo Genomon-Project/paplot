@@ -448,6 +448,7 @@ var legend = (function()
             font_family: style_general.font_family,
             padding_left: 20,
             padding_top: 20,
+            margin_right: 0,
             
             // title
             title_font_size: 16,
@@ -498,6 +499,7 @@ var legend = (function()
             'height' : p_data.svg_height + 'px',
             'font-family' : this.layout.font_family,
             'padding-left': this.layout.padding_left + 'px',
+            'margin-right': this.layout.margin_right + 'px',
             'padding-top': this.layout.padding_top + 'px',
         };
         var css_title = {

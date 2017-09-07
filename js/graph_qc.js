@@ -167,7 +167,7 @@ function init() {
             bar.options.grid_y.border_opacity = style_qc.brush_border_y_opacity;
         }
         else {
-            bar.options.padding_right = 100;
+            bar.options.padding_right = 150;
             bar.options.zoom.enable = true;
             
             bar.options.grid_y.ticks = 10;
