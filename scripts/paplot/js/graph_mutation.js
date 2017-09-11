@@ -809,6 +809,7 @@ function init() {
     div_legend.layout.shape_sift_left = 10;
     div_legend.layout.title_font_size = Number(style_mut.legend_title_font_size.replace("px",""));
     div_legend.layout.text_font_size = Number(style_mut.legend_text_font_size.replace("px",""));
+    div_legend.layout.margin_right = 300;
     
     div_legend.html_id = "legend_html";
     div_legend.svg_id = "legend_svg";
