@@ -32,7 +32,7 @@ ca_data.genome_size = [
 ];
 
 ca_data.index_ID = ['SAMPLE1','SAMPLE10','SAMPLE2','SAMPLE3','SAMPLE4','SAMPLE5','SAMPLE6','SAMPLE7','SAMPLE8','SAMPLE9',];
-ca_data.group = [{"name":"outer", "label":"Inter Chromosome", "color":"#9E4A98" },{"name":"inner", "label":"Intra Chromosome", "color":"#51BF69" }];
+ca_data.group = [{"name":"outer", "label":"Inter-chromosome", "color":"#9E4A98" },{"name":"inner", "label":"Intra-chromosome", "color":"#51BF69" }];
 ca_data.tooltip_format = { bundle:{format:[[{label:'[',type:'fix',keys:[],ext:''},{label:'{chr1}',type:'str',keys:['chr1',],ext:''},{label:'] ',type:'fix',keys:[],ext:''},{label:'{break1}',type:'numeric',keys:['break1',],ext:','},{label:' (',type:'fix',keys:[],ext:''},{label:'{dir1}',type:'str',keys:['dir1',],ext:''},{label:') ',type:'fix',keys:[],ext:''},{label:'{gene_name1}',type:'str',keys:['gene_name1',],ext:''},{label:'; [',type:'fix',keys:[],ext:''},{label:'{chr2}',type:'str',keys:['chr2',],ext:''},{label:'] ',type:'fix',keys:[],ext:''},{label:'{break2}',type:'numeric',keys:['break2',],ext:','},{label:' (',type:'fix',keys:[],ext:''},{label:'{dir2}',type:'str',keys:['dir2',],ext:''},{label:') ',type:'fix',keys:[],ext:''},{label:'{gene_name2}',type:'str',keys:['gene_name2',],ext:''},{label:'; ',type:'fix',keys:[],ext:''},{label:'{type}',type:'str',keys:['type',],ext:''},],], keys: '{break1} {break2} {chr1} {chr2} {dir1} {dir2} {gene_name1} {gene_name2} {type} '}, };
 ca_data.link_header = ['dir1','dir2','gene_name1','gene_name2','type',];
 // 0:ID, 1:chr1, 2:break1, 3:chr2, 4:break2, 5:is_outer, 6:group_id, 7:tooltip_data

@@ -17,7 +17,7 @@ style_qc = {
 // style of genome-wide bar plot
 style_sv_bar = {
     // title's text options
-    title_y: "Mutations with CA breakp.",
+    title_y: "Breakpoint freq.",
     title_y_font_size: "12px",
 
     title_x: "Chromosome",
