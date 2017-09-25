@@ -1,9 +1,6 @@
-
-# mutation
-paplot mutation mutation_minimal/data.csv  ./demo mutation_minimal  --ellipsis minimal  --config_file ./mutation_minimal/paplot.cfg
-paplot mutation mutation_option/data.csv   ./demo mutation_option   --ellipsis option   --config_file ./mutation_option/paplot.cfg
-paplot mutation mutation_subplot/data.csv  ./demo mutation_subplot  --ellipsis subplot  --config_file ./mutation_subplot/paplot.cfg
-paplot mutation mutation_noheader/data.csv ./demo mutation_noheader --ellipsis noheader --config_file ./mutation_noheader/paplot.cfg
+#!/bin/bash
+#
+set -xv
 
 # qc
 paplot qc qc_minimal/data.csv    ./demo qc_minimal    --ellipsis minimal    --config_file ./qc_minimal/paplot.cfg
@@ -17,6 +14,12 @@ paplot ca ca_minimal/data.csv  ./demo ca_minimal  --ellipsis minimal  --config_f
 paplot ca ca_group/data.csv    ./demo ca_group    --ellipsis group   --config_file ./ca_group/paplot.cfg
 paplot ca ca_option/data.csv   ./demo ca_option   --ellipsis option   --config_file ./ca_option/paplot.cfg
 paplot ca ca_noheader/data.csv ./demo ca_noheader --ellipsis noheader --config_file ./ca_noheader/paplot.cfg
+
+# mutation
+paplot mutation mutation_minimal/data.csv  ./demo mutation_minimal  --ellipsis minimal  --config_file ./mutation_minimal/paplot.cfg
+paplot mutation mutation_option/data.csv   ./demo mutation_option   --ellipsis option   --config_file ./mutation_option/paplot.cfg
+paplot mutation mutation_subplot/data.csv  ./demo mutation_subplot  --ellipsis subplot  --config_file ./paplot_mutation_subplot.cfg
+paplot mutation mutation_noheader/data.csv ./demo mutation_noheader --ellipsis noheader --config_file ./mutation_noheader/paplot.cfg
 
 # signature
 paplot signature signature_minimal/data.json ./demo signature_minimal --ellipsis signature_minimal --config_file ./signature_minimal/paplot.cfg

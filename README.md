@@ -1,12 +1,12 @@
 # paplot
 
-Welcome to Post Analysis PLOT (PAPLOT).
+Welcome to Post Analysis PLOT (paplot).
 
-Paplot creates interactive graphs from text data of genome analysis.
+paplot creates interactive graphs from text data of genome analysis.
 
 ## 1. Demo
 
-Output example by PAPLOT.
+Output example by paplot.
 
 http://genomon-project.github.io/paplot/
 
@@ -56,20 +56,20 @@ For example, (using sample data)
 ```
 cd {paplot install directory}
 
-# create bar graphs of qc
-paplot qc "example/qc/SAMPLE*" ./demo demo --config_file ./example/example.cfg
+ # QC Report
+paplot qc example/qc_brush/data.csv ./tmp demo
 
-# create bundle graphs of Structural Variation (SV)
-paplot ca "example/sv/SAMPLE*" ./demo demo --config_file ./example/example.cfg
+ # Chromosomal Aberration Report
+paplot ca example/ca_option/data.csv ./tmp demo
 
-# create sample-mutation plot (Mutation Matrix)
-paplot mutation example/mutation/sample_merge.csv ./demo demo --config_file ./example/example.cfg
+ # Mutation Matrix Report
+paplot mutation example/mutation_option/data.csv ./tmp demo
 
-# create signature plot
-paplot signature "example/signature/Nik_Zainal_2012.full.*.json" ./demo demo --config_file ./example/example.cfg
+ # Mutational Signature Report 
+paplot signature "example/signature_stack/data*.json" ./tmp demo
 
-# create pmsignature plot (see https://github.com/friend1ws/pmsignature)
-paplot pmsignature "example/pmsignature/Nik_Zainal_2012.ind.*.json" ./demo demo --config_file ./example/example.cfg
+ # pmsignature Report (see https://github.com/friend1ws/pmsignature)
+paplot pmsignature "example/pmsignature_stack/data*.json" ./tmp demo
 ```
 
 ## 6. Description 
@@ -83,18 +83,19 @@ positional arguments:
   {conf,index,qc,ca,mutation,signature,pmsignature}
     conf                view config file
     index               re-create index file
-    qc                  plot Quarity Control graphs
-    ca                  plot Chromosomal Aberration graphs
-    mutation            plot mutation-matrix graph
-    signature           plot signature graphs
-    pmsignature         plot pmsignature graphs
+    qc                  plot QC Report
+    ca                  plot Chromosomal Aberration Report
+    mutation            plot Mutation Matrix Report
+    signature           plot Mutational Signature Report
+    pmsignature         plot pmsignature Report
 
 optional arguments:
   -h, --help            show this help message and exit
   --version             show program's version number and exit
+
 ```
 
-### 6.1 QC
+### 6.1 QC Report
 
 ```
 $ paplot qc -h
@@ -118,7 +119,7 @@ optional arguments:
   --remarks REMARKS     optional text
 ```
 
-### 6.2 CA
+### 6.2 Chromosomal Aberration Report
 
 ```
 $ paplot ca -h
@@ -142,7 +143,7 @@ optional arguments:
   --remarks REMARKS     optional text
 ```
 
-### 6.3 mutation-matrix
+### 6.3 Mutation Matrix Report
 
 ```
 $ paplot mutation -h
@@ -166,7 +167,7 @@ optional arguments:
   --remarks REMARKS     optional text
 ```
 
-### 6.4 signature
+### 6.4 Mutational Signature Report
 
 ```
 $ paplot signature -h
@@ -190,7 +191,7 @@ optional arguments:
   --remarks REMARKS     optional text
 ```
 
-### 6.5 pmsignature
+### 6.5 pmsignature Report
 
 About pmsignaute?, see https://github.com/friend1ws/pmsignature)
 

@@ -418,7 +418,7 @@ def convert_tojs(input_file, output_file, positions, config):
         
     else:
         groups = ["outer", "inner"]
-        labels = ["Inter Chromosome", "Intra Chromosome"]
+        labels = ["Inter-chromosome", "Intra-chromosome"]
         colors_n = ["#9E4A98", "#51BF69"]
     
     conbined = []

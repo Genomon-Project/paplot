@@ -6,7 +6,7 @@ Created on Wed Dec 02 17:43:52 2015
 
 @author: okada
 
-$Id: paplot 204 2017-08-02 08:23:55Z aokada $
+$Id: paplot 212 2017-09-25 03:06:17Z aokada $
 """
 
 def main():
@@ -33,7 +33,7 @@ def main():
     index_parser.set_defaults(func = paplot.run.index_main)
     ##########
     # qc 
-    qc_parser = subparsers.add_parser("qc", help = "plot Quarity Control graphs")
+    qc_parser = subparsers.add_parser("qc", help = "plot QC Report")
     qc_parser.add_argument("input", help = "input files path", type = str)
     qc_parser.add_argument("output_dir", help = "output file path", type = str)
     qc_parser.add_argument("project_name", help = "project name", type = str)
@@ -45,7 +45,7 @@ def main():
     qc_parser.set_defaults(func = paplot.run.qc_main)
     ##########
     # ca 
-    ca_parser = subparsers.add_parser("ca", help = "plot Chromosomal Aberration graphs")
+    ca_parser = subparsers.add_parser("ca", help = "plot Chromosomal Aberration Report")
     ca_parser.add_argument("input", help = "input files path", type = str)
     ca_parser.add_argument("output_dir", help = "output file path", type = str)
     ca_parser.add_argument("project_name", help = "project name", type = str)
@@ -57,7 +57,7 @@ def main():
     ca_parser.set_defaults(func = paplot.run.ca_main)
     ##########
     # mutation 
-    mutation_parser = subparsers.add_parser("mutation", help = "plot mutation-matrix graph")
+    mutation_parser = subparsers.add_parser("mutation", help = "plot Mutation Matrix Report")
     mutation_parser.add_argument("input", help = "input files path", type = str)
     mutation_parser.add_argument("output_dir", help = "output file path", type = str)
     mutation_parser.add_argument("project_name", help = "project name", type = str)
@@ -69,7 +69,7 @@ def main():
     mutation_parser.set_defaults(func = paplot.run.mutation_main)
     ##########
     # signature 
-    signature_parser = subparsers.add_parser("signature", help = "plot signature graphs")
+    signature_parser = subparsers.add_parser("signature", help = "plot Mutational Signature Report")
     signature_parser.add_argument("input", help = "input files path", type = str)
     signature_parser.add_argument("output_dir", help = "output file path", type = str)
     signature_parser.add_argument("project_name", help = "project name", type = str)
@@ -81,7 +81,7 @@ def main():
     signature_parser.set_defaults(func = paplot.run.signature_main)
     ##########
     # pmsignature 
-    pmsignature_parser = subparsers.add_parser("pmsignature", help = "plot pmsignature graphs")
+    pmsignature_parser = subparsers.add_parser("pmsignature", help = "plot pmsignature Report")
     pmsignature_parser.add_argument("input", help = "input files path", type = str)
     pmsignature_parser.add_argument("output_dir", help = "output file path", type = str)
     pmsignature_parser.add_argument("project_name", help = "project name", type = str)
