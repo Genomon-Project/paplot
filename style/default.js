@@ -23,7 +23,7 @@ style_sv_bar = {
     title_x: "Chromosome",
     title_x_font_size: "14px",
     
-    legend_title: "Genome-wide CAs identify",
+    legend_title: "Distribution for breakpoints of CAs",
     legend_title_font_size: "16px",
     legend_text_font_size: "12px",
     
