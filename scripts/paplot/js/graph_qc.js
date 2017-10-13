@@ -35,7 +35,7 @@ window.addEventListener('resize', function() {
 
 function svg_resize(item_num) {
     
-    var margin_left = 200, margin_right = 80, padding_left = 80, padding_right = 100;
+    var margin_left = 200, margin_right = 80, padding_left = 80, padding_right = 150;
     var bar_min1 = 1, bar_min2 = 6, bar_max = 50;
     
     var w = window.innerWidth - margin_left - margin_right;
