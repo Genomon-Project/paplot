@@ -1,0 +1,12 @@
+language: python
+python:
+  - "2.7"
+
+script:
+  - python setup.py build install
+
+notifications:
+  emails:
+    - aiokada@hgc.jp
+  on_success: change
+  on_failure: always

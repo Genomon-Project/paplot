@@ -1,3 +1,9 @@
+[![Build Status](https://travis-ci.org/Genomon-Project/paplot.svg?branch=master)](https://travis-ci.org/Genomon-Project/paplot)
+[![License](https://img.shields.io/badge/license-MIT-red.svg?style=flat)](https://opensource.org/licenses/MIT)
+[![Documentation](https://img.shields.io/badge/docs-latest-blue.svg?style=flat)](http://paplot-doc.readthedocs.io)
+<!-- [![PyPI version](https://badge.fury.io/py/xxx.svg)](http://badge.fury.io/py/xxx)-->
+<!-- [![Code Health](https://landscape.io/github/Genomon-Project/paplot/master/landscape.svg?style=flat)](https://landscape.io/github/Genomon-Project/paplot/master) -->
+
 # paplot
 
 Welcome to Post Analysis PLOT (paplot).
