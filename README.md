@@ -1,7 +1,9 @@
 [![Build Status](https://travis-ci.org/Genomon-Project/paplot.svg?branch=master)](https://travis-ci.org/Genomon-Project/paplot)
 [![Quality Gate](https://sonarcloud.io/api/badges/gate?key=paplot)](https://sonarcloud.io/dashboard?id=paplot)
 [![PyPI version](https://badge.fury.io/py/paplot.svg)](http://badge.fury.io/py/paplot)
-[![License](https://img.shields.io/badge/license-MIT-red.svg?style=flat)](https://opensource.org/licenses/MIT)
+[![Python](https://img.shields.io/badge/python-2.7-blue.svg)](https://img.shields.io/badge/python-2.7-blue.svg)
+[![Python](https://img.shields.io/badge/python-3.x-blue.svg)](https://img.shields.io/badge/python-3.x-blue.svg)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://opensource.org/licenses/MIT)
 [![Documentation](https://img.shields.io/badge/docs-latest-blue.svg?style=flat)](http://paplot-doc.readthedocs.io)
 
 
