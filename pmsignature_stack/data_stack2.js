@@ -22,7 +22,6 @@ msig_data.dataset_strand = [[0.514,0.485],];
 msig_data.mutations = [[0,0,0.090000],[0,1,0.909000],[1,0,0.170000],[1,1,0.829000],[2,0,0.159000],[2,1,0.840000],[3,0,0.163000],[3,1,0.836000],[4,0,0.083000],[4,1,0.916000],[5,0,0.385000],[5,1,0.614000],[6,0,0.048000],[6,1,0.951000],[7,0,0.079000],[7,1,0.920000],[8,0,0.319000],[8,1,0.680000],[9,0,0.172000],[9,1,0.827000],[10,0,0.274000],[10,1,0.725000],[11,0,0.121000],[11,1,0.878000],[12,0,0.231000],[12,1,0.768000],[13,0,0.050000],[13,1,0.949000],[14,0,0.154000],[14,1,0.845000],[15,0,0.933000],[15,1,0.066000],[16,0,0.214000],[16,1,0.785000],[17,0,0.224000],[17,1,0.775000],[18,0,0.182000],[18,1,0.817000],[19,0,0.730000],[19,1,0.269000],[20,0,0.112000],[20,1,0.887000],];
 msig_data.mutation_count = [796,2599,2340,1877,4146,2633,3679,1112,1029,754,2283,4154,4284,4093,3415,33129,1714,671,1888,3343,1047,];
 msig_data.Ids = ['PD3851a','PD3890a','PD3904a','PD3905a','PD3945a','PD4005a','PD4006a','PD4085a','PD4086a','PD4088a','PD4103a','PD4107a','PD4109a','PD4115a','PD4116a','PD4120a','PD4192a','PD4194a','PD4198a','PD4199a','PD4248a',];
-
 msig_data.esc_Ids = [];
 for (var i=0; i < msig_data.Ids.length; i++) {
     msig_data.esc_Ids[i] = 'Key' + i;
@@ -113,9 +112,9 @@ msig_data.get_bars_data = function (rate) {
     var tooltips = {};
     var sum_par_id = [];
     
-    for (var i=0; i < msig_data.Ids.length; i++) {
-        tooltips[msig_data.esc_Ids[i]] = [];
-        sum_par_id[i] = 0;
+    for (var i1=0; i1 < msig_data.Ids.length; i1++) {
+        tooltips[msig_data.esc_Ids[i1]] = [];
+        sum_par_id[i1] = 0;
     }
     
     // par func
@@ -125,10 +124,10 @@ msig_data.get_bars_data = function (rate) {
         keys[f] = [];
 
         // par ID
-        for (var i=0; i < msig_data.Ids.length; i++) {
+        for (var i2=0; i2 < msig_data.Ids.length; i2++) {
             
             var data_filt = msig_data.mutations.filter(function(item, index){
-                if ((item[0] == i) && (item[1] == f)) return true;
+                if ((item[0] == i2) && (item[1] == f)) return true;
             });
             
             //var sum = data_filt.length;
@@ -139,40 +138,41 @@ msig_data.get_bars_data = function (rate) {
             
             var mutation_count = 1;
             if (rate == false) {
-                if (msig_data.mutation_count.length > 0) mutation_count = msig_data.mutation_count[i];
+                if (msig_data.mutation_count.length > 0) mutation_count = msig_data.mutation_count[i2];
             }
             
             if (sum > 0) {
                 sum = sum*mutation_count;
                 
                 data[f].push(sum);
-                keys[f].push(msig_data.esc_Ids[i]);
+                keys[f].push(msig_data.esc_Ids[i2]);
                 
-                var obj = {
+                var obj2 = {
                     '#sum_mutaion_all': msig_data.mutations.length,
                     '#sum_item_value': sum,
-                    'id': msig_data.Ids[i],
+                    'id': msig_data.Ids[i2],
                     'sig': msig_data.signatures[f],
                 };
-                tooltips[msig_data.esc_Ids[i]].push(tooltip_text(msig_data.tooltip_format['mutation_partial'], obj));
-                sum_par_id[i] += sum;
+                tooltips[msig_data.esc_Ids[i2]].push(tooltip_text(msig_data.tooltip_format['mutation_partial'], obj2));
+                sum_par_id[i2] += sum;
             }
         }
     }
-    for (var i=0; i < msig_data.Ids.length; i++) {
-        var obj = {
+    for (var i3=0; i3 < msig_data.Ids.length; i3++) {
+        var obj3 = {
             '#sum_mutaion_all': msig_data.mutations.length,
-            '#sum_item_value': sum_par_id[i],
-            'id': msig_data.Ids[i],
+            '#sum_item_value': sum_par_id[i3],
+            'id': msig_data.Ids[i3],
         };
         
-        title = tooltip_text(msig_data.tooltip_format['mutation_title'], obj);
+        var title = tooltip_text(msig_data.tooltip_format['mutation_title'], obj3);
         for (var t = 0; t < title.length; t++) {
-            tooltips[msig_data.esc_Ids[i]].splice(t, 0, title[t]);
+            tooltips[msig_data.esc_Ids[i3]].splice(t, 0, title[t]);
         }
     }
     
     return {data: data, key: keys, tooltip: tooltips};
 };
+
 })();
 Object.freeze(msig_data);

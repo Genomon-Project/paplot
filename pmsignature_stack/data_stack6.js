@@ -22,7 +22,6 @@ msig_data.dataset_strand = [[0.445,0.554],[0.559,0.44],[0.495,0.504],[0.493,0.50
 msig_data.mutations = [[0,0,0.248000],[0,1,0.002000],[0,2,0.229000],[0,3,0.005000],[0,4,0.054000],[0,5,0.459000],[1,0,0.244000],[1,1,0.056000],[1,2,0.060000],[1,3,0.052000],[1,4,0.035000],[1,5,0.551000],[2,0,0.320000],[2,1,0.042000],[2,2,0.076000],[2,3,0.020000],[2,4,0.064000],[2,5,0.475000],[3,0,0.236000],[3,1,0.052000],[3,2,0.073000],[3,3,0.047000],[3,4,0.045000],[3,5,0.544000],[4,0,0.335000],[4,1,0.026000],[4,2,0.061000],[4,3,0.015000],[4,4,0.019000],[4,5,0.541000],[5,0,0.205000],[5,1,0.103000],[5,2,0.074000],[5,3,0.118000],[5,4,0.125000],[5,5,0.373000],[6,0,0.324000],[6,1,0.023000],[6,2,0.061000],[6,3,0.013000],[6,4,0.000000],[6,5,0.577000],[7,0,0.365000],[7,1,0.020000],[7,2,0.207000],[7,3,0.000000],[7,4,0.032000],[7,5,0.373000],[8,0,0.218000],[8,1,0.066000],[8,2,0.115000],[8,3,0.099000],[8,4,0.117000],[8,5,0.383000],[9,0,0.341000],[9,1,0.030000],[9,2,0.254000],[9,3,0.026000],[9,4,0.055000],[9,5,0.293000],[10,0,0.344000],[10,1,0.047000],[10,2,0.212000],[10,3,0.031000],[10,4,0.128000],[10,5,0.234000],[11,0,0.308000],[11,1,0.025000],[11,2,0.069000],[11,3,0.005000],[11,4,0.061000],[11,5,0.529000],[12,0,0.332000],[12,1,0.067000],[12,2,0.153000],[12,3,0.061000],[12,4,0.052000],[12,5,0.331000],[13,0,0.290000],[13,1,0.021000],[13,2,0.075000],[13,3,0.005000],[13,4,0.006000],[13,5,0.599000],[14,0,0.274000],[14,1,0.040000],[14,2,0.056000],[14,3,0.046000],[14,4,0.043000],[14,5,0.538000],[15,0,0.016000],[15,1,0.171000],[15,2,0.019000],[15,3,0.255000],[15,4,0.491000],[15,5,0.046000],[16,0,0.088000],[16,1,0.058000],[16,2,0.140000],[16,3,0.066000],[16,4,0.068000],[16,5,0.577000],[17,0,0.219000],[17,1,0.039000],[17,2,0.234000],[17,3,0.067000],[17,4,0.092000],[17,5,0.345000],[18,0,0.309000],[18,1,0.019000],[18,2,0.162000],[18,3,0.019000],[18,4,0.113000],[18,5,0.375000],[19,0,0.080000],[19,1,0.124000],[19,2,0.067000],[19,3,0.188000],[19,4,0.387000],[19,5,0.151000],[20,0,0.254000],[20,1,0.016000],[20,2,0.144000],[20,3,0.017000],[20,4,0.053000],[20,5,0.515000],];
 msig_data.mutation_count = [796,2599,2340,1877,4146,2633,3679,1112,1029,754,2283,4154,4284,4093,3415,33129,1714,671,1888,3343,1047,];
 msig_data.Ids = ['PD3851a','PD3890a','PD3904a','PD3905a','PD3945a','PD4005a','PD4006a','PD4085a','PD4086a','PD4088a','PD4103a','PD4107a','PD4109a','PD4115a','PD4116a','PD4120a','PD4192a','PD4194a','PD4198a','PD4199a','PD4248a',];
-
 msig_data.esc_Ids = [];
 for (var i=0; i < msig_data.Ids.length; i++) {
     msig_data.esc_Ids[i] = 'Key' + i;
@@ -113,9 +112,9 @@ msig_data.get_bars_data = function (rate) {
     var tooltips = {};
     var sum_par_id = [];
     
-    for (var i=0; i < msig_data.Ids.length; i++) {
-        tooltips[msig_data.esc_Ids[i]] = [];
-        sum_par_id[i] = 0;
+    for (var i1=0; i1 < msig_data.Ids.length; i1++) {
+        tooltips[msig_data.esc_Ids[i1]] = [];
+        sum_par_id[i1] = 0;
     }
     
     // par func
@@ -125,10 +124,10 @@ msig_data.get_bars_data = function (rate) {
         keys[f] = [];
 
         // par ID
-        for (var i=0; i < msig_data.Ids.length; i++) {
+        for (var i2=0; i2 < msig_data.Ids.length; i2++) {
             
             var data_filt = msig_data.mutations.filter(function(item, index){
-                if ((item[0] == i) && (item[1] == f)) return true;
+                if ((item[0] == i2) && (item[1] == f)) return true;
             });
             
             //var sum = data_filt.length;
@@ -139,40 +138,41 @@ msig_data.get_bars_data = function (rate) {
             
             var mutation_count = 1;
             if (rate == false) {
-                if (msig_data.mutation_count.length > 0) mutation_count = msig_data.mutation_count[i];
+                if (msig_data.mutation_count.length > 0) mutation_count = msig_data.mutation_count[i2];
             }
             
             if (sum > 0) {
                 sum = sum*mutation_count;
                 
                 data[f].push(sum);
-                keys[f].push(msig_data.esc_Ids[i]);
+                keys[f].push(msig_data.esc_Ids[i2]);
                 
-                var obj = {
+                var obj2 = {
                     '#sum_mutaion_all': msig_data.mutations.length,
                     '#sum_item_value': sum,
-                    'id': msig_data.Ids[i],
+                    'id': msig_data.Ids[i2],
                     'sig': msig_data.signatures[f],
                 };
-                tooltips[msig_data.esc_Ids[i]].push(tooltip_text(msig_data.tooltip_format['mutation_partial'], obj));
-                sum_par_id[i] += sum;
+                tooltips[msig_data.esc_Ids[i2]].push(tooltip_text(msig_data.tooltip_format['mutation_partial'], obj2));
+                sum_par_id[i2] += sum;
             }
         }
     }
-    for (var i=0; i < msig_data.Ids.length; i++) {
-        var obj = {
+    for (var i3=0; i3 < msig_data.Ids.length; i3++) {
+        var obj3 = {
             '#sum_mutaion_all': msig_data.mutations.length,
-            '#sum_item_value': sum_par_id[i],
-            'id': msig_data.Ids[i],
+            '#sum_item_value': sum_par_id[i3],
+            'id': msig_data.Ids[i3],
         };
         
-        title = tooltip_text(msig_data.tooltip_format['mutation_title'], obj);
+        var title = tooltip_text(msig_data.tooltip_format['mutation_title'], obj3);
         for (var t = 0; t < title.length; t++) {
-            tooltips[msig_data.esc_Ids[i]].splice(t, 0, title[t]);
+            tooltips[msig_data.esc_Ids[i3]].splice(t, 0, title[t]);
         }
     }
     
     return {data: data, key: keys, tooltip: tooltips};
 };
+
 })();
 Object.freeze(msig_data);

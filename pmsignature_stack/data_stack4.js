@@ -22,7 +22,6 @@ msig_data.dataset_strand = [[0.513,0.486],[0.46,0.539],[0.518,0.481],];
 msig_data.mutations = [[0,0,0.008000],[0,1,0.535000],[0,2,0.046000],[0,3,0.409000],[1,0,0.108000],[1,1,0.248000],[1,2,0.035000],[1,3,0.607000],[2,0,0.062000],[2,1,0.365000],[2,2,0.062000],[2,3,0.509000],[3,0,0.095000],[3,1,0.264000],[3,2,0.049000],[3,3,0.590000],[4,0,0.044000],[4,1,0.313000],[4,2,0.016000],[4,3,0.626000],[5,0,0.211000],[5,1,0.245000],[5,2,0.138000],[5,3,0.404000],[6,0,0.039000],[6,1,0.306000],[6,2,0.000000],[6,3,0.654000],[7,0,0.016000],[7,1,0.581000],[7,2,0.023000],[7,3,0.378000],[8,0,0.160000],[8,1,0.323000],[8,2,0.122000],[8,3,0.393000],[9,0,0.053000],[9,1,0.621000],[9,2,0.048000],[9,3,0.276000],[10,0,0.074000],[10,1,0.568000],[10,2,0.120000],[10,3,0.236000],[11,0,0.025000],[11,1,0.348000],[11,2,0.056000],[11,3,0.568000],[12,0,0.125000],[12,1,0.470000],[12,2,0.053000],[12,3,0.351000],[13,0,0.027000],[13,1,0.302000],[13,2,0.003000],[13,3,0.667000],[14,0,0.084000],[14,1,0.259000],[14,2,0.045000],[14,3,0.611000],[15,0,0.394000],[15,1,0.029000],[15,2,0.529000],[15,3,0.047000],[16,0,0.114000],[16,1,0.263000],[16,2,0.073000],[16,3,0.549000],[17,0,0.102000],[17,1,0.487000],[17,2,0.091000],[17,3,0.317000],[18,0,0.038000],[18,1,0.438000],[18,2,0.109000],[18,3,0.413000],[19,0,0.292000],[19,1,0.160000],[19,2,0.410000],[19,3,0.136000],[20,0,0.033000],[20,1,0.420000],[20,2,0.045000],[20,3,0.499000],];
 msig_data.mutation_count = [796,2599,2340,1877,4146,2633,3679,1112,1029,754,2283,4154,4284,4093,3415,33129,1714,671,1888,3343,1047,];
 msig_data.Ids = ['PD3851a','PD3890a','PD3904a','PD3905a','PD3945a','PD4005a','PD4006a','PD4085a','PD4086a','PD4088a','PD4103a','PD4107a','PD4109a','PD4115a','PD4116a','PD4120a','PD4192a','PD4194a','PD4198a','PD4199a','PD4248a',];
-
 msig_data.esc_Ids = [];
 for (var i=0; i < msig_data.Ids.length; i++) {
     msig_data.esc_Ids[i] = 'Key' + i;
@@ -113,9 +112,9 @@ msig_data.get_bars_data = function (rate) {
     var tooltips = {};
     var sum_par_id = [];
     
-    for (var i=0; i < msig_data.Ids.length; i++) {
-        tooltips[msig_data.esc_Ids[i]] = [];
-        sum_par_id[i] = 0;
+    for (var i1=0; i1 < msig_data.Ids.length; i1++) {
+        tooltips[msig_data.esc_Ids[i1]] = [];
+        sum_par_id[i1] = 0;
     }
     
     // par func
@@ -125,10 +124,10 @@ msig_data.get_bars_data = function (rate) {
         keys[f] = [];
 
         // par ID
-        for (var i=0; i < msig_data.Ids.length; i++) {
+        for (var i2=0; i2 < msig_data.Ids.length; i2++) {
             
             var data_filt = msig_data.mutations.filter(function(item, index){
-                if ((item[0] == i) && (item[1] == f)) return true;
+                if ((item[0] == i2) && (item[1] == f)) return true;
             });
             
             //var sum = data_filt.length;
@@ -139,40 +138,41 @@ msig_data.get_bars_data = function (rate) {
             
             var mutation_count = 1;
             if (rate == false) {
-                if (msig_data.mutation_count.length > 0) mutation_count = msig_data.mutation_count[i];
+                if (msig_data.mutation_count.length > 0) mutation_count = msig_data.mutation_count[i2];
             }
             
             if (sum > 0) {
                 sum = sum*mutation_count;
                 
                 data[f].push(sum);
-                keys[f].push(msig_data.esc_Ids[i]);
+                keys[f].push(msig_data.esc_Ids[i2]);
                 
-                var obj = {
+                var obj2 = {
                     '#sum_mutaion_all': msig_data.mutations.length,
                     '#sum_item_value': sum,
-                    'id': msig_data.Ids[i],
+                    'id': msig_data.Ids[i2],
                     'sig': msig_data.signatures[f],
                 };
-                tooltips[msig_data.esc_Ids[i]].push(tooltip_text(msig_data.tooltip_format['mutation_partial'], obj));
-                sum_par_id[i] += sum;
+                tooltips[msig_data.esc_Ids[i2]].push(tooltip_text(msig_data.tooltip_format['mutation_partial'], obj2));
+                sum_par_id[i2] += sum;
             }
         }
     }
-    for (var i=0; i < msig_data.Ids.length; i++) {
-        var obj = {
+    for (var i3=0; i3 < msig_data.Ids.length; i3++) {
+        var obj3 = {
             '#sum_mutaion_all': msig_data.mutations.length,
-            '#sum_item_value': sum_par_id[i],
-            'id': msig_data.Ids[i],
+            '#sum_item_value': sum_par_id[i3],
+            'id': msig_data.Ids[i3],
         };
         
-        title = tooltip_text(msig_data.tooltip_format['mutation_title'], obj);
+        var title = tooltip_text(msig_data.tooltip_format['mutation_title'], obj3);
         for (var t = 0; t < title.length; t++) {
-            tooltips[msig_data.esc_Ids[i]].splice(t, 0, title[t]);
+            tooltips[msig_data.esc_Ids[i3]].splice(t, 0, title[t]);
         }
     }
     
     return {data: data, key: keys, tooltip: tooltips};
 };
+
 })();
 Object.freeze(msig_data);

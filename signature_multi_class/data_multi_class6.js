@@ -19,7 +19,6 @@ sig_data.substitution = [{name: 'C > A', color: '#1BBDEB', route: ['ApCpA','ApCp
 sig_data.mutations = [];
 sig_data.mutation_count = [];
 sig_data.Ids = [];
-
 sig_data.esc_Ids = [];
 for (var i=0; i < sig_data.Ids.length; i++) {
     sig_data.esc_Ids[i] = 'Key' + i;
@@ -46,7 +45,7 @@ sig_data.get_data_par_signature = function (signature_id) {
             'sig': sig_data.substitution[i].name,
         };
         tooltips[i] = [];
-        segment_index = -1;
+        var segment_index = -1;
         for (var j=0; j < sig_data.dataset_sig[signature_id][i].length; j++) {
             if (j%16 == 0) {
                 segment_index += 1;
@@ -61,7 +60,7 @@ sig_data.get_data_par_signature = function (signature_id) {
         
         obj['#sum_group_value'] = sum;
         
-        title = tooltip_text(sig_data.tooltip_format['signature_title'], obj);
+        var title = tooltip_text(sig_data.tooltip_format['signature_title'], obj);
         for (var s = 0; s < tooltips[i].length; s++) {
             for (var t = 0; t < title.length; t++) {
                 tooltips[i][s].splice(t, 0, title[t]);
@@ -78,9 +77,9 @@ sig_data.get_bars_data = function (rate) {
     var keys = [];
     var tooltips = {};
     var sum_par_id = [];
-    for (var i=0; i < sig_data.Ids.length; i++) {
-        tooltips[sig_data.esc_Ids[i]] = [];
-        sum_par_id[i] = 0;
+    for (var i1=0; i1 < sig_data.Ids.length; i1++) {
+        tooltips[sig_data.esc_Ids[i1]] = [];
+        sum_par_id[i1] = 0;
     }
     
     // par func
@@ -90,10 +89,10 @@ sig_data.get_bars_data = function (rate) {
         keys[f] = [];
 
         // par ID
-        for (var i=0; i < sig_data.Ids.length; i++) {
+        for (var i2=0; i2 < sig_data.Ids.length; i2++) {
             
             var data_filt = sig_data.mutations.filter(function(item, index){
-                if ((item[0] == i) && (item[1] == f)) return true;
+                if ((item[0] == i2) && (item[1] == f)) return true;
             });
             
             //var sum = data_filt.length;
@@ -104,40 +103,41 @@ sig_data.get_bars_data = function (rate) {
             
             var mutation_count = 1;
             if (rate == false) {
-                if (sig_data.mutation_count.length > 0) mutation_count = sig_data.mutation_count[i];
+                if (sig_data.mutation_count.length > 0) mutation_count = sig_data.mutation_count[i2];
             }
             
             if (sum > 0) {
                 sum = sum*mutation_count;
             
                 data[f].push(sum);
-                keys[f].push(sig_data.esc_Ids[i]);
+                keys[f].push(sig_data.esc_Ids[i2]);
                 
-                var obj = {
+                var obj2 = {
                     '#sum_mutaion_all': sig_data.mutations.length,
                     '#sum_item_value': sum,
-                    'id': sig_data.Ids[i],
+                    'id': sig_data.Ids[i2],
                     'sig': sig_data.signatures[f],
                 };
-                tooltips[sig_data.esc_Ids[i]].push(tooltip_text(sig_data.tooltip_format["mutation_partial"], obj));
-                sum_par_id[i] += sum;
+                tooltips[sig_data.esc_Ids[i2]].push(tooltip_text(sig_data.tooltip_format["mutation_partial"], obj2));
+                sum_par_id[i2] += sum;
             }
         }
     }
-    for (var i=0; i < sig_data.Ids.length; i++) {
-        var obj = {
+    for (var i3=0; i3 < sig_data.Ids.length; i3++) {
+        var obj3 = {
             '#sum_mutaion_all': sig_data.mutations.length,
-            '#sum_item_value': sum_par_id[i],
-            'id': sig_data.Ids[i],
+            '#sum_item_value': sum_par_id[i3],
+            'id': sig_data.Ids[i3],
         };
         
-        title = tooltip_text(sig_data.tooltip_format["mutation_title"], obj);
+        var title = tooltip_text(sig_data.tooltip_format["mutation_title"], obj3);
         for (var t = 0; t < title.length; t++) {
-            tooltips[sig_data.esc_Ids[i]].splice(t, 0, title[t]);
+            tooltips[sig_data.esc_Ids[i3]].splice(t, 0, title[t]);
         }
     }
     
     return {data: data, key: keys, tooltip: tooltips};
 };
+
 })();
 Object.freeze(sig_data);

@@ -5,8 +5,8 @@ var utils = (function() {
         if (value <= range[0]) return colors[0];
         else if (value >= range[range.length-1]) return colors[range.length-1];
 
-        var pos = 0;
-        for (var i=0; i < (range.length-1); i++) {
+        var pos = 0, i = 0;
+        for (i = 0; i < (range.length-1); i++) {
             
             if ((value >= range[i]) && (value < range[i+1])) {
                 pos = i;
@@ -21,12 +21,12 @@ var utils = (function() {
         
         var ret = "#";
         
-        for (var i=0; i < 3; i++) {
+        for (i = 0; i < 3; i++) {
             
             var c0 = parseInt(color0.slice(2*i+1, 2*i+3), 16);
             var c1 = parseInt(color1.slice(2*i+1, 2*i+3), 16);
             
-            var c = c0 + ((value - v0) * (c1 - c0)) / ((v1 - v0));
+            var c = c0 + ((value - v0) * (c1 - c0)) / (v1 - v0);
             if (c > 255) c = 255;
             if (c < 0) c = 0;
             
@@ -59,7 +59,8 @@ var utils = (function() {
             }
             // case numeric
             if (format[f].type == 'numeric') {
-                try{  replaced = eval(replaced);
+                try{
+                    replaced = eval(replaced);
                 } catch(e) {}
                 if (format[f].ext != null) {
                     if (format[f].ext == ",") {
@@ -150,8 +151,7 @@ var utils = (function() {
 if (String.prototype.format == undefined) {
     String.prototype.format = function(arg)
     {
-        var rep_fn = undefined;
-        rep_fn = function(m, k) {
+        var rep_fn = function(m, k) {
             if (k.indexOf(":") < 0) { return arg[k]; }
             var k_split = k.split(":");
             if (k_split[1] == ",") {
@@ -315,7 +315,7 @@ var downloader = (function() {
             trans_y = height - font_size;
         }
         
-        tagText = '<g transform="translate(' + trans_x + ',' + trans_y + ')">' + styleText + '>' + text + '</text></g>';
+        var tagText = '<g transform="translate(' + trans_x + ',' + trans_y + ')">' + styleText + '>' + text + '</text></g>';
         
         var svgText = '<svg ' + downloader._SVG_HEADER + ' height="' + height + '" width="' + width + '">' + tagText + '</svg>';
         return "\n<g transform='translate(" + tr_x + ", " + tr_y + ")'>\n" + svgText + "\n</g>\n";
@@ -353,8 +353,7 @@ var downloader = (function() {
                 context.drawImage(image, 0, 0);
                 
                 try {
-                    data_url = canvas.toDataURL('image/png');
-                    downloader.download_content(data_url, mode, filename + '.' + mode);
+                    downloader.download_content(canvas.toDataURL('image/png'), mode, filename + '.' + mode);
                 }
                 catch (e) {
                     // canvas.toDataURL = false (IE)
@@ -370,7 +369,7 @@ var downloader = (function() {
         
     downloader.download_content = function(content, type, name) {
         
-        var data_url, bin;
+        var data_url, bin, mimeType;
         
         // image
         if (type == "png") {
@@ -384,7 +383,7 @@ var downloader = (function() {
                 mimeType = "image/svg+xml";
             }
             else if (type == "text") {
-                mimeType == "text/plain";
+                mimeType = "text/plain";
             }
             else {
                 return;
@@ -695,7 +694,8 @@ var legend = (function()
         var items_org = [];
         var colors = [];
         var enables = [];
-        for (var i = 0; i < this.items.length; i++) {
+        var i = 0;
+        for (i = 0; i < this.items.length; i++) {
             if ((mode == "svg") && (this.enables[i] == false)) continue;
             
             items_org.push(this.items[i]);
@@ -712,7 +712,7 @@ var legend = (function()
         
         // duplicate rename from item-list
         var items = [];
-        for (var i = 0; i < items_org.length; i++) {
+        for (i = 0; i < items_org.length; i++) {
             if (items.indexOf(items_org[i]) < 0) {
                 items.push(items_org[i]);
                 continue;
@@ -744,7 +744,7 @@ var legend = (function()
         }
         
         var max_length = 0;
-        for (var i = 0; i < items.length; i++) {
+        for (i = 0; i < items.length; i++) {
             if (items[i].length > max_length) max_length = items[i].length;
         }
         

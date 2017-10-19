@@ -40,7 +40,6 @@ ca_data.links = [["SAMPLE1","13",16019088,"11",62784483,false,0,[['-','+','LS7T1
 ca_data.select_value = [[1,1,1,1,1,1,1,2,2,1,2,1,2,1,1,1,2,1,1,1,1,1,2,1,1,1,1,1,1,2,1,1,2,1,1,1,1,1,2,1,2,1,1,1,4,1,2,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,2,2,1,1,1,2,1,1,1,1,1,1,2,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,2,1,1,1,1,1,1,1,1,1,2,1],[1,1,1,1,1,1,1,1,1,1,1],];
 ca_data.select_key = [[[17,10],[17,11],[19,10],[19,11],[8,20],[22,7],[14,17],[3,34],[22,2],[3,37],[9,4],[9,1],[9,3],[14,19],[17,3],[17,2],[17,6],[19,3],[8,19],[19,1],[7,4],[8,10],[19,9],[8,17],[10,16],[2,0],[3,29],[3,20],[14,4],[14,6],[14,0],[4,34],[7,15],[14,8],[0,38],[0,32],[0,30],[0,31],[21,9],[8,4],[8,0],[21,1],[21,2],[21,5],[21,4],[1,10],[21,6],[10,5],[13,17],[10,0],[12,0],[10,8],[13,11],[0,49],[4,29],[7,8],[2,2],[1,37],[0,47],[7,3],[0,25],[0,27],[13,21],[6,30],[18,4],[18,6],[18,0],[18,3],[18,2],[16,16],[13,14],[13,16],[10,24],[1,34],[11,24],[10,20],[6,21],[6,22],[6,25],[6,24],[6,27],[6,26],[7,27],[4,4],[12,16],[15,6],[7,29],[0,1],[15,13],[16,4],[16,7],[11,16],[1,24],[11,12],[13,3],[6,10],[5,11],[6,19],[23,0],[23,5],[23,6],[15,7],[2,37],[15,5],[15,8],[11,1],[11,8],[6,3],[5,4],[20,1],[1,15],[6,6],[22,28],[22,26],[20,3],[2,23],[2,29],[2,28],[6,1],[18,9],[20,6],[22,13],[5,34],[12,21],[12,20],[9,18],[9,16],[22,12],[9,15],[9,11]],[[20,0],[5,13],[20,8],[0,14],[0,48],[9,25],[5,6],[3,3],[5,0],[6,17],[5,20]],];
 ca_data.select_item = [[[0],[9],[2],[7],[8],[1],[8],[1,7],[1,6],[8],[1,9],[9],[1,3],[1],[6],[0],[6,8],[8],[0],[9],[9],[9],[1,3],[9],[5],[6],[6],[7],[1],[6,7],[2],[1],[5,9],[9],[7],[2],[0],[0],[4,8],[8],[5,9],[5],[4],[2],[2,4,6],[3],[0,3],[7],[5],[6],[1],[8],[9],[1],[8],[1,6],[7],[6],[8],[1],[8],[8],[4],[5],[7],[8],[2],[8],[9],[5],[1],[8],[4],[9],[0],[2],[4],[4],[0],[6],[2],[4,5],[4],[5],[0,1],[1,9],[6],[9],[6],[4],[7],[8],[2],[0],[0],[9],[4],[9],[5],[9],[4,9],[2],[6],[5],[2],[8],[1],[5],[1],[0],[6],[7],[6],[0],[8],[4],[0],[9],[4,7],[4],[4],[2],[5],[7],[1],[4],[5],[8],[4],[1]],[[6],[3],[6],[6],[6],[4],[3],[4],[9],[4],[9]],];
-
 var node_name = function(Chr, index, leveling) {
     if (leveling == null) {
         leveling = false;
@@ -118,7 +117,8 @@ function text_format(format, obj) {
         }
         // case numeric
         if (format[f].type == 'numeric') {
-            try{  replaced = eval(replaced);
+            try{
+                replaced = eval(replaced);
             } catch(e) {}
             if (format[f].ext != null) {
                 if (format[f].ext == ",") {
@@ -136,12 +136,13 @@ function text_format(format, obj) {
 
 var create_bundle_dataset = function (ID, node_size, tooltip) {
 
+    var i = 0;
     var each_dataset = [];
-    for (var i = 0; i< ca_data.group.length; i++) {
+    for (i = 0; i< ca_data.group.length; i++) {
         each_dataset[i] = create_blank_nodes(node_size);
     }
     
-    for (var i = 0; i < ca_data.links.length; i++) {
+    for (i = 0; i < ca_data.links.length; i++) {
         if (ca_data.links[i][0] != ID) {
             continue;
         }
@@ -209,19 +210,20 @@ var key_to_index = function (list, key) {
 
 ca_data.get_select = function () {
     var node_size = ca_data.node_size_select;
+    var i = 0, j= 0;
     
     var key = [];
-    for (var i = 0; i < ca_data.select_key.length; i++) {
+    for (i = 0; i < ca_data.select_key.length; i++) {
         key[i] = [];
-        for (var j = 0; j < ca_data.select_key[i].length; j++) {
+        for (j = 0; j < ca_data.select_key[i].length; j++) {
             key[i][j] = node_name(("0" + ca_data.select_key[i][j][0]).substr(-2), ("0" + ca_data.select_key[i][j][1]).substr(-2), true);
         }
     }
     
     var item = [];
-    for (var i = 0; i < ca_data.select_item.length; i++) {
+    for (i = 0; i < ca_data.select_item.length; i++) {
         item[i] = [];
-        for (var j = 0; j < ca_data.select_item[i].length; j++) {
+        for (j = 0; j < ca_data.select_item[i].length; j++) {
             item[i][j] = [];
             for (var k = 0; k < ca_data.select_item[i][j].length; k++) {
                 item[i][j][k] = ca_data.index_ID[ca_data.select_item[i][j][k]];
@@ -231,9 +233,9 @@ ca_data.get_select = function () {
     
     var all_key = [];
     var c = 0;
-    for (var i = 0; i < ca_data.genome_size.length; i++){
+    for (i = 0; i < ca_data.genome_size.length; i++){
         var item_num = Math.floor(ca_data.genome_size[i].size/node_size) + 1;
-        for (var j = 0; j < item_num; j++){
+        for (j = 0; j < item_num; j++){
             all_key[c] = node_name(ca_data.genome_size[i].chr, j, true);
             c++;
         }
@@ -241,5 +243,6 @@ ca_data.get_select = function () {
     
     return {value:ca_data.select_value, key:key, item:item, all_key:all_key};
 };
+
 })();
 Object.freeze(ca_data);

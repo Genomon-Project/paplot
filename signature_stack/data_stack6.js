@@ -19,7 +19,6 @@ sig_data.substitution = [{name: 'C > A', color: '#1BBDEB', route: ['ApCpA','ApCp
 sig_data.mutations = [[0,0,0.236300],[0,1,0.018000],[0,2,0.342100],[0,3,0.315400],[0,4,0.075200],[0,5,0.012700],[1,0,0.125800],[1,1,0.068300],[1,2,0.000000],[1,3,0.120900],[1,4,0.426900],[1,5,0.257800],[2,0,0.058700],[2,1,0.098600],[2,2,0.246600],[2,3,0.000000],[2,4,0.519500],[2,5,0.076400],[3,0,0.188200],[3,1,0.076500],[3,2,0.035500],[3,3,0.108100],[3,4,0.412900],[3,5,0.178600],[4,0,0.000000],[4,1,0.021500],[4,2,0.030000],[4,3,0.104500],[4,4,0.713400],[4,5,0.130200],[5,0,0.070200],[5,1,0.237300],[5,2,0.151100],[5,3,0.000000],[5,4,0.261500],[5,5,0.279700],[6,0,0.324300],[6,1,0.000000],[6,2,0.055500],[6,3,0.058000],[6,4,0.428500],[6,5,0.133400],[7,0,0.058500],[7,1,0.000000],[7,2,0.297000],[7,3,0.357700],[7,4,0.248800],[7,5,0.037700],[8,0,0.072400],[8,1,0.189800],[8,2,0.083000],[8,3,0.244700],[8,4,0.174600],[8,5,0.235300],[9,0,0.029300],[9,1,0.000000],[9,2,0.702200],[9,3,0.147500],[9,4,0.026000],[9,5,0.094700],[10,0,0.000000],[10,1,0.146400],[10,2,0.451100],[10,3,0.223800],[10,4,0.124200],[10,5,0.054300],[11,0,0.256500],[11,1,0.084900],[11,2,0.171100],[11,3,0.005100],[11,4,0.482200],[11,5,0.000000],[12,0,0.000000],[12,1,0.084900],[12,2,0.226400],[12,3,0.238200],[12,4,0.220200],[12,5,0.230100],[13,0,0.094400],[13,1,0.000000],[13,2,0.093400],[13,3,0.100900],[13,4,0.589600],[13,5,0.121400],[14,0,0.128000],[14,1,0.072500],[14,2,0.000000],[14,3,0.070000],[14,4,0.566300],[14,5,0.163000],[15,0,0.000000],[15,1,0.935100],[15,2,0.043300],[15,3,0.000000],[15,4,0.000000],[15,5,0.021400],[16,0,0.353300],[16,1,0.123800],[16,2,0.000000],[16,3,0.320500],[16,4,0.000000],[16,5,0.202200],[17,0,0.086000],[17,1,0.116800],[17,2,0.337600],[17,3,0.343300],[17,4,0.000000],[17,5,0.116000],[18,0,0.022000],[18,1,0.146300],[18,2,0.000000],[18,3,0.485700],[18,4,0.345800],[18,5,0.000000],[19,0,0.041100],[19,1,0.666100],[19,2,0.212400],[19,3,0.058300],[19,4,0.000000],[19,5,0.021900],[20,0,0.088400],[20,1,0.070900],[20,2,0.009100],[20,3,0.395500],[20,4,0.385200],[20,5,0.050500],];
 sig_data.mutation_count = [4001,7174,5804,5712,14470,8572,9542,6290,3656,2597,5718,12025,11346,11099,8837,71019,5435,2170,5187,7108,3550,];
 sig_data.Ids = ['PD3851a','PD3890a','PD3904a','PD3905a','PD3945a','PD4005a','PD4006a','PD4085a','PD4086a','PD4088a','PD4103a','PD4107a','PD4109a','PD4115a','PD4116a','PD4120a','PD4192a','PD4194a','PD4198a','PD4199a','PD4248a',];
-
 sig_data.esc_Ids = [];
 for (var i=0; i < sig_data.Ids.length; i++) {
     sig_data.esc_Ids[i] = 'Key' + i;
@@ -46,7 +45,7 @@ sig_data.get_data_par_signature = function (signature_id) {
             'sig': sig_data.substitution[i].name,
         };
         tooltips[i] = [];
-        segment_index = -1;
+        var segment_index = -1;
         for (var j=0; j < sig_data.dataset_sig[signature_id][i].length; j++) {
             if (j%16 == 0) {
                 segment_index += 1;
@@ -61,7 +60,7 @@ sig_data.get_data_par_signature = function (signature_id) {
         
         obj['#sum_group_value'] = sum;
         
-        title = tooltip_text(sig_data.tooltip_format['signature_title'], obj);
+        var title = tooltip_text(sig_data.tooltip_format['signature_title'], obj);
         for (var s = 0; s < tooltips[i].length; s++) {
             for (var t = 0; t < title.length; t++) {
                 tooltips[i][s].splice(t, 0, title[t]);
@@ -78,9 +77,9 @@ sig_data.get_bars_data = function (rate) {
     var keys = [];
     var tooltips = {};
     var sum_par_id = [];
-    for (var i=0; i < sig_data.Ids.length; i++) {
-        tooltips[sig_data.esc_Ids[i]] = [];
-        sum_par_id[i] = 0;
+    for (var i1=0; i1 < sig_data.Ids.length; i1++) {
+        tooltips[sig_data.esc_Ids[i1]] = [];
+        sum_par_id[i1] = 0;
     }
     
     // par func
@@ -90,10 +89,10 @@ sig_data.get_bars_data = function (rate) {
         keys[f] = [];
 
         // par ID
-        for (var i=0; i < sig_data.Ids.length; i++) {
+        for (var i2=0; i2 < sig_data.Ids.length; i2++) {
             
             var data_filt = sig_data.mutations.filter(function(item, index){
-                if ((item[0] == i) && (item[1] == f)) return true;
+                if ((item[0] == i2) && (item[1] == f)) return true;
             });
             
             //var sum = data_filt.length;
@@ -104,40 +103,41 @@ sig_data.get_bars_data = function (rate) {
             
             var mutation_count = 1;
             if (rate == false) {
-                if (sig_data.mutation_count.length > 0) mutation_count = sig_data.mutation_count[i];
+                if (sig_data.mutation_count.length > 0) mutation_count = sig_data.mutation_count[i2];
             }
             
             if (sum > 0) {
                 sum = sum*mutation_count;
             
                 data[f].push(sum);
-                keys[f].push(sig_data.esc_Ids[i]);
+                keys[f].push(sig_data.esc_Ids[i2]);
                 
-                var obj = {
+                var obj2 = {
                     '#sum_mutaion_all': sig_data.mutations.length,
                     '#sum_item_value': sum,
-                    'id': sig_data.Ids[i],
+                    'id': sig_data.Ids[i2],
                     'sig': sig_data.signatures[f],
                 };
-                tooltips[sig_data.esc_Ids[i]].push(tooltip_text(sig_data.tooltip_format["mutation_partial"], obj));
-                sum_par_id[i] += sum;
+                tooltips[sig_data.esc_Ids[i2]].push(tooltip_text(sig_data.tooltip_format["mutation_partial"], obj2));
+                sum_par_id[i2] += sum;
             }
         }
     }
-    for (var i=0; i < sig_data.Ids.length; i++) {
-        var obj = {
+    for (var i3=0; i3 < sig_data.Ids.length; i3++) {
+        var obj3 = {
             '#sum_mutaion_all': sig_data.mutations.length,
-            '#sum_item_value': sum_par_id[i],
-            'id': sig_data.Ids[i],
+            '#sum_item_value': sum_par_id[i3],
+            'id': sig_data.Ids[i3],
         };
         
-        title = tooltip_text(sig_data.tooltip_format["mutation_title"], obj);
+        var title = tooltip_text(sig_data.tooltip_format["mutation_title"], obj3);
         for (var t = 0; t < title.length; t++) {
-            tooltips[sig_data.esc_Ids[i]].splice(t, 0, title[t]);
+            tooltips[sig_data.esc_Ids[i3]].splice(t, 0, title[t]);
         }
     }
     
     return {data: data, key: keys, tooltip: tooltips};
 };
+
 })();
 Object.freeze(sig_data);

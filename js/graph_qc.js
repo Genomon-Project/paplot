@@ -35,33 +35,34 @@ window.addEventListener('resize', function() {
 
 function svg_resize(item_num) {
     
-    var margin_left = 200, margin_right = 80, padding_left = 80, padding_right = 100;
+    var margin_left = 200, margin_right = 80, padding_left = 80, padding_right = 150;
     var bar_min1 = 1, bar_min2 = 6, bar_max = 50;
     
     var w = window.innerWidth - margin_left - margin_right;
+    var w_min1 = 0, w_min2 = 0, w_extend = 0;
     
     if (item_num == undefined) {
         item_num = qc_data.Ids.length;
         
-        var w_min1 = item_num * bar_min1 + padding_left;
-        var w_min2 = item_num * bar_min2 + padding_left;
+        w_min1 = item_num * bar_min1 + padding_left;
+        w_min2 = item_num * bar_min2 + padding_left;
         var w_max = item_num * bar_max + padding_left;
 
         // width
         if (w > w_max) w = w_max;
         if (w < w_min1) w = w_min1;
-        var w_extend = w;
+        w_extend = w;
         if (w_extend < w_min2) w_extend = w_min2;
         
         return {width_fix: w, width_extend: w_extend + padding_right};
     }
     
-    var w_min1 = item_num * bar_min1 + padding_left;
-    var w_min2 = item_num * bar_min2 + padding_left;
+    w_min1 = item_num * bar_min1 + padding_left;
+    w_min2 = item_num * bar_min2 + padding_left;
 
     // width
     if (w < w_min1) w = w_min1;
-    var w_extend = w;
+    w_extend = w;
     if (w_extend < w_min2) w_extend = w_min2;
     
     return {width_fix: w, width_extend: w_extend + padding_right};
@@ -102,16 +103,16 @@ function init() {
     update_div();
     
     var tag_data = [];
-    for (var i = 0; i < divs.length; i++) {
-        if (divs[i].chart_id == "chart_brush") {
+    for (var i1 = 0; i1 < divs.length; i1++) {
+        if (divs[i1].chart_id == "chart_brush") {
             continue;
         }
-        tag_data.push(load_tag_data(divs[i].chart_id));
+        tag_data.push(load_tag_data(divs[i1].chart_id));
     }
     
-    for (var i = 0; i < divs.length; i++) {
-        var bar = divs[i].obj;
-        var info = qc_data.get_plot_config(divs[i].chart_id);
+    for (var i2 = 0; i2 < divs.length; i2++) {
+        var bar = divs[i2].obj;
+        var info = qc_data.get_plot_config(divs[i2].chart_id);
         var dataset = qc_data.get_dataset(info.chart_id);
         
         for (var s = 0; s < dataset.data.length; s++) {
@@ -156,7 +157,7 @@ function init() {
         bar.options.grid_y.wide = 80;
         bar.options.grid_y.orient = "left";
         
-        if (divs[i].chart_id == "chart_brush") {
+        if (divs[i2].chart_id == "chart_brush") {
             bar.options.padding_right = 0;
             bar.options.brush.enable = true;
             bar.options.brush.fill = "blue";
@@ -196,26 +197,26 @@ function init() {
         }
         
         bar.draw();
-        downloader.set_event_listner (divs[i].chart_id);
+        downloader.set_event_listner (divs[i2].chart_id);
 
         // legend
-        var legend = legends[i].obj;
+        var legend = legends[i2].obj;
         legend.items =  info.label;
         legend.colors = info.color;
         legend.options.title = info.title;
         legend.layout.shape_sift_left = 70;
         legend.layout.title_font_size = Number(style_qc.legend_title_font_size.replace("px",""));
         legend.layout.text_font_size = Number(style_qc.legend_text_font_size.replace("px",""));
-        legend.svg_id = legends[i].chart_id;
+        legend.svg_id = legends[i2].chart_id;
         legend.draw_svg(true);
-        downloader.set_event_listner (legends[i].chart_id);
+        downloader.set_event_listner (legends[i2].chart_id);
     }
     
     sort("sample_ID", true);
     
-    listbox_items = [["sample_ID", "Sample ID"]];
-    for (var i = 0; i < tag_data.length; i++) {
-        listbox_items.push([tag_data[i].id, tag_data[i].title]);
+    var listbox_items = [["sample_ID", "Sample ID"]];
+    for (var i3 = 0; i3 < tag_data.length; i3++) {
+        listbox_items.push([tag_data[i3].id, tag_data[i3].title]);
     }
 
     d3.select("#sort_list")
@@ -233,13 +234,19 @@ function init() {
 // selection events
 // *********************************************
 function chart_selected(key, on) {
-    for (var i = 1; i< divs.length; i++) {
+    for (var i = 0; i< divs.length; i++) {
+        if (divs[i].chart_id == "chart_brush") {
+            continue;
+        }
         divs[i].obj.bar_select(key, on);
     }
 }
 
 function selection_reset() {
-    for (var i = 1; i< divs.length; i++) {
+    for (var i = 0; i< divs.length; i++) {
+        if (divs[i].chart_id == "chart_brush") {
+            continue;
+        }
         divs[i].obj.reset_select();
     }
 }
@@ -278,7 +285,7 @@ function click_sort() {
 }
 
 function click_reset() {
-    brush_reset("sample_ID");
+    brush_reset();
     sort("sample_ID", true);
     
     d3.select("#sort_list").selectAll("option")[0][0].selected = true;
@@ -372,6 +379,6 @@ function push_export() {
     
     svgText = downloader.add_svgtag(svgText, sift_y, max_width)
 
-    rect = utils.absolute_position("dw_btn");
+    var rect = utils.absolute_position("dw_btn");
     downloader.createMenu ([rect.x + rect.width, rect.y], "btn", "paplot_qc", max_width, sift_y, svgText);
 }

@@ -14,8 +14,7 @@ checker_title:{format:[[{label:'Sample:',type:'fix',keys:[],ext:''},{label:'{id}
 mut_data.subdata = [{name:"sub0",title:"Clinical Gender", type:"fix",item:['M','F',],label:['Male','Female',],colors_n:['#0000ff','#ff0000',],data:[[0,1],[1,1],[2,1],[3,0],[4,0],[5,1],[6,0],[7,0],[8,1],[9,0],[10,1],[11,0],[12,1],[13,0],[14,0],[15,0],[16,1],[17,0],[18,1],[19,1],[20,1],[21,1],[22,0],[23,0],[24,0],[25,0],[26,0],[27,1],[28,1],[29,1],[30,0],[31,0],[32,0],[33,1],[34,0],[35,1],[36,0],[37,1],[38,1],[39,0],[40,0],[41,0],[42,0],[43,1],[44,0],[45,1],[46,0],[47,0],[48,1],[49,1],[50,0],[51,1],[52,1],[53,0],[54,0],[55,0],[56,1],[57,0],[58,0],[59,1],]},
 {name:"sub1",title:"Clinical Age", type:"range",item:['20','40','60',],label:['0-19','20-39','40-59','60over',],colors_n:['#E51721','#0079BA','#019A68','#522886',],data:[[0,30],[1,62],[2,59],[3,66],[4,53],[5,79],[6,64],[7,54],[8,55],[9,39],[10,68],[11,70],[12,66],[13,71],[14,56],[15,22],[16,66],[17,51],[18,76],[19,38],[20,78],[21,11],[22,51],[23,79],[24,58],[25,53],[26,56],[27,67],[28,52],[29,61],[30,17],[31,79],[32,74],[33,72],[34,79],[35,54],[36,27],[37,61],[38,54],[39,21],[40,39],[41,78],[42,40],[43,72],[44,72],[45,45],[46,50],[47,74],[48,24],[49,57],[50,30],[51,62],[52,59],[53,66],[54,53],[55,79],[56,64],[57,54],[58,55],[59,39],]},
 {name:"sub2",title:"Clinical BMI", type:"gradient",item:['16.0','40.0',],label:['Min(15)','Max(40)',],colors_n:['#0000ff','#ff0000',],data:[[0,40],[1,25],[2,34],[3,26],[4,40],[5,27],[6,29],[7,22],[8,35],[9,28],[10,21],[11,20],[12,39],[13,20],[14,32],[15,29],[16,27],[17,20],[18,40],[19,30],[20,20],[21,26],[22,31],[23,28],[24,21],[25,26],[26,16],[27,25],[28,25],[29,22],[30,16],[31,30],[32,35],[33,29],[34,16],[35,28],[36,23],[37,24],[38,20],[39,24],[40,17],[41,21],[42,29],[43,24],[44,35],[45,30],[46,32],[47,21],[48,24],[49,29],[50,40],[51,25],[52,34],[53,26],[54,40],[55,27],[56,29],[57,22],[58,35],[59,28],]},
-];
-mut_data.Ids_keys = utils.create_key_list(mut_data.Ids);
+];mut_data.Ids_keys = utils.create_key_list(mut_data.Ids);
 mut_data.genes_keys = utils.create_key_list(mut_data.genes);
 
 function calc_option(format, pos, sum, value) {
@@ -76,9 +75,9 @@ mut_data.get_dataset_id = function () {
     var keys = [];
     var tooltips = {};
     var sum_par_id = [];
-    for (var i=0; i < mut_data.Ids_keys.length; i++) {
-        tooltips[mut_data.Ids_keys[i]] = [];
-        sum_par_id[i] = 0;
+    for (var i1=0; i1 < mut_data.Ids_keys.length; i1++) {
+        tooltips[mut_data.Ids_keys[i1]] = [];
+        sum_par_id[i1] = 0;
     }
     
     // par func
@@ -88,26 +87,26 @@ mut_data.get_dataset_id = function () {
         keys[f] = [];
 
         // par ID
-        for (var i=0; i < mut_data.Ids_keys.length; i++) {
+        for (var i2=0; i2 < mut_data.Ids_keys.length; i2++) {
             
             var data_filt = mut_data.mutations.filter(function(item, index){
-                if ((item[0] == i) && (item[1] == f)) return true;
+                if ((item[0] == i2) && (item[1] == f)) return true;
             });
             
             var sum = 0;
             for (var d in data_filt) sum += data_filt[d][3];
             if (sum > 0) {
                 data[f].push(sum);
-                keys[f].push(mut_data.Ids_keys[i]);
-                tooltips[mut_data.Ids_keys[i]].push(tooltip_partial(mut_data.tooltip_format.id_partial, [i, f, null], data_filt, false, sum));
-                sum_par_id[i] += sum;
+                keys[f].push(mut_data.Ids_keys[i2]);
+                tooltips[mut_data.Ids_keys[i2]].push(tooltip_partial(mut_data.tooltip_format.id_partial, [i2, f, null], data_filt, false, sum));
+                sum_par_id[i2] += sum;
             }
         }
     }
-    for (var i=0; i < mut_data.Ids_keys.length; i++) {
-        title = tooltip_title(mut_data.tooltip_format.id_title, [i, null, null], sum_par_id[i]);
+    for (var i3=0; i3 < mut_data.Ids_keys.length; i3++) {
+        var title = tooltip_title(mut_data.tooltip_format.id_title, [i3, null, null], sum_par_id[i3]);
         for (var t = 0; t < title.length; t++) {
-            tooltips[mut_data.Ids_keys[i]].splice(t, 0, title[t]);
+            tooltips[mut_data.Ids_keys[i3]].splice(t, 0, title[t]);
         }
     }
     
@@ -123,23 +122,23 @@ mut_data.get_dataset_checker = function (func_flgs, use_genes) {
             tooltips_matrix[i] = {};
         }
         
-        for (var d in mut_data.mutations) {
-            var data = mut_data.mutations[d];
-            if (func_flgs[mut_data.funcs[data[1]]] == false) continue;
-            if (use_genes.indexOf(mut_data.genes_keys[data[2]]) < 0) continue;
+        for (var d1 in mut_data.mutations) {
+            var data_tmp = mut_data.mutations[d1];
+            if (func_flgs[mut_data.funcs[data_tmp[1]]] == false) continue;
+            if (use_genes.indexOf(mut_data.genes_keys[data_tmp[2]]) < 0) continue;
             
-            if (tooltips_matrix[data[0]][mut_data.genes_keys[data[2]]] == null) {
+            if (tooltips_matrix[data_tmp[0]][mut_data.genes_keys[data_tmp[2]]] == null) {
                 var data_filt = mut_data.mutations.filter(function(item, index){
-                    if ((item[0] == data[0]) && (item[2] == data[2])) return true;
+                    if ((item[0] == data_tmp[0]) && (item[2] == data_tmp[2])) return true;
                 });
                 
                 var sum = 0;
-                for (var d in data_filt) sum += data_filt[d][3];
-                tooltips_matrix[data[0]][mut_data.genes_keys[data[2]]] = tooltip_title(mut_data.tooltip_format.checker_title, [data[0], null, data[2]], sum);
+                for (var d2 in data_filt) sum += data_filt[d2][3];
+                tooltips_matrix[data_tmp[0]][mut_data.genes_keys[data_tmp[2]]] = tooltip_title(mut_data.tooltip_format.checker_title, [data_tmp[0], null, data_tmp[2]], sum);
             }
-            var texts = tooltip_partial(mut_data.tooltip_format.checker_partial, [data[0],data[1],data[2]], [data], true, 1);
+            var texts = tooltip_partial(mut_data.tooltip_format.checker_partial, [data_tmp[0],data_tmp[1],data_tmp[2]], [data_tmp], true, 1);
             for (var t in texts) {
-                tooltips_matrix[data[0]][mut_data.genes_keys[data[2]]].push(texts[t]);
+                tooltips_matrix[data_tmp[0]][mut_data.genes_keys[data_tmp[2]]].push(texts[t]);
             }
         }
     }
@@ -155,16 +154,16 @@ mut_data.get_dataset_checker = function (func_flgs, use_genes) {
         
         if (func_flgs[mut_data.funcs[f]] == false) continue;
         
-        var data_filt = mut_data.mutations.filter(function(item, index){
+        var data_filt2 = mut_data.mutations.filter(function(item, index){
             if (item[1] == f) return true;
         });
         
         // par data
-        for (var d in data_filt) {
-            if (use_genes.indexOf(mut_data.genes_keys[data_filt[d][2]]) < 0) continue;
+        for (var d3 in data_filt2) {
+            if (use_genes.indexOf(mut_data.genes_keys[data_filt2[d3][2]]) < 0) continue;
             data[f].push(1);
-            keys[f].push(mut_data.Ids_keys[data_filt[d][0]]);
-            keys2[f].push(mut_data.genes_keys[data_filt[d][2]]);
+            keys[f].push(mut_data.Ids_keys[data_filt2[d3][0]]);
+            keys2[f].push(mut_data.genes_keys[data_filt2[d3][2]]);
         }
     }
     
@@ -173,9 +172,10 @@ mut_data.get_dataset_checker = function (func_flgs, use_genes) {
 
 function extract_gene(func_flgs, gene_th, gene_max, sort_name_y, sort_asc_y) {
 
+    var g = 0
     var gene_nums = [];
     {
-        for (var g=0; g < mut_data.genes_keys.length; g++) {
+        for (g = 0; g < mut_data.genes_keys.length; g++) {
             gene_nums[g] = 0;
         }
         var gene_Ids = [];
@@ -195,7 +195,7 @@ function extract_gene(func_flgs, gene_th, gene_max, sort_name_y, sort_asc_y) {
     // sort
     var gene_obj = [];
     {
-        for (var g in mut_data.genes_keys) {
+        for (g in mut_data.genes_keys) {
             if (gene_nums[g] * 100.0 / mut_data.Ids_keys.length < gene_th) continue;
             if (gene_nums[g] == 0) continue;
 
@@ -227,7 +227,7 @@ function extract_gene(func_flgs, gene_th, gene_max, sort_name_y, sort_asc_y) {
     var gene_nums_ex = [];
     var gene_keys = [];
     var gene_names = [];
-    for (var g in gene_obj) {
+    for (g in gene_obj) {
         if (g >= gene_max) break;
         gene_nums_ex.push(gene_obj[g].num);
         gene_keys.push(mut_data.genes_keys[mut_data.genes.indexOf(gene_obj[g].name)]);
@@ -241,8 +241,9 @@ mut_data.get_dataset_gene = function (func_flgs, gene_th, gene_max, sort_name_y,
     
     var gene_nums = [];
     var genes = [];
+    var g = 0, ex_g = 0, f = 0;
     
-    for (var f=0; f < mut_data.funcs.length; f++) {
+    for (f=0; f < mut_data.funcs.length; f++) {
         gene_nums[f] = [];
         genes[f] = [];
     }
@@ -250,18 +251,18 @@ mut_data.get_dataset_gene = function (func_flgs, gene_th, gene_max, sort_name_y,
 
     var gene_ids = [];
     var tooltips = {};
-    for (var ex_g=0; ex_g < ex_genes.keys.length; ex_g++) {
-        var g = mut_data.genes_keys.indexOf(ex_genes.keys[ex_g]);
+    for (ex_g=0; ex_g < ex_genes.keys.length; ex_g++) {
+        g = mut_data.genes_keys.indexOf(ex_genes.keys[ex_g]);
         gene_ids[ex_g] = [];
         tooltips[ex_genes.keys[ex_g]] = tooltip_title(mut_data.tooltip_format.gene_title, [null, null, g], ex_genes.values[ex_g]);
     }
     
     // par func
-    for (var f=0; f < mut_data.funcs.length; f++) {
+    for (f=0; f < mut_data.funcs.length; f++) {
         if (func_flgs[mut_data.funcs[f]] == false) continue;
         // par gene
-        for (var ex_g=0; ex_g < ex_genes.keys.length; ex_g++) {
-            var g = mut_data.genes_keys.indexOf(ex_genes.keys[ex_g]);
+        for (ex_g=0; ex_g < ex_genes.keys.length; ex_g++) {
+            g = mut_data.genes_keys.indexOf(ex_genes.keys[ex_g]);
             var data_filt = mut_data.mutations.filter(function(item, index){
                 if ((item[2] == g) && (item[1] == f)) return true;
             });
@@ -315,7 +316,7 @@ mut_data.get_id_flg_par_gene = function (name, func_flgs) {
     // par ID
     var idx_g = 0;
     
-    for (var g=0; g < mut_data.genes_keys.length; g++) {
+    for (var g = 0; g < mut_data.genes_keys.length; g++) {
         if (mut_data.genes_keys[g] == name) {
             idx_g = g;
             break;
@@ -344,10 +345,10 @@ mut_data.get_id_flg_par_gene = function (name, func_flgs) {
 };
 
 mut_data.get_sub_data = function (name) {
-    
+    var i = 0;
     var sub = {}
     // par sub
-    for (var i = 0; i < mut_data.subdata.length; i++) {
+    for (i = 0; i < mut_data.subdata.length; i++) {
         if (mut_data.subdata[i].name == name) {
             sub = mut_data.subdata[i];
             break;
@@ -358,10 +359,12 @@ mut_data.get_sub_data = function (name) {
     // par item
     var stack_length = sub.item.length;
     if (sub.type == "range") stack_length = stack_length + 1;
+    
+    var gradient_stack_d = [];
     if (sub.type == "gradient") {
         
         var gradient_stack = [];
-        for (var i=0; i < sub.data.length; i++) {
+        for (i = 0; i < sub.data.length; i++) {
             gradient_stack.push(sub.data[i][1]);
         }
         gradient_stack.sort(function(a,b){
@@ -369,16 +372,16 @@ mut_data.get_sub_data = function (name) {
             if( a > b ) return 1;
             return 0;
         });
-        var gradient_stack_d = gradient_stack.filter(function (x, i, self) {
+        gradient_stack_d = gradient_stack.filter(function (x, i, self) {
             return self.indexOf(x) === i;
         });
         stack_length = gradient_stack_d.length;
     }
     
     var stack = [];
-    tooltips = {};
+    var tooltips = {};
     
-    for (var i=0; i < stack_length; i++) {
+    for (i = 0; i < stack_length; i++) {
         stack[i] = {};
         stack[i].data = [];
         stack[i].keys = [];
@@ -392,15 +395,15 @@ mut_data.get_sub_data = function (name) {
     }
     
     // par data
-    for (var i=0; i < sub.data.length; i++) {
+    for (i = 0; i < sub.data.length; i++) {
         
         var id = mut_data.Ids_keys[sub.data[i][0]];
-        var s = -1;
+        var s = -1, l = 0;
         var val = "";
         
         if (sub.type == "range") {
             val = sub.data[i][1];
-            for (var l=0; l < sub.item.length; l++) {
+            for (l = 0; l < sub.item.length; l++) {
                 if (val < sub.item[l]) {
                     s = l;
                     break;
@@ -412,7 +415,7 @@ mut_data.get_sub_data = function (name) {
         }
         else if (sub.type == "gradient") {
             val = sub.data[i][1];
-            for (var l=0; l < gradient_stack_d.length; l++) {
+            for (l = 0; l < gradient_stack_d.length; l++) {
                 if (val == gradient_stack_d[l]) {
                     s = l;
                     break;
@@ -460,5 +463,4 @@ mut_data.get_sub_values = function (name) {
 };
 
 })();
-
 Object.freeze(mut_data);
