@@ -290,6 +290,3 @@ def load_file(filepath, sept = ",", usecol = None, header = 0, skipfooter = 0, c
     df.title = title
 
     return df
-
-if __name__ == "__main__":
-    pass

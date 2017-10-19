@@ -35,19 +35,19 @@ function push_export() {
     // thumb's size
     var thumb_margin_top, thumb_margin_bottom, thumb_margin_left, thumb_margin_right, thumb_width, thumb_height, thumb_title_height, thumb_title_fontsize;
     
-    for (var i in ca_data.index_ID) {
+    for (var i1 in ca_data.index_ID) {
         
-        if (d3.select("#thumb" + i + "_li").classed("hidden") == true) {
+        if (d3.select("#thumb" + i1 + "_li").classed("hidden") == true) {
             continue;
         }
-        thumb_margin_top = Number(d3.select("#thumb" + i + "_li").style("margin-top").replace("px", ""));
-        thumb_margin_bottom = Number(d3.select("#thumb" + i + "_li").style("margin-bottom").replace("px", ""));
-        thumb_margin_left = Number(d3.select("#thumb" + i + "_li").style("margin-left").replace("px", ""));
-        thumb_margin_right = Number(d3.select("#thumb" + i + "_li").style("margin-right").replace("px", ""));
-        thumb_width = Number(d3.select("#thumb" + i + "_li").style("width").replace("px", ""));
-        thumb_height = Number(d3.select("#thumb" + i + "_li").style("height").replace("px", ""));
+        thumb_margin_top = Number(d3.select("#thumb" + i1 + "_li").style("margin-top").replace("px", ""));
+        thumb_margin_bottom = Number(d3.select("#thumb" + i1 + "_li").style("margin-bottom").replace("px", ""));
+        thumb_margin_left = Number(d3.select("#thumb" + i1 + "_li").style("margin-left").replace("px", ""));
+        thumb_margin_right = Number(d3.select("#thumb" + i1 + "_li").style("margin-right").replace("px", ""));
+        thumb_width = Number(d3.select("#thumb" + i1 + "_li").style("width").replace("px", ""));
+        thumb_height = Number(d3.select("#thumb" + i1 + "_li").style("height").replace("px", ""));
         thumb_title_height = thumb_height - thumb_width;
-        thumb_title_fontsize = Number(d3.select("#thumb" + i + "_li").style("font-size").replace("px", ""));
+        thumb_title_fontsize = Number(d3.select("#thumb" + i1 + "_li").style("font-size").replace("px", ""));
         if (thumb_title_height < thumb_title_fontsize) {
             thumb_title_height = thumb_title_fontsize;
         }
@@ -82,24 +82,24 @@ function push_export() {
     
     var thumbs_counter = 0;
     
-    for (var i in ca_data.index_ID) {
+    for (var i2 in ca_data.index_ID) {
         
-        if (d3.select("#thumb" + i + "_li").classed("hidden") == true) {
+        if (d3.select("#thumb" + i2 + "_li").classed("hidden") == true) {
             continue;
         }
         thumbs_counter += 1;
         
         // bg-color
-        var bg = d3.select("#thumb" + i).style("background-color");
+        var bg = d3.select("#thumb" + i2).style("background-color");
         if (bg != "rgb(255, 255, 255)") {
             svgText += downloader.virtual_svg_rect(bg, "1.0", thumb_height, thumb_width, sift_x, sift_y);
         }
         
         //title
-        svgText += downloader.virtual_svg_text(ca_data.index_ID[i], thumb_title_height, thumb_width, sift_x, sift_y, thumb_title_fontsize, true);
+        svgText += downloader.virtual_svg_text(ca_data.index_ID[i2], thumb_title_height, thumb_width, sift_x, sift_y, thumb_title_fontsize, true);
 
         // bundle
-        svgText += downloader.svg_text("thumb" + i, sift_x, sift_y + thumb_title_height);
+        svgText += downloader.svg_text("thumb" + i2, sift_x, sift_y + thumb_title_height);
         
         sift_x += thumb_width + thumb_margin_right;
         
@@ -119,15 +119,15 @@ function push_export() {
     
     svgText = downloader.add_svgtag(svgText, height, width)
     
-    rect = utils.absolute_position("dw_btn");
+    var rect = utils.absolute_position("dw_btn");
     downloader.createMenu ([rect.x + rect.width, rect.y], "btn", "paplot_sv", width, height, svgText);
 }
 
 div_legend.stack_change = function(d, i, on)
 {
     group_enable[i] = on;
-    for (var i = 0; i < group_enable.length; i++) {
-        div_select_bar.dataset[i].enable = group_enable[i];
+    for (var idx = 0; idx < group_enable.length; idx++) {
+        div_select_bar.dataset[idx].enable = group_enable[idx];
     };
     div_select_bar.change_stack();
     
@@ -142,34 +142,34 @@ function draw_select()
 
     var chromos = [];
     var chromos_grid = [];
-    for (var i = 0; i < bar_dataset.all_key.length; i++) {
+    for (var i1 = 0; i1 < bar_dataset.all_key.length; i1++) {
         
-        var split = bar_dataset.all_key[i].split("_");
+        var split = bar_dataset.all_key[i1].split("_");
         var pos = Number(split[1]);
         
         if (pos == 0) {
-            chromos[i] = ca_data.genome_size[Number(split[0].split(".")[1])].label;
+            chromos[i1] = ca_data.genome_size[Number(split[0].split(".")[1])].label;
         }
         else {
-            chromos[i] = "";
+            chromos[i1] = "";
         }
         
         if ((pos != 0) && (pos % Math.floor(bar_dataset.all_key.length/60) == 0)) {
-            chromos_grid[i] = ca_data.genome_size[Number(split[0].split(".")[1])].label;
+            chromos_grid[i1] = ca_data.genome_size[Number(split[0].split(".")[1])].label;
         }
         else {
-            chromos_grid[i] = "";
+            chromos_grid[i1] = "";
         }
     }
 
-    for (var i = 0; i < bar_dataset.value.length; i++) {
+    for (var i2 = 0; i2 < bar_dataset.value.length; i2++) {
 
-        div_select_bar.dataset[i] = new div_select_bar.dataset_template(ca_data.group[i].name);
-        div_select_bar.dataset[i].data = bar_dataset.value[i];
-        div_select_bar.dataset[i].keys = bar_dataset.key[i];
-        div_select_bar.dataset[i].color_fill = ca_data.group[i].color;
-        div_select_bar.dataset[i].enable = true;
-        group_enable[i] = true;
+        div_select_bar.dataset[i2] = new div_select_bar.dataset_template(ca_data.group[i2].name);
+        div_select_bar.dataset[i2].data = bar_dataset.value[i2];
+        div_select_bar.dataset[i2].keys = bar_dataset.key[i2];
+        div_select_bar.dataset[i2].color_fill = ca_data.group[i2].color;
+        div_select_bar.dataset[i2].enable = true;
+        group_enable[i2] = true;
     };
     
     div_select_bar.keys = bar_dataset.all_key;
@@ -236,13 +236,13 @@ function draw_select()
     downloader.set_event_listner ("selector");
     
     // legend
-    scale_domain = [];
-    scale_color = [];
+    var scale_domain = [];
+    var scale_color = [];
     var max_length = 0;
-    for (var i = 0; i < ca_data.group.length; i++) {
-        scale_domain.push(ca_data.group[i].label);
-        scale_color.push(ca_data.group[i].color);
-        if (ca_data.group[i].label.length > max_length) max_length = ca_data.group[i].label.length;
+    for (var i3 = 0; i3 < ca_data.group.length; i3++) {
+        scale_domain.push(ca_data.group[i3].label);
+        scale_color.push(ca_data.group[i3].color);
+        if (ca_data.group[i3].label.length > max_length) max_length = ca_data.group[i3].label.length;
     };
     
     // legend
@@ -264,38 +264,38 @@ function draw_select()
 div_select_bar.brushed = function(data) {
 
     var target = [];
-    for (var i = 0; i < bar_dataset.key.length; i++) {
-        if (group_enable[i] == false) continue;
+    for (var i1 = 0; i1 < bar_dataset.key.length; i1++) {
+        if (group_enable[i1] == false) continue;
         
         for (var j = 0; j < data.length; j++) {
-            var index = bar_dataset.key[i].indexOf(data[j]);
+            var index = bar_dataset.key[i1].indexOf(data[j]);
             if (index < 0) continue;
-            for (var k = 0; k < bar_dataset.item[i][index].length; k++) {
-                if (target.indexOf(bar_dataset.item[i][index][k]) < 0) {
-                    target.push(bar_dataset.item[i][index][k])
+            for (var k = 0; k < bar_dataset.item[i1][index].length; k++) {
+                if (target.indexOf(bar_dataset.item[i1][index][k]) < 0) {
+                    target.push(bar_dataset.item[i1][index][k])
                 }
             }
         }
     }
     // hilight
-    for (var i in ca_data.index_ID) {
+    for (var i2 in ca_data.index_ID) {
         
-        var find = target.indexOf(ca_data.index_ID[i]);
+        var find = target.indexOf(ca_data.index_ID[i2]);
             
         if (find < 0) {
             if (selection_mode() == "hilight") {
-                d3.select("#thumb" + i).style("background-color", "#FFFFFF");
+                d3.select("#thumb" + i2).style("background-color", "#FFFFFF");
             }
             else {
-                d3.select("#thumb" + i + "_li").classed("hidden", true);
+                d3.select("#thumb" + i2 + "_li").classed("hidden", true);
             }
         }
         else {
             if (selection_mode() == "hilight") {
-                d3.select("#thumb" + i).style("background-color", "#FFFFCC");
+                d3.select("#thumb" + i2).style("background-color", "#FFFFCC");
             }
             else {
-                d3.select("#thumb" + i + "_li").classed("hidden", false);
+                d3.select("#thumb" + i2 + "_li").classed("hidden", false);
             }
         }
     }
@@ -326,9 +326,9 @@ function selection_mode() {
 {
     var color_list = [];
     var label_list = [];
-    for (var i = 0; i < ca_data.genome_size.length; i++) {
-        color_list.push(ca_data.genome_size[i].color);
-        label_list.push(ca_data.genome_size[i].label);
+    for (var i1 = 0; i1 < ca_data.genome_size.length; i1++) {
+        color_list.push(ca_data.genome_size[i1].color);
+        label_list.push(ca_data.genome_size[i1].label);
     }
     
     var arc_style_detail = {
@@ -343,10 +343,10 @@ function selection_mode() {
     };
 
     var link_style_detail = [];
-    for (var i = 0; i < ca_data.group.length; i++) {
+    for (var i2 = 0; i2 < ca_data.group.length; i2++) {
         link_style_detail.push({
     
-            stroke : ca_data.group[i].color,
+            stroke : ca_data.group[i2].color,
             stroke_width : style_sv_detail.link_width,
             stroke_opacity : style_sv_detail.link_opacity,
 
@@ -354,8 +354,8 @@ function selection_mode() {
             active_stroke_width : style_sv_detail.link_select_width,
             active_stroke_opacity : style_sv_detail.link_select_opacity,
 
-            name : ca_data.group[i].name,
-            enable : group_enable[i],
+            name : ca_data.group[i2].name,
+            enable : group_enable[i2],
         })
     }
     
@@ -371,10 +371,10 @@ function selection_mode() {
     };
 
     var link_style_thumb = [];
-    for (var i = 0; i < ca_data.group.length; i++) {
+    for (var i3 = 0; i3 < ca_data.group.length; i3++) {
         link_style_thumb.push({
     
-            stroke : ca_data.group[i].color,
+            stroke : ca_data.group[i3].color,
             stroke_width : style_sv_thumb.link_width,
             stroke_opacity : style_sv_thumb.link_opacity,
 
@@ -382,8 +382,8 @@ function selection_mode() {
             //active_stroke_width : style_sv_thumb.link_select_width,
             //active_stroke_opacity : style_sv_thumb.link_select_opacity,
 
-            name : ca_data.group[i].name,
-            enable : group_enable[i],
+            name : ca_data.group[i3].name,
+            enable : group_enable[i3],
         })
     }
 }
@@ -455,16 +455,16 @@ function draw_bandle_thumb (iid, ID)
 
 function bundle_update() {
     
-    for (var id in thumbs) {
+    for (var id1 in thumbs) {
         for (var i = 0; i < link_style_thumb.length; i++) {
-            thumbs[id].link_style[i].enable = group_enable[i];
-            thumbs[id].bundle_update();
+            thumbs[id1].link_style[i].enable = group_enable[i];
+            thumbs[id1].bundle_update();
         }
     }
-    for (var id in bundles) {
-        for (var i = 0; i < link_style_detail.length; i++) {
-            bundles[id].link_style[i].enable = group_enable[i];
-            bundles[id].bundle_update();
+    for (var id2 in bundles) {
+        for (var j = 0; j < link_style_detail.length; j++) {
+            bundles[id2].link_style[j].enable = group_enable[j];
+            bundles[id2].bundle_update();
         }
     }
 }
@@ -475,7 +475,7 @@ function show_float(e, idx, ID) {
     
     draw_bandle("map" + idx, ID);
 
-    pos = get_pos("thumb" + idx);
+    var pos = get_pos("thumb" + idx);
 
     d3.select("#float" + idx + "_t")
         .style("color", style_sv_detail.win_header_text_color)
@@ -508,8 +508,8 @@ function mouse_down(event, id) {
 }
 function mouse_move(event, id) {
     if (item != id) { return; }
-    dist_x = mouse_x - event.screenX;
-    dist_y = mouse_y - event.screenY;
+    var dist_x = mouse_x - event.screenX;
+    var dist_y = mouse_y - event.screenY;
     if ((Math.abs(dist_x) < 1) && (Math.abs(dist_y) < 1)) { return; }
     d3.select(id).style("left", String(pos_tonum(d3.select(id).style("left")) - dist_x) + "px");
     d3.select(id).style("top", String(pos_tonum(d3.select(id).style("top")) - dist_y) + "px");

@@ -11,6 +11,11 @@ $Id: ca.py 205 2017-08-08 06:25:59Z aokada $
 js_header = """(function() {
 ca_data = {};
 """
+js_footer = """
+})();
+Object.freeze(ca_data);
+"""
+
 js_dataset = """
 ca_data.node_size_detail = {node_size_detail};
 ca_data.node_size_thumb = {node_size_thumb};
@@ -31,7 +36,6 @@ js_links_1 = """// 0:ID, 1:chr1, 2:break1, 3:chr2, 4:break2, 5:is_outer, 6:group
 ca_data.links = ["""
 js_links_2 = "];"
 links_template = '["{ID}","{Chr1:0>2}",{pos1},"{Chr2:0>2}",{pos2},{inner_flg},{group_id},[{tooltip}]],'
-#links_template = '[{ID},{func},{gene},{num},[{tooltip}]],'
 
 js_selection = """
 ca_data.select_value = [{value}];
@@ -39,217 +43,10 @@ ca_data.select_key = [{key}];
 ca_data.select_item = [{item}];
 """
 
-js_function = """
-var node_name = function(Chr, index, leveling) {
-    if (leveling == null) {
-        leveling = false;
-    }
-    var ret;
-    if (leveling == true) {
-        ret = "root." + Chr + "." + Chr + "_" + ("000" + index).substr(-4);
-    }
-    else {
-        ret = Chr + "_" + ("000" + index).substr(-4);
-    }
-    return ret;
-};
-
-var create_blank_nodes = function(node_size, leveling) {
-    if (leveling == null) {
-        leveling = false;
-    }
-    var nodes = [];
-    for (var i = 0; i < ca_data.genome_size.length; i++){
-        var item_num = Math.floor(ca_data.genome_size[i].size/node_size) + 1;
-        if (leveling == false) {
-            item_num = item_num + 1;
-        }
-        for (var j = 0; j < item_num; j++){
-            var start;
-            if (leveling == true) {
-                start = node_name(ca_data.genome_size[i].chr, j, true);
-            }
-            else {
-                start = node_name(ca_data.genome_size[i].chr, j, false);
-            }
-            nodes.push({"start":start, "ends":[], "tooltip":[]});
-        }
-    }
-    return nodes
-};
-
-function tooltip_partial(format, link) {
-    
-    var obj = {id: link[0], 
-        chr1: ca_data.genome_size[Number(link[1])].label, 
-        break1: link[2], 
-        chr2: ca_data.genome_size[Number(link[3])].label, 
-        break2: link[4], func: ca_data.group[link[6]].label};
-        
-    var tooltip = [];
-    
-    for (var p = 0; p < link[7].length; p++) {
-        for (var p2 = 0; p2 < link[7][p].length; p2++) {
-            obj[ca_data.link_header[p2]] = link[7][p][p2];
-        }
-        for (var t in format.format) {
-            var text = text_format(format.format[t], obj);
-            if (tooltip.indexOf(text) < 0){
-                tooltip.push(text);
-            }
-        }
-    }
-
-    return tooltip;
-};
-function text_format(format, obj) {
-
-    var text = "";
-    for (var f in format) {
-        if (format[f].type == 'fix') {
-            text += format[f].label;
-            continue;
-        }
-        var replaced = format[f].label;
-        for (var k in format[f].keys) {
-            var reg = new RegExp("{" + format[f].keys[k] + "}", 'g');
-            replaced = replaced.replace(reg, obj[format[f].keys[k]]);
-        }
-        // case numeric
-        if (format[f].type == 'numeric') {
-            try{  replaced = eval(replaced);
-            } catch(e) {}
-            if (format[f].ext != null) {
-                if (format[f].ext == ",") {
-                    replaced = String(replaced).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
-                }
-                if (format[f].ext[0] == ".") {
-                    replaced = parseFloat(replaced).toFixed(parseInt(format[f].ext.substr(1)));
-                }
-            }
-        }
-        text += replaced;
-    }
-    return text;
-};
-
-var create_bundle_dataset = function (ID, node_size, tooltip) {
-
-    var each_dataset = [];
-    for (var i = 0; i< ca_data.group.length; i++) {
-        each_dataset[i] = create_blank_nodes(node_size);
-    }
-    
-    for (var i = 0; i < ca_data.links.length; i++) {
-        if (ca_data.links[i][0] != ID) {
-            continue;
-        }
-        
-        var start = node_name(ca_data.links[i][1], Math.floor(ca_data.links[i][2]/node_size));
-        var index = -1;
-        for (var j = 0; j < each_dataset[0].length; j++){
-            if (each_dataset[0][j].start == start) {
-                index = j;
-                break;
-            }
-        }
-        if (index < 0) {
-            continue;
-        }
-        var end_pos = Math.floor(ca_data.links[i][4]/node_size);
-        var end = node_name(ca_data.links[i][3], end_pos);
-        // if same position, sift end position.
-        if (start == end) {
-            if (end_pos == Math.floor(ca_data.genome_size[Number(ca_data.links[i][3])].size/node_size)) {
-                end = node_name(ca_data.links[i][3], end_pos - 1);
-            }
-            else {
-                end = node_name(ca_data.links[i][3], end_pos + 1);
-            }
-        }
-        
-        var group = ca_data.links[i][6];
-        each_dataset[group][index].ends.push(end);
-        
-        // tooltip
-        if (tooltip == true) {
-            each_dataset[group][index].tooltip.push(tooltip_partial(ca_data.tooltip_format.bundle, ca_data.links[i]));
-        }
-    }
-    
-    return each_dataset;
-};
-
-ca_data.get_data_thumb = function (ID) {
-    return create_bundle_dataset(ID, ca_data.node_size_thumb, false);
-};
-
-ca_data.get_arc_data_thumb = function () {
-    return create_blank_nodes(ca_data.node_size_thumb, true);
-};
-
-ca_data.get_data_detail = function (ID) {
-    return create_bundle_dataset(ID, ca_data.node_size_detail, true);
-};
-
-ca_data.get_arc_data_detail = function (ID) {
-    return create_blank_nodes(ca_data.node_size_detail, true);
-};
-
-var key_to_index = function (list, key) {
-    
-    for (var i = 0; i < list.length; i++) {
-        if (list[i] == key) {
-            return i
-        }
-    }
-    return -1;
-};
-
-ca_data.get_select = function () {
-    var node_size = ca_data.node_size_select;
-    
-    var key = [];
-    for (var i = 0; i < ca_data.select_key.length; i++) {
-        key[i] = [];
-        for (var j = 0; j < ca_data.select_key[i].length; j++) {
-            key[i][j] = node_name(("0" + ca_data.select_key[i][j][0]).substr(-2), ("0" + ca_data.select_key[i][j][1]).substr(-2), true);
-        }
-    }
-    
-    var item = [];
-    for (var i = 0; i < ca_data.select_item.length; i++) {
-        item[i] = [];
-        for (var j = 0; j < ca_data.select_item[i].length; j++) {
-            item[i][j] = [];
-            for (var k = 0; k < ca_data.select_item[i][j].length; k++) {
-                item[i][j][k] = ca_data.index_ID[ca_data.select_item[i][j][k]];
-            }
-        }
-    }
-    
-    var all_key = [];
-    var c = 0;
-    for (var i = 0; i < ca_data.genome_size.length; i++){
-        var item_num = Math.floor(ca_data.genome_size[i].size/node_size) + 1;
-        for (var j = 0; j < item_num; j++){
-            all_key[c] = node_name(ca_data.genome_size[i].chr, j, true);
-            c++;
-        }
-    }
-    
-    return {value:ca_data.select_value, key:key, item:item, all_key:all_key};
-};
-})();
-Object.freeze(ca_data);
-"""
-
 ########### html template
 
 li_template = '<li class="thumb" id="thumb{id}_li"><strong>{title}<br></strong><div id="thumb{id}" onclick="show_float(event,\'{id}\',\'{title}\')"></div></li>\n'
 call_template = 'draw_bandle_thumb("{id}", "{title}");\n'
-#call_later_header = "var wait = 1000;\nvar inerval = 100;\n"
-#call_later_template = 'setTimeout(function() {{draw_bandle_thumb("{id}", "{title}");}}, wait); wait +=inerval;\n'
 detail_template = """<div class="float_frame" id="float{id}"><table><tr><td class="float_header" id="float{id}_t"><strong>{title}</strong></td><td><input type="button" value="X" onclick="hide_float('#float{id}')" margin="0"></td></tr><tr><td colspan="2" class="float_svg" id="map{id}"></td></tr></table><div class="float_handle" id="float{id}_h" onmousedown="mouse_down(event, '#float{id}')" onmousemove="mouse_move(event, '#float{id}')" onmouseup="mouse_up(event, '#float{id}')" onmouseout="mouse_out('#float{id}')"></div></div>
 """
 ########### functions
@@ -343,13 +140,13 @@ def calc_node_size(genome_size, total):
 
     return size
 
-def insite_genome(genome_size, Chr, pos):
+def insite_genome(genome_size, chrom, pos):
     # return [i,   0] : insite
     # return [i,  >0] : range
-    # return [-1, -1] : Chr is none
+    # return [-1, -1] : chrom is none
 
     for i in range(len(genome_size)):
-        label = Chr.lower()
+        label = chrom.lower()
         if label[0:3] == "chr":
             label = label[3:len(label)]
         if genome_size[i][0] == label:
@@ -360,21 +157,13 @@ def insite_genome(genome_size, Chr, pos):
     
     return [-1, -1]
 
-def output_html(output_di, positions, config):
-    data = convert_tojs(output_di["dir"] + "/" + output_di["data"], output_di["dir"] + "/" + output_di["js"], positions, config)
-    if data != None:
-        create_html(data, output_di, config)
-        return True
-    
-    return False
-    
 def convert_tojs(input_file, output_file, positions, config):
 
     import paplot.subcode.data_frame as data_frame
     import paplot.subcode.merge as merge
     import paplot.subcode.tools as tools
     import paplot.convert as convert
-    
+    import os
     import math
     
     genome_size = load_genome_size(config)
@@ -428,12 +217,12 @@ def convert_tojs(input_file, output_file, positions, config):
     group_text = ",".join(conbined)
     
     # ID list
-    Ids = []
+    id_list = []
     for row in df.data:
         iid = row[df.name_to_index(cols_di["id"])]
-        if iid != "": Ids.append(iid)
-    Ids = list(set(Ids))
-    Ids.sort()
+        if iid != "": id_list.append(iid)
+    id_list = list(set(id_list))
+    id_list.sort()
 
     option_keys = tools.dict_keys(cols_di)
     option_keys.remove("id")
@@ -454,7 +243,7 @@ def convert_tojs(input_file, output_file, positions, config):
             node_size_thumb = calc_node_size(genome_size, 250), \
             node_size_select = node_size_select,\
             genome_size = genome, \
-            IDs = convert.list_to_text(Ids), \
+            IDs = convert.list_to_text(id_list), \
             group = group_text, \
             tooltip = convert.pyformat_to_jstooltip_text(cols_di, config, "ca", "result_format_ca", "tooltip_format"), \
             link_header = convert.list_to_text(option_keys), \
@@ -564,7 +353,7 @@ def convert_tojs(input_file, output_file, positions, config):
             
             temp = []
             for t in sort:
-                temp.append(Ids.index(t))
+                temp.append(id_list.index(t))
             items.append(temp)
 
         select_value_text += "[%s]," % (",".join(map(str,values)).replace(" ", ""))
@@ -577,10 +366,15 @@ def convert_tojs(input_file, output_file, positions, config):
         item = select_item_text
     ))
     
+    f_template = open(os.path.dirname(os.path.abspath(__file__)) + "/templates/ca.js")
+    js_function = f_template.read()
+    f_template.close()
     f.write(js_function)
+    f.write(js_footer)
+
     f.close()
     
-    return {"id_list":Ids, "group_list":groups, "color":colors_n}
+    return {"id_list":id_list, "group_list":groups, "color":colors_n}
 
 def create_html(dataset, output_di, config):
     import os
@@ -617,6 +411,11 @@ def create_html(dataset, output_di, config):
             style = "../style/%s" % os.path.basename(tools.config_getpath(config, "style", "path", "default.js")),
         ))
     f_html.close()
+
+def output_html(output_di, positions, config):
+    data = convert_tojs(output_di["dir"] + "/" + output_di["data"], output_di["dir"] + "/" + output_di["js"], positions, config)
+    if data != None:
+        create_html(data, output_di, config)
+        return True
     
-if __name__ == "__main__":
-    pass
+    return False

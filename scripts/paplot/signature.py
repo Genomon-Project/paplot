@@ -11,6 +11,11 @@ $Id: signature.py 205 2017-08-08 06:25:59Z aokada $
 js_header = """(function() {
 sig_data = {};
 """
+js_footer = """
+})();
+Object.freeze(sig_data);
+"""
+
 js_dataset = """
 sig_data.tooltip_format = {{
     signature_title:{signature_title},
@@ -33,130 +38,6 @@ sig_data.Ids = [{Ids}];
 """
 
 js_substruction_template = "{{name: '{name}', color: '{color}', route: [{route}],}},"
-
-js_function = """
-sig_data.esc_Ids = [];
-for (var i=0; i < sig_data.Ids.length; i++) {
-    sig_data.esc_Ids[i] = 'Key' + i;
-}
-
-function tooltip_text(format, obj) {
-    var tooltip = [];
-    for (var t in format.format) {
-        tooltip.push(utils.text_format(format.format[t], obj));
-    }
-    return tooltip;
-};
-
-sig_data.get_data_par_signature = function (signature_id) {
-    
-    var tooltips = [];
-
-    // par change
-    for (var i=0; i < sig_data.substitution.length; i++) {
-        
-        var sum = 0;
-        
-        var obj = {
-            'sig': sig_data.substitution[i].name,
-        };
-        tooltips[i] = [];
-        segment_index = -1;
-        for (var j=0; j < sig_data.dataset_sig[signature_id][i].length; j++) {
-            if (j%16 == 0) {
-                segment_index += 1;
-                tooltips[i][segment_index] = [];
-            }
-            obj['route'] = sig_data.substitution[i].route[j];
-            obj['#sum_item_value'] = sig_data.dataset_sig[signature_id][i][j];
-            
-            tooltips[i][segment_index].push(tooltip_text(sig_data.tooltip_format['signature_partial'], obj));
-            sum += sig_data.dataset_sig[signature_id][i][j];
-        }
-        
-        obj['#sum_group_value'] = sum;
-        
-        title = tooltip_text(sig_data.tooltip_format['signature_title'], obj);
-        for (var s = 0; s < tooltips[i].length; s++) {
-            for (var t = 0; t < title.length; t++) {
-                tooltips[i][s].splice(t, 0, title[t]);
-            }
-        }
-    }
-    
-    return {data: sig_data.dataset_sig[signature_id], tooltip: tooltips};
-};
-
-sig_data.get_bars_data = function (rate) {
-    
-    var data = [];
-    var keys = [];
-    var tooltips = {};
-    var sum_par_id = [];
-    for (var i=0; i < sig_data.Ids.length; i++) {
-        tooltips[sig_data.esc_Ids[i]] = [];
-        sum_par_id[i] = 0;
-    }
-    
-    // par func
-    for (var f=0; f < sig_data.signatures.length; f++) {
-
-        data[f] = [];
-        keys[f] = [];
-
-        // par ID
-        for (var i=0; i < sig_data.Ids.length; i++) {
-            
-            var data_filt = sig_data.mutations.filter(function(item, index){
-                if ((item[0] == i) && (item[1] == f)) return true;
-            });
-            
-            //var sum = data_filt.length;
-            var sum = 0;
-            for (var s = 0; s < data_filt.length; s++) {
-                sum += data_filt[s][2];
-            }
-            
-            var mutation_count = 1;
-            if (rate == false) {
-                if (sig_data.mutation_count.length > 0) mutation_count = sig_data.mutation_count[i];
-            }
-            
-            if (sum > 0) {
-                sum = sum*mutation_count;
-            
-                data[f].push(sum);
-                keys[f].push(sig_data.esc_Ids[i]);
-                
-                var obj = {
-                    '#sum_mutaion_all': sig_data.mutations.length,
-                    '#sum_item_value': sum,
-                    'id': sig_data.Ids[i],
-                    'sig': sig_data.signatures[f],
-                };
-                tooltips[sig_data.esc_Ids[i]].push(tooltip_text(sig_data.tooltip_format["mutation_partial"], obj));
-                sum_par_id[i] += sum;
-            }
-        }
-    }
-    for (var i=0; i < sig_data.Ids.length; i++) {
-        var obj = {
-            '#sum_mutaion_all': sig_data.mutations.length,
-            '#sum_item_value': sum_par_id[i],
-            'id': sig_data.Ids[i],
-        };
-        
-        title = tooltip_text(sig_data.tooltip_format["mutation_title"], obj);
-        for (var t = 0; t < title.length; t++) {
-            tooltips[sig_data.esc_Ids[i]].splice(t, 0, title[t]);
-        }
-    }
-    
-    return {data: data, key: keys, tooltip: tooltips};
-};
-})();
-Object.freeze(sig_data);
-"""
 
 ########### HTML template
 html_integral_template = """<table>
@@ -186,7 +67,7 @@ def output_html(params, config):
     return dataset
         
 def convert_tojs(params, config):
-
+    import os
     import json
     import math
     import itertools
@@ -196,17 +77,17 @@ def convert_tojs(params, config):
     
     # data read
     try:
-        jsonData = json.load(open(params["data"]))
+        json_data = json.load(open(params["data"]))
     except Exception as e:
         print ("failure open data %s, %s" % (params["data"], e.message))
         return None
     
-    key_Ids = tools.config_getstr(config, "result_format_signature", "key_id")
+    key_ids = tools.config_getstr(config, "result_format_signature", "key_id")
     key_signature = tools.config_getstr(config, "result_format_signature", "key_signature")
     key_mutations = tools.config_getstr(config, "result_format_signature", "key_mutation")
     key_mutation_count = tools.config_getstr(config, "result_format_signature", "key_mutation_count")
     
-    sig_num = len(jsonData[key_signature])
+    sig_num = len(json_data[key_signature])
     
     if sig_num == 0:
         print ("no data %s" % params["data"])
@@ -228,14 +109,14 @@ def convert_tojs(params, config):
     # axis-y max
     sig_y_max = tools.config_getint(config, "signature", "signature_y_max")
     if (sig_y_max < 0):
-        for sig in jsonData[key_signature]:
+        for sig in json_data[key_signature]:
             for sub in sig:
                 m = max(sub)
                 if sig_y_max < m:
                     sig_y_max = m
                     
     # route list
-    sub_num = len(jsonData[key_signature][0][0])
+    sub_num = len(json_data[key_signature][0][0])
     log = math.log(sub_num, 4)
     if log % 1 > 0:
         print ("substitution's list length is invalid (%d, not number 4^N)" % sub_num)
@@ -267,26 +148,26 @@ def convert_tojs(params, config):
     
     # Id list
     id_txt = ""
-    if key_Ids in jsonData:
-        id_txt = convert.list_to_text(jsonData[key_Ids])
+    if key_ids in json_data:
+        id_txt = convert.list_to_text(json_data[key_ids])
             
     # mutations
     mutations_txt = ""
-    if key_mutations in jsonData:
-        for m in jsonData[key_mutations]:
+    if key_mutations in json_data:
+        for m in json_data[key_mutations]:
             mutations_txt += "[%d,%d,%f]," % (m[0],m[1],m[2])
     
     # signature
     dataset_sig = ""
-    for sig in jsonData[key_signature]:
+    for sig in json_data[key_signature]:
         tmp = ""
         for sub in sig:
             tmp += "[" + ",".join(map(str, sub)) + "],"
         dataset_sig += ("[" + tmp + "],")
         
     mutation_count_txt = ""
-    if (key_mutation_count != "") and (key_mutation_count in jsonData.keys()):
-        for v in jsonData[key_mutation_count]:
+    if (key_mutation_count != "") and (key_mutation_count in json_data.keys()):
+        for v in json_data[key_mutation_count]:
             mutation_count_txt += "%d," % v
     
     # output
@@ -315,11 +196,18 @@ def convert_tojs(params, config):
             mutation_partial = convert.pyformat_to_jstooltip_text(keys_di, config, "signature", "", "tooltip_format_mutation_partial"), \
             mutation_count = mutation_count_txt, \
             )
-        + js_function)
+        )
+
+    f_template = open(os.path.dirname(os.path.abspath(__file__)) + "/templates/signature.js")
+    js_function = f_template.read()
+    f_template.close()
+    f.write(js_function)
+    f.write(js_footer)
+
     f.close()
 
     integral = True
-    if key_Ids == "" or key_mutations == "" or key_mutation_count == "":
+    if key_ids == "" or key_mutations == "" or key_mutation_count == "":
         integral = False
     
     return {"sig_num": sig_num,
@@ -367,6 +255,4 @@ def create_html(dataset, params, config):
             style = "../style/%s" % os.path.basename(tools.config_getpath(config, "style", "path", "default.js")),
         ))
     f_html.close()
-    
-if __name__ == "__main__":
-    pass
+

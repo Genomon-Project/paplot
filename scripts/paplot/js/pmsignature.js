@@ -145,25 +145,26 @@ var pmsignature = (function()
                 .selectAll("rect")
                 .remove();
             
+            var idx = 0;
             var stack_sum = [];
-            for (var i=0; i < this.data.length; i++) {
-                stack_sum[i] = 0;
-                for (var j=0; j < this.data[i].length; j++) {
-                    stack_sum[i] += this.data[i][j];
+            for (idx = 0; idx < this.data.length; idx++) {
+                stack_sum[idx] = 0;
+                for (var j=0; j < this.data[idx].length; j++) {
+                    stack_sum[idx] += this.data[idx][j];
                 }
             }
             
             var width_sum = 0;
-            for (var i=0; i < this.horizontal_rate.length; i++) {
-                width_sum += this.horizontal_rate[i];
+            for (idx = 0; idx < this.horizontal_rate.length; idx++) {
+                width_sum += this.horizontal_rate[idx];
             }
             var width_rate_list = [];
-            for (var i=0; i < this.horizontal_rate.length; i++) {
+            for (idx = 0; idx < this.horizontal_rate.length; idx++) {
                 if (width_sum > 0) {
-                    width_rate_list[i] = this.horizontal_rate[i]/width_sum;
+                    width_rate_list[idx] = this.horizontal_rate[idx]/width_sum;
                 }
                 else {
-                    width_rate_list[i] = 0;
+                    width_rate_list[idx] = 0;
                 }
             }
             
@@ -172,9 +173,9 @@ var pmsignature = (function()
             var sift_x = 0;
             var dataset = [];
             var num = this.data[0].length;
-            for (var i=0; i < this.data.length * num; i++) {
-                if (i%num == 0) {
-                    bar_index = Math.floor(i/num);
+            for (idx = 0; idx < this.data.length * num; idx++) {
+                if (idx%num == 0) {
+                    bar_index = Math.floor(idx/num);
                     sum = stack_sum[bar_index];
                     width_rate = width_rate_list[bar_index];
                     sift_y = 0;
@@ -184,10 +185,10 @@ var pmsignature = (function()
                 }
                 var h_rate = 0;
                 if (sum > 0) {
-                    h_rate = this.data[bar_index][i%num]/sum;
+                    h_rate = this.data[bar_index][idx%num]/sum;
                 }
-                dataset[i] = {x_rate: sift_x, y_rate: sift_y, w_rate: width_rate, h_rate: h_rate};
-                sift_y += dataset[i].h_rate;
+                dataset[idx] = {x_rate: sift_x, y_rate: sift_y, w_rate: width_rate, h_rate: h_rate};
+                sift_y += dataset[idx].h_rate;
             };
             
             parent.svg_obj.selectAll("g." + this.name)
@@ -380,12 +381,12 @@ var pmsignature = (function()
         // ----- appendix -----
         // strand
         if (this.strand.data.length == 2) {
-            strand_w = rect_width*0.5;
-            strand_h = rect_height;
-            strand_padding_x = rect_width*0.25;
-            strand_padding_y = rect_height*0;
-            strand_x = this.padding.left + this.plot.w - rect_width + strand_padding_x;
-            strand_y = this.padding.top + rect_height;
+            var strand_w = rect_width*0.5;
+            var strand_h = rect_height;
+            var strand_padding_x = rect_width*0.25;
+            //var strand_padding_y = rect_height*0;
+            var strand_x = this.padding.left + this.plot.w - rect_width + strand_padding_x;
+            var strand_y = this.padding.top + rect_height;
             
             this.svg_obj.selectAll("g.strand").selectAll("rect")
                 .attr("x", function(d, i) {
@@ -414,14 +415,14 @@ var pmsignature = (function()
         }
         
         // arrow
-        arrow_w = rect_width*0.6;
-        arrow_h = rect_height*0.6;
-        arrow_padding_x = rect_width*0.2;
-        arrow_padding_y = rect_height*0.2;
-        arrow_x = this.padding.left + this.plot.w/2 - grid_size_x*2 + arrow_padding_x;
-        arrow_y = this.padding.top + rect_height + arrow_padding_y;
+        var arrow_w = rect_width*0.6;
+        var arrow_h = rect_height*0.6;
+        var arrow_padding_x = rect_width*0.2;
+        var arrow_padding_y = rect_height*0.2;
+        var arrow_x = this.padding.left + this.plot.w/2 - grid_size_x*2 + arrow_padding_x;
+        var arrow_y = this.padding.top + rect_height + arrow_padding_y;
         
-        lineFunction = d3.svg.line()
+        var lineFunction = d3.svg.line()
             .x(function(d) { return d.x * arrow_w + arrow_x; })
             .y(function(d) { return d.y * arrow_h + arrow_y; })
             .interpolate("linear");
@@ -576,7 +577,7 @@ var pmsignature = (function()
                 .selectAll("rect")
                 .remove();
             
-            dataset = [];
+            var dataset = [];
             dataset[0] = this.strand.data[0] / (this.strand.data[0] + this.strand.data[1]);
             dataset[1] = this.strand.data[1] / (this.strand.data[0] + this.strand.data[1]);
             this.svg_obj.selectAll("g.strand")
@@ -669,7 +670,6 @@ var pmsignature = (function()
     // initialize
     // -----------------------------------
     p.draw = function() {
-        var that = this;
         
         this.svg_obj = d3.select("#" + this.id).append("svg");
 
@@ -683,25 +683,25 @@ var pmsignature = (function()
         var wide_bottom = [];
         var wide_left = [];
         var wide_right = [];
-        
-        for (var i = 0; i< this.options.titles.length; i++) {
-            switch(this.options.titles[i].orient) {
+        var idx = 0;
+        for (idx = 0; idx < this.options.titles.length; idx++) {
+            switch(this.options.titles[idx].orient) {
                 case "left":
-                    wide_left.push(this.options.titles[i].wide);
+                    wide_left.push(this.options.titles[idx].wide);
                     break;
                 case "right":
-                    wide_right.push(this.options.titles[i].wide);
+                    wide_right.push(this.options.titles[idx].wide);
                     break;
                 case "top":
-                    wide_top.push(this.options.titles[i].wide);
+                    wide_top.push(this.options.titles[idx].wide);
                     break;
                 case "bottom":
-                    wide_bottom.push(this.options.titles[i].wide);
+                    wide_bottom.push(this.options.titles[idx].wide);
                     break;
                 case "":
                     break;
                 default:
-                    console.log("[debug] this.options.titles[" + i + "].orient: undefined value. " + this.options.titles[i].orient);
+                    console.log("[debug] this.options.titles[" + idx + "].orient: undefined value. " + this.options.titles[idx].orient);
                     break;
             }
         }
@@ -719,7 +719,7 @@ var pmsignature = (function()
         }
         
         // rect
-        for (var idx=0; idx < this.signature_rects.length; idx++) {
+        for (idx=0; idx < this.signature_rects.length; idx++) {
             this.signature_rects[idx].initialize(this);
         }
         
@@ -758,14 +758,14 @@ var pmsignature = (function()
         if (this.options.titles.length > 0) {
             var titles = this.svg_obj.append("g").attr("class", "title");
             
-            for (var i = 0; i< this.options.titles.length; i++) {
+            for (idx = 0; idx < this.options.titles.length; idx++) {
                 titles
                     .append("text")
-                    .text(this.options.titles[i].title)
-                    .attr("text-color", this.options.titles[i].text_color)
-                    .attr("text-anchor", this.options.titles[i].text_anchor)
-                    .attr("font-size", this.options.titles[i].font_size)
-                    .attr("font-family", this.options.titles[i].font_family);
+                    .text(this.options.titles[idx].title)
+                    .attr("text-color", this.options.titles[idx].text_color)
+                    .attr("text-anchor", this.options.titles[idx].text_anchor)
+                    .attr("font-size", this.options.titles[idx].font_size)
+                    .attr("font-family", this.options.titles[idx].font_family);
             }
         }
         
@@ -791,7 +791,8 @@ var pmsignature = (function()
                     // target rect
                     var classes = this.className.baseVal.split(" ");
                     var me = false;
-                    for (var k = 0; k< classes.length; k++) {
+                    var k = 0;
+                    for (k = 0; k< classes.length; k++) {
                         if (classes[k] == key) {
                             me = true;
                             break;
@@ -807,7 +808,7 @@ var pmsignature = (function()
                     }
                     classes = this.className.baseVal.split(" ");
                     var selected = false;
-                    for (var k = 1; k < classes.length; k++) {
+                    for (k = 1; k < classes.length; k++) {
                         if (classes[k].indexOf("selected") == 0) {
                             selected = true;
                             break;

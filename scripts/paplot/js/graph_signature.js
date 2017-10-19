@@ -109,14 +109,14 @@ function init() {
             
             update_div();
         
-            var dataset = sig_data.get_bars_data(true);
+            var dataset_rate = sig_data.get_bars_data(true);
             
-            for (var s = 0; s < dataset.data.length; s++) {
-                div_rate.dataset[s] = new div_rate.dataset_template("sig_" + s);
-                div_rate.dataset[s].data = dataset.data[s];
-                div_rate.dataset[s].keys = dataset.key[s];
-                div_rate.dataset[s].color_fill = sig_data.sig_colors[s];
-                div_rate.dataset[s].enable = true;
+            for (var r = 0; r < dataset_rate.data.length; r++) {
+                div_rate.dataset[r] = new div_rate.dataset_template("sig_" + r);
+                div_rate.dataset[r].data = dataset_rate.data[r];
+                div_rate.dataset[r].keys = dataset_rate.key[r];
+                div_rate.dataset[r].color_fill = sig_data.sig_colors[r];
+                div_rate.dataset[r].enable = true;
             };
             
             div_rate.keys = sig_data.esc_Ids;
@@ -138,11 +138,11 @@ function init() {
             div_rate.options.zoom.enable = true;
             div_rate.options.animation.mtime = 0;
             
-            if (dataset.tooltip == 0) {
+            if (dataset_rate.tooltip == 0) {
                 div_rate.options.tooltip.enable = false;
             }
             else {
-                div_rate.tooltips = dataset.tooltip;
+                div_rate.tooltips = dataset_rate.tooltip;
                 div_rate.options.tooltip.position = "bar";
             }
             
@@ -210,14 +210,14 @@ function init() {
             
             update_div();
         
-            var dataset = sig_data.get_bars_data(false);
+            var dataset_num = sig_data.get_bars_data(false);
             
-            for (var s = 0; s < dataset.data.length; s++) {
-                div_integral.dataset[s] = new div_integral.dataset_template("sig_" + s);
-                div_integral.dataset[s].data = dataset.data[s];
-                div_integral.dataset[s].keys = dataset.key[s];
-                div_integral.dataset[s].color_fill = sig_data.sig_colors[s];
-                div_integral.dataset[s].enable = true;
+            for (var n = 0; n < dataset_num.data.length; n++) {
+                div_integral.dataset[n] = new div_integral.dataset_template("sig_" + n);
+                div_integral.dataset[n].data = dataset_num.data[n];
+                div_integral.dataset[n].keys = dataset_num.key[n];
+                div_integral.dataset[n].color_fill = sig_data.sig_colors[n];
+                div_integral.dataset[n].enable = true;
             };
             
             div_integral.keys = sig_data.esc_Ids;
@@ -243,11 +243,11 @@ function init() {
             div_integral.options.zoom.enable = true;
             div_integral.options.animation.mtime = 0;
             
-            if (dataset.tooltip == 0) {
+            if (dataset_num.tooltip == 0) {
                 div_integral.options.tooltip.enable = false;
             }
             else {
-                div_integral.tooltips = dataset.tooltip;
+                div_integral.tooltips = dataset_num.tooltip;
                 div_integral.options.tooltip.position = "bar";
             }
             
@@ -436,9 +436,9 @@ function draw_signature(name, signature_id, change_id) {
     
     var change = [];
     var change_colors = [];
-    for (var s in sig_data.substitution)  {
-        change.push(sig_data.substitution[s].name);
-        change_colors.push(sig_data.substitution[s].color);
+    for (var s1 in sig_data.substitution)  {
+        change.push(sig_data.substitution[s1].name);
+        change_colors.push(sig_data.substitution[s1].color);
     }
     div_legend.items =  change;
     div_legend.colors = change_colors;
@@ -526,7 +526,7 @@ function draw_signature(name, signature_id, change_id) {
         // add tooltip
         var rect_data = [];
         var seg_num = bar_dataset.data[c].length/16;
-        for (var s=0; s < seg_num; s++) {
+        for (var s2=0; s2 < seg_num; s2++) {
             rect_data.push(c);
         }
         svg_sub.append("g")
@@ -557,7 +557,7 @@ function draw_signature(name, signature_id, change_id) {
             
                 // add text to tooltip
                 for (var p=0; p < bar_dataset.tooltip[d][i].length; p++) {
-                    var temp = d3.select("#tooltip").append("p").attr("id", "text").append("pre").text(bar_dataset.tooltip[d][i][p]);
+                    d3.select("#tooltip").append("p").attr("id", "text").append("pre").text(bar_dataset.tooltip[d][i][p]);
                 }
                 
                 //Show the tooltip
@@ -650,7 +650,7 @@ function push_export() {
     
     svgText = downloader.add_svgtag(svgText, svg_h, svg_w)
     
-    rect = utils.absolute_position("dw_btn");
+    var rect = utils.absolute_position("dw_btn");
     downloader.createMenu ([rect.x + rect.width, rect.y], "btn", "paplot_signature", svg_w, svg_h, svgText);
 }
 

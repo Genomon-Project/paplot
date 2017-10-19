@@ -86,10 +86,8 @@ def group_list(colmun, mode, name, config):
             if func == "":
                 continue
             
-            if len(limited_list) > 0:
-                #if (func in limited_list) == False:
-                if fnmatch_list(func, limited_list) == False:
-                    continue
+            if len(limited_list) > 0 and fnmatch_list(func, limited_list) == False:
+                continue
 
             #if func in nouse_list:
             if fnmatch_list(func, nouse_list):
@@ -172,11 +170,10 @@ def pyformat_to_jstooltip_text(positions, config, section_fmt, section_col, item
             check = True
             for sub_key in list(set(sub_keys)):
                 
-                if not sub_key in positions.keys():
-                    if not sub_key.startswith("#"):
-                        print("[WARNING] key:{key} is not defined.".format(key = sub_key))
-                        check = False
-                        break
+                if not sub_key in positions.keys() and not sub_key.startswith("#"):
+                    print("[WARNING] key:{key} is not defined.".format(key = sub_key))
+                    check = False
+                    break
                 label_text = label_text.replace(sub_key, "{" + sub_key +"}")
 
             if check == True:
@@ -196,5 +193,3 @@ def pyformat_to_jstooltip_text(positions, config, section_fmt, section_col, item
         
     return tooltip_templete.format(formats = tooltip_fomat_text, keys = key_text)
 
-if __name__ == "__main__":
-    pass

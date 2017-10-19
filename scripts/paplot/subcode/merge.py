@@ -360,6 +360,4 @@ def position_to_dict(position):
     for key in position["option"]:
         di[key] = position["option"][key]
     return di
-        
-if __name__ == "__main__":
-    pass
+

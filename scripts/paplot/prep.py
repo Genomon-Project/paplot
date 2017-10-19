@@ -104,7 +104,7 @@ def version_text():
 # -------------------------------------
 _META_FILE_ = ".meta.json"
 
-def _convert_index_item(jsonData):
+def _convert_index_item(json_data):
 
     proj_template = """<h2>{proj}</h2>
 <table style="margin-left:40px;">
@@ -123,7 +123,7 @@ def _convert_index_item(jsonData):
     link_templete_td = "<a class='plot' href='{proj}/{output_html}' target=_blank>{sub_text}</a>"
     
     output = ""
-    for data in jsonData:
+    for data in json_data:
         graphs_text = ""
         for graph in data["graphs"]:
             if graph["composite"] == True:
@@ -156,31 +156,22 @@ def _convert_index_item(jsonData):
         
     return output    
     
-def _load_metadata(
-    output_dir,
-    output_html,
-    project_name,
-    name,
-    overview,
-    sub_text,
-    composite,
-    exists
-    ):
+def _load_metadata(output_dir, output_html, project_name, name, overview, sub_text, composite, exists):
 
     import json
     
-    argData = {"proj": project_name, \
+    arg_data = {"proj": project_name, \
                "graphs": [{ "name": name, \
                    "overview": overview, \
                    "composite": composite, \
                    "items": [{"output_html":  output_html, "exists":  exists, "sub_text": sub_text}] \
                }]}
     try:
-        jsonData = json.load(open(output_dir + "/" + _META_FILE_))
+        json_data = json.load(open(output_dir + "/" + _META_FILE_))
         
-        # input args to jsonData
+        # input args to json_data
         find = False
-        for data in jsonData:
+        for data in json_data:
             if data["proj"] != project_name: continue
                         
             for graph in data["graphs"]:
@@ -193,39 +184,29 @@ def _load_metadata(
                     break
 
                 if find == False:
-                    graph["items"].append(argData["graphs"][0]["items"][0])
+                    graph["items"].append(arg_data["graphs"][0]["items"][0])
                     find = True
                 break
             
             if find == False:
-                data["graphs"].append(argData["graphs"][0])
+                data["graphs"].append(arg_data["graphs"][0])
                 find = True
             break
 
         if find == False:
-            jsonData.append(argData)
+            json_data.append(arg_data)
                 
     except Exception:
-        # create jsonData from args
-        jsonData = [argData]
+        # create json_data from args
+        json_data = [arg_data]
     
     f = open(output_dir + "/" + _META_FILE_, "w")
-    f.writelines(json.dumps(jsonData, indent=2))
+    f.writelines(json.dumps(json_data, indent=2))
     f.close()
     
-    return jsonData
+    return json_data
     
-def create_index(
-    config,
-    output_dir,
-    output_html,
-    project_name,
-    name,
-    overview = "",
-    sub_text = "",
-    composite = False,
-    remarks = "",
-    ):
+def create_index(config, output_dir, output_html, project_name, name, overview = "", sub_text = "", composite = False, remarks = ""):
 
     import paplot.subcode.tools as tools
     import os
@@ -234,9 +215,9 @@ def create_index(
     if output_html == "":
         html_exists = False
         
-    jsonData = _load_metadata(output_dir, output_html, project_name, name, overview, sub_text, composite, html_exists)
+    json_data = _load_metadata(output_dir, output_html, project_name, name, overview, sub_text, composite, html_exists)
     
-    link_text = _convert_index_item(jsonData)
+    link_text = _convert_index_item(json_data)
     
     f_template = open(os.path.dirname(os.path.abspath(__file__)) + "/templates/index.html")
     html_template = f_template.read()
@@ -262,10 +243,10 @@ def _reload_metadata(output_dir):
     import json
     import os
     try:
-        jsonData = json.load(open(output_dir + "/" + _META_FILE_))
+        json_data = json.load(open(output_dir + "/" + _META_FILE_))
         
-        # input args to jsonData
-        for data in jsonData:
+        # input args to json_data
+        for data in json_data:
             for graph in data["graphs"]:
                 for item in graph["items"]:
                     if item["output_html"] == True and os.path.exists(output_dir + "/" + data["proj"] + "/" + item["output_html"]) == False:                    
@@ -275,25 +256,25 @@ def _reload_metadata(output_dir):
                     data["graphs"].remove(graph)
             
             if len(data["graphs"]) == 0:
-                jsonData.remove(data)
+                json_data.remove(data)
                 
     except Exception:
-        jsonData = []
+        json_data = []
     
     f = open(output_dir + "/" + _META_FILE_, "w")
-    f.writelines(json.dumps(jsonData, indent=2))
+    f.writelines(json.dumps(json_data, indent=2))
     f.close()
     
-    return jsonData
+    return json_data
     
 def recreate_index(config, output_dir, remarks = ""):
 
     import paplot.subcode.tools as tools
     import os
 
-    jsonData = _reload_metadata(output_dir)
+    json_data = _reload_metadata(output_dir)
       
-    link_text = _convert_index_item(jsonData)
+    link_text = _convert_index_item(json_data)
     
     f_template = open(os.path.dirname(os.path.abspath(__file__)) + "/templates/index.html")
     html_template = f_template.read()

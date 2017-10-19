@@ -34,7 +34,7 @@ parser result files created by genomon (SV, mutaion-call and so on)""",
       # -*- Entry points: -*-
       """,
       package_data = {
-          'paplot': ['lib/*/*','js/*','templates/*.html', 'style/*', 'layout/*'],
+          'paplot': ['lib/*/*','js/*','templates/*', 'style/*', 'layout/*'],
       },
       test_suite = 'unit_tests.suite',
 )

@@ -406,9 +406,9 @@ var mut_bar = (function()
         
         // title
         if (this.options.titles.length > 0) {
-            var trans = [];
+            var trans_title = [];
             for (var i = 0; i< this.options.titles.length; i++) {
-                trans.push(this._title_pos(this.options.titles[i].wide, this.options.titles[i].orient, this.options.titles[i].text_anchor, 
+                trans_title.push(this._title_pos(this.options.titles[i].wide, this.options.titles[i].orient, this.options.titles[i].text_anchor, 
                         this.options.titles[i].text_rotate, this.options.titles[i].sift_x, this.options.titles[i].sift_y, 
                         this.svg, this.plot, this.padding,
                         this.options.padding_top, this.options.padding_bottom, this.options.padding_right, this.options.padding_left));
@@ -416,7 +416,7 @@ var mut_bar = (function()
             
             this.svg_obj.selectAll("g.title").selectAll("text")
                 .attr('transform', function(d,i){
-                    return ('translate(' + trans[i] + ') rotate(' + that.options.titles[i].text_rotate + ')');
+                    return ('translate(' + trans_title[i] + ') rotate(' + that.options.titles[i].text_rotate + ')');
                 });
         }
     }
@@ -442,7 +442,7 @@ var mut_bar = (function()
         }
         var max =  Math.max.apply(null, sum_array);
         if (max == 0) max = 1;
-        y_size = max
+        var y_size = max
         if ((this.options.tall_limit > 0) && (max > this.options.tall_limit)) y_size = this.options.tall_limit;
         if (this.options.tall_fix > 0) y_size = this.options.tall_fix;
         
@@ -574,47 +574,47 @@ var mut_bar = (function()
       
         var tag_name = [];
         var asc = [];
-        for (var i = 0; i < tag_name_org.length; i++) {
-            tag_name.push(tag_name_org[i]);
-            asc.push(asc_org[i]);
+        for (var i1 = 0; i1 < tag_name_org.length; i1++) {
+            tag_name.push(tag_name_org[i1]);
+            asc.push(asc_org[i1]);
         }
         
         var tags = [];
-        for (var j = 0; j< tag_name.length; j++) {
-            for (var i = 0; i< this.tags.length; i++) {
-                if (this.tags[i].name == tag_name[j]) {
-                    tags.push(this.tags[i].values);
+        for (var j2 = 0; j2 < tag_name.length; j2++) {
+            for (var i2 = 0; i2 < this.tags.length; i2++) {
+                if (this.tags[i2].name == tag_name[j2]) {
+                    tags.push(this.tags[i2].values);
                     break;
                 }
             }
         }
         
         var item = [];
-        for (var i = 0; i< this.keys.length; i++) {
+        for (var i3 = 0; i3 < this.keys.length; i3++) {
             var tags2 = [];
-            for (var j = 0; j< tags.length; j++) {
-                tags2[j] = tags[j][i];
+            for (var j3 = 0; j3 < tags.length; j3++) {
+                tags2[j3] = tags[j3][i3];
             }
-            item[i] = [this.keys[i], tags2];
+            item[i3] = [this.keys[i3], tags2];
         }
         
         item.sort(
             function(a,b){
-                for (var i = 0; i< a[1].length; i++) {
+                for (var i4 = 0; i4 < a[1].length; i4++) {
                     var ret1 = 1, ret2 = -1;
-                    if (asc[i] == true) {
+                    if (asc[i4] == true) {
                         ret1 = -1, ret2 = 1;
                     }
-                    if( a[1][i] < b[1][i] ) return ret1;
-                    if( a[1][i] > b[1][i] ) return ret2;
+                    if( a[1][i4] < b[1][i4] ) return ret1;
+                    if( a[1][i4] > b[1][i4] ) return ret2;
                 }
                 return 0;
             }
         );
         var item_index = {};
-        for (var i = 0; i< item.length; i++) {
-            item_index[item[i][0]] = i;
-            //console.log([item[i][0],item[i][1][0], i])
+        for (var i5 = 0; i5 < item.length; i5++) {
+            item_index[item[i5][0]] = i5;
+            //console.log([item[i5][0],item[i5][1][0], i5])
         }
         this.asc.sort_list = item_index;
 
@@ -622,7 +622,6 @@ var mut_bar = (function()
 
     p._keys_from_sort_list = function(sort_list, start, end) {
         
-        //var x_items = this._x_items();
         var x_items = this.keys.length;
         
         if (start < 0) start = 0;
@@ -904,8 +903,8 @@ var mut_bar = (function()
         
         // x-axis
         if (this.options.grid_xs.length > 0) {
-            grid_data = [];
-            grid_idx = [];
+            var grid_data = [];
+            var grid_idx = [];
             for (var i = 0; i < this.options.grid_xs.length; i++) {
                 for (var j = 0; j < this.options.grid_xs[i].labels.length; j++) {
                     grid_data.push(this.options.grid_xs[i].labels[j]);
@@ -985,13 +984,11 @@ var mut_bar = (function()
     p._init = function() {
         
         // check key value
-        for (var idx=0; idx < this.keys.length; idx++) {
-            if (this.keys[idx][0].match(/[0-9]+/)) {
-                console.log("[WARNING] Key's first character is numeric. " + this.keys[idx]);
+        for (var idx1=0; idx1 < this.keys.length; idx1++) {
+            if (this.keys[idx1][0].match(/[0-9]+/)) {
+                console.log("[WARNING] Key's first character is numeric. " + this.keys[idx1]);
             }
         }
-        
-        var that = this;
         
         if (this.svg_obj == 0) {
             this.svg_obj = d3.select("#" + this.id).append("svg");
@@ -1035,9 +1032,9 @@ var mut_bar = (function()
                 break;
         }
         // bar
-        for (var idx=0; idx < this.dataset.length; idx++) {
+        for (var idx2=0; idx2 < this.dataset.length; idx2++) {
             this.svg_obj.append("g")
-                .attr("class", this.dataset[idx].name)
+                .attr("class", this.dataset[idx2].name)
                 .selectAll("rect")
                 .data([])
                 .enter()
@@ -1081,24 +1078,24 @@ var mut_bar = (function()
             }
         }
         
-        for (var i = 0; i< this.options.grid_xs.length; i++) {
-            switch(this.options.grid_xs[i].orient) {
+        for (var i1 = 0; i1 < this.options.grid_xs.length; i1++) {
+            switch(this.options.grid_xs[i1].orient) {
                 case "left":
-                    this.padding.left = this.padding.left + this.options.grid_xs[i].wide;
+                    this.padding.left = this.padding.left + this.options.grid_xs[i1].wide;
                     break;
                 case "right":
-                    this.padding.right = this.padding.right + this.options.grid_xs[i].wide;
+                    this.padding.right = this.padding.right + this.options.grid_xs[i1].wide;
                     break;
                 case "top":
-                    this.padding.top = this.padding.top + this.options.grid_xs[i].wide;
+                    this.padding.top = this.padding.top + this.options.grid_xs[i1].wide;
                     break;
                 case "bottom":
-                    this.padding.bottom = this.padding.bottom + this.options.grid_xs[i].wide;
+                    this.padding.bottom = this.padding.bottom + this.options.grid_xs[i1].wide;
                     break;
                 case "":
                     break;
                 default:
-                    console.log("[debug] this.options.grid_xs[" + i + "].orient: undefined value. " + this.options.grid_xs[i].orient);
+                    console.log("[debug] this.options.grid_xs[" + i1 + "].orient: undefined value. " + this.options.grid_xs[i1].orient);
                     break;
             }
         }
@@ -1108,24 +1105,24 @@ var mut_bar = (function()
         var wide_left = [];
         var wide_right = [];
         
-        for (var i = 0; i< this.options.titles.length; i++) {
-            switch(this.options.titles[i].orient) {
+        for (var i2 = 0; i2 < this.options.titles.length; i2++) {
+            switch(this.options.titles[i2].orient) {
                 case "left":
-                    wide_left.push(this.options.titles[i].wide);
+                    wide_left.push(this.options.titles[i2].wide);
                     break;
                 case "right":
-                    wide_right.push(this.options.titles[i].wide);
+                    wide_right.push(this.options.titles[i2].wide);
                     break;
                 case "top":
-                    wide_top.push(this.options.titles[i].wide);
+                    wide_top.push(this.options.titles[i2].wide);
                     break;
                 case "bottom":
-                    wide_bottom.push(this.options.titles[i].wide);
+                    wide_bottom.push(this.options.titles[i2].wide);
                     break;
                 case "":
                     break;
                 default:
-                    console.log("[debug] this.options.titles[" + i + "].orient: undefined value. " + this.options.titles[i].orient);
+                    console.log("[debug] this.options.titles[" + i2 + "].orient: undefined value. " + this.options.titles[i2].orient);
                     break;
             }
         }
@@ -1179,15 +1176,15 @@ var mut_bar = (function()
         if (this.options.titles.length > 0) {
             var titles = this.svg_obj.append("g").attr("class", "title");
             
-            for (var i = 0; i< this.options.titles.length; i++) {
+            for (var i3 = 0; i3 < this.options.titles.length; i3++) {
                 titles
                     .append("text")
-                    .text(this.options.titles[i].title)
-                    .attr("text-color", this.options.titles[i].text_color)
-                    .attr("text-anchor", this.options.titles[i].text_anchor)
-                    .attr("font-size", this.options.titles[i].font_size)
-                    .attr("font-family", this.options.titles[i].font_family)
-                    .attr("text-color", this.options.titles[i].text_color)
+                    .text(this.options.titles[i3].title)
+                    .attr("text-color", this.options.titles[i3].text_color)
+                    .attr("text-anchor", this.options.titles[i3].text_anchor)
+                    .attr("font-size", this.options.titles[i3].font_size)
+                    .attr("font-family", this.options.titles[i3].font_family)
+                    .attr("text-color", this.options.titles[i3].text_color)
                 ;
             }
         }
@@ -1223,7 +1220,7 @@ var mut_bar = (function()
                     }
                 }
                 
-                classes = this.className.baseVal.split(" ");
+                var classes = this.className.baseVal.split(" ");
                 var selected = false;
                 for (var k = 1; k < classes.length; k++) {
                     if (classes[k].indexOf("selected") == 0) {

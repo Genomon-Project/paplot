@@ -216,27 +216,27 @@ p.draw_bundle = function(obj, arc_data, data, options)
     
     var enable_tooltip = this.enable_tooltip;
     
-    for (var idx=0; idx<link_style.length; idx++) {
-        link_data[idx] = setLinkData(classes[idx]);
-        var links = packages.ends(cluster.nodes(packages.root(classes[idx])));
+    for (var idx1=0; idx1 < link_style.length; idx1++) {
+        link_data[idx1] = setLinkData(classes[idx1]);
+        var links = packages.ends(cluster.nodes(packages.root(classes[idx1])));
         var splines = bundle(links);
         
         svg.append("g")
-            .attr("class", link_style[idx].name)
+            .attr("class", link_style[idx1].name)
             .selectAll("path")
             .data(links)
             .enter()
             .append("path")
-            .attr("class", link_style[idx].name)
+            .attr("class", link_style[idx1].name)
             .attr("d", function(d, i) {
                 var start = d.source.key.split("_")[0];
                 var end = d.target.key.split("_")[0];
                 if (start == end) return line_inner(splines[i]);
                 return line_outer(splines[i]); 
             })
-            .style("stroke", link_style[idx].stroke)
-            .style("stroke-width", link_style[idx].stroke_width)
-            .style("stroke-opacity", link_style[idx].stroke_opacity)
+            .style("stroke", link_style[idx1].stroke)
+            .style("stroke-width", link_style[idx1].stroke_width)
+            .style("stroke-opacity", link_style[idx1].stroke_opacity)
             .style("fill", "none")
         
             .on("mouseover", function(d, i) {
@@ -264,12 +264,12 @@ p.draw_bundle = function(obj, arc_data, data, options)
                 var texts = link_data[group_id];
                 var result = getLinkData_values(texts, d.source.start, d.target.start);
                 d3.select("#tooltip").append("p").attr("id",  "text").append("pre").text("Link detail");
-                for (var i = 0; i<result.length; i++) {
+                for (var idx2 = 0; idx2 <result.length; idx2++) {
                     d3.select("#tooltip")
                         .append("p")
                         .attr("id",  "text")
                         .append("pre")
-                        .text(result[i]);
+                        .text(result[idx2]);
                 }
                 //Show the tooltip
                 d3.select("#tooltip").classed("hidden", false);

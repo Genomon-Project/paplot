@@ -43,7 +43,7 @@ def qc_main(args):
         return
     
     [sec_in, sec_out] = tools.get_section("qc")
-    id_list = tools.get_IDlist(input_list, tools.config_getstr(config, sec_in, "suffix"))
+    id_list = tools.get_idlist(input_list, tools.config_getstr(config, sec_in, "suffix"))
     
     # dirs
     output_html_dir = prep.create_dirs(tools.win_to_unix(args.output_dir), args.project_name, config)
@@ -78,7 +78,7 @@ def ca_main(args):
         return
     
     [sec_in, sec_out] = tools.get_section("ca")
-    id_list = tools.get_IDlist(input_list, tools.config_getstr(config, sec_in, "suffix"))
+    id_list = tools.get_idlist(input_list, tools.config_getstr(config, sec_in, "suffix"))
     
     # dirs
     output_html_dir = prep.create_dirs(tools.win_to_unix(args.output_dir), args.project_name, config)
@@ -114,7 +114,7 @@ def mutation_main(args):
         return
     
     [sec_in, sec_out] = tools.get_section("mutation")
-    id_list = tools.get_IDlist(input_list, tools.config_getstr(config, sec_in, "suffix"))
+    id_list = tools.get_idlist(input_list, tools.config_getstr(config, sec_in, "suffix"))
     
     # dirs
     output_html_dir = prep.create_dirs(tools.win_to_unix(args.output_dir), args.project_name, config)

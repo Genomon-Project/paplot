@@ -114,14 +114,12 @@ var mut_checker = (function() {
     // x/y position
     // -----------------------------------
     p.xy_position = function(asc, wide, padding1, items, i, sift) {
-        var pos = 0;
         if (asc == true) {
             return padding1 + i*wide/items + sift;
         }
         return padding1 + wide - (i+1) * wide/items + sift;
     }
     p.xy_position_grid = function(asc, wide, padding1, items, i, sift) {
-        var pos = 0;
         if (asc == true) {
             return padding1 + i*wide/items + sift;
         }
@@ -141,9 +139,9 @@ var mut_checker = (function() {
 
         var tag_name = [];
         var asc = [];
-        for (var i = 0; i < tag_name_org.length; i++) {
-            tag_name.push(tag_name_org[i]);
-            asc.push(asc_org[i]);
+        for (var i1 = 0; i1 < tag_name_org.length; i1++) {
+            tag_name.push(tag_name_org[i1]);
+            asc.push(asc_org[i1]);
         }
 
         var this_keys = this.keys;
@@ -154,40 +152,40 @@ var mut_checker = (function() {
         }
         
         var tags = [];
-        for (var j = 0; j< tag_name.length; j++) {
-            for (var i = 0; i< this_tags.length; i++) {
-                if (this_tags[i].name == tag_name[j]) {
-                    tags.push(this_tags[i].values);
+        for (var j2 = 0; j2 < tag_name.length; j2++) {
+            for (var i2 = 0; i2 < this_tags.length; i2++) {
+                if (this_tags[i2].name == tag_name[j2]) {
+                    tags.push(this_tags[i2].values);
                     break;
                 }
             }
         }
         
         var item = [];
-        for (var i = 0; i< this_keys.length; i++) {
+        for (var i3 = 0; i3 < this_keys.length; i3++) {
             var tags2 = [];
-            for (var j = 0; j< tags.length; j++) {
-                tags2[j] = tags[j][i];
+            for (var j3 = 0; j3 < tags.length; j3++) {
+                tags2[j3] = tags[j3][i3];
             }
-            item[i] = [this_keys[i], tags2];
+            item[i3] = [this_keys[i3], tags2];
         }
         
         item.sort(
             function(a,b){
-                for (var i = 0; i< a[1].length; i++) {
+                for (var i4 = 0; i4 < a[1].length; i4++) {
                     var ret1 = 1, ret2 = -1;
-                    if (asc[i] == true) {
+                    if (asc[i4] == true) {
                         ret1 = -1, ret2 = 1;
                     }
-                    if( a[1][i] < b[1][i] ) return ret1;
-                    if( a[1][i] > b[1][i] ) return ret2;
+                    if( a[1][i4] < b[1][i4] ) return ret1;
+                    if( a[1][i4] > b[1][i4] ) return ret2;
                 }
                 return 0;
             }
         );
         var item_index = {};
-        for (var i = 0; i< item.length; i++) {
-            item_index[item[i][0]] = i;
+        for (var i5 = 0; i5 < item.length; i5++) {
+            item_index[item[i5][0]] = i5;
         }
         
         if (axis == "x") {
@@ -221,12 +219,12 @@ var mut_checker = (function() {
         }
         
         if ((attr == "x") && (x == true)) {
-            var item = p.pos_from_sort_list(axis.x.sort_list, key, -1);
-            return p.xy_position_grid(axis.x.asc, plot.w, padding.left, items_len, item, 0);
+            var item_x = p.pos_from_sort_list(axis.x.sort_list, key, -1);
+            return p.xy_position_grid(axis.x.asc, plot.w, padding.left, items_len, item_x, 0);
         }
         else if ((attr == "y") && (x == false)) {
-            var item = p.pos_from_sort_list(axis.y.sort_list, key, -1);
-            return p.xy_position_grid(axis.y.asc, plot.h, padding.top, items_len, item, 0);
+            var item_y = p.pos_from_sort_list(axis.y.sort_list, key, -1);
+            return p.xy_position_grid(axis.y.asc, plot.h, padding.top, items_len, item_y, 0);
         }
         else if ((attr == "x") && (x == false)) {
             if (number == 1) {
@@ -249,24 +247,20 @@ var mut_checker = (function() {
         // rect
         var x_items = this.x_items();
         var y_items = this.y_items();
-
         for (var idx = 0; idx < this.dataset.length; idx++) {
             this.svg_obj.selectAll("g." + this.dataset[idx].name).selectAll("rect")
                 .attr("x", function(d, i) {
-                    var item = p.pos_from_sort_list(that.axis.x.sort_list, that.dataset[idx].keys[i], -1);
-                    return p.xy_position (that.axis.x.asc, that.plot.w, that.padding.left, x_items, item, 0);
+                    return p.xy_position (that.axis.x.asc, that.plot.w, that.padding.left, x_items, p.pos_from_sort_list(that.axis.x.sort_list, that.dataset[idx].keys[i], -1), 0);
                 })
                 .attr("y", function(d, i) {
-                    var item = p.pos_from_sort_list(that.axis.y.sort_list, that.dataset[idx].keys2[i], -1);
-                    return p.xy_position (that.axis.y.asc, that.plot.h, that.padding.top, y_items, item, 0);
+                    return p.xy_position (that.axis.y.asc, that.plot.h, that.padding.top, y_items, p.pos_from_sort_list(that.axis.y.sort_list, that.dataset[idx].keys2[i], -1), 0);
                 });
         }
 
         // transparent-bar
         this.svg_obj.selectAll("g.transparent_bar1").selectAll("rect")
             .attr("x", function(d, i) {
-                var item = p.pos_from_sort_list(that.axis.x.sort_list, d, -1);
-                return p.xy_position (that.axis.x.asc, that.plot.w, that.padding.left, x_items, item, 0);
+                return p.xy_position (that.axis.x.asc, that.plot.w, that.padding.left, x_items, p.pos_from_sort_list(that.axis.x.sort_list, d, -1), 0);
             })
             .attr("y", this.padding.top)
         ;
@@ -274,19 +268,16 @@ var mut_checker = (function() {
         this.svg_obj.selectAll("g.transparent_bar2").selectAll("rect")
                 .attr("x", this.padding.left)
                 .attr("y", function(d, i) {
-                    var item = p.pos_from_sort_list(that.axis.y.sort_list, d, -1);
-                    return p.xy_position (that.axis.y.asc, that.plot.h, that.padding.top, y_items, item, 0);
+                    return p.xy_position (that.axis.y.asc, that.plot.h, that.padding.top, y_items, p.pos_from_sort_list(that.axis.y.sort_list, d, -1), 0);
                 });
         
         // transparent-rect
         this.svg_obj.selectAll("g.transparent_rect").selectAll("rect")
             .attr("x", function(d, i) {
-                var item = p.pos_from_sort_list(that.axis.x.sort_list, d[0], -1);
-                return p.xy_position (that.axis.x.asc, that.plot.w, that.padding.left, x_items, item, 0);
+                return p.xy_position (that.axis.x.asc, that.plot.w, that.padding.left, x_items, p.pos_from_sort_list(that.axis.x.sort_list, d[0], -1), 0);
             })
             .attr("y", function(d, i) {
-                var item = p.pos_from_sort_list(that.axis.y.sort_list, d[1], -1);
-                return p.xy_position (that.axis.y.asc, that.plot.h, that.padding.top, y_items, item, 0);
+                return p.xy_position (that.axis.y.asc, that.plot.h, that.padding.top, y_items, p.pos_from_sort_list(that.axis.y.sort_list, d[1], -1), 0);
             })
         ;
         
@@ -301,26 +292,22 @@ var mut_checker = (function() {
 
                 if (that.options.grids[idx].axis == "x") {
                     if (that.options.grids[idx].orient == "bottom") {
-                        var item = p.pos_from_sort_list(that.axis.x.sort_list, classes[1], i);
-                        tx = tx + p.xy_position(that.axis.x.asc, that.plot.w, that.padding.left, x_items, item, Math.floor(that.plot.w / x_items / 2));
+                        tx = tx + p.xy_position(that.axis.x.asc, that.plot.w, that.padding.left, x_items, p.pos_from_sort_list(that.axis.x.sort_list, classes[1], i), Math.floor(that.plot.w / x_items / 2));
                         ty = ty + that.padding.top + that.plot.h + f;
                     }
                     else if (that.options.grids[idx].orient == "top") {
-                        var item = p.pos_from_sort_list(that.axis.x.sort_list, classes[1], i);
-                        tx = tx + p.xy_position(that.axis.x.asc, that.plot.w, that.padding.left, x_items, item, Math.floor(that.plot.w / x_items / 2));
+                        tx = tx + p.xy_position(that.axis.x.asc, that.plot.w, that.padding.left, x_items, p.pos_from_sort_list(that.axis.x.sort_list, classes[1], i), Math.floor(that.plot.w / x_items / 2));
                         ty = ty + that.padding.top - f;
                     }
                 }
                 else if (that.options.grids[idx].axis == "y") {
                     if (that.options.grids[idx].orient == "left") {
-                        var item = p.pos_from_sort_list(that.axis.y.sort_list, classes[1], i);
                         tx = tx + that.padding.left - f;
-                        ty = ty + p.xy_position(that.axis.y.asc, that.plot.h, that.padding.top, y_items, item, Math.floor(that.plot.h / y_items / 2));
+                        ty = ty + p.xy_position(that.axis.y.asc, that.plot.h, that.padding.top, y_items, p.pos_from_sort_list(that.axis.y.sort_list, classes[1], i), Math.floor(that.plot.h / y_items / 2));
                     }
                     else if (that.options.grids[idx].orient == "right") {
-                        var item = p.pos_from_sort_list(that.axis.y.sort_list, classes[1], i);
                         tx = tx + that.padding.left + that.plot.w + f;
-                        ty = ty + p.xy_position(that.axis.y.asc, that.plot.h, that.padding.top, y_items, item, Math.floor(that.plot.h / y_items / 2));
+                        ty = ty + p.xy_position(that.axis.y.asc, that.plot.h, that.padding.top, y_items, p.pos_from_sort_list(that.axis.y.sort_list, classes[1], i), Math.floor(that.plot.h / y_items / 2));
                     }
                 }
                 return 'translate(' + tx + ', ' + ty + ') rotate(' + that.options.grids[idx].text_rotate + ')';
@@ -389,7 +376,6 @@ var mut_checker = (function() {
     // resize svg
     // -----------------------------------
     p.resize = function() {
-        var that = this;
         
         // ----- update size -----
         this.update_plot_size();
@@ -466,9 +452,9 @@ var mut_checker = (function() {
         // call me after draw()
         
         var that = this;
-        
+        var idx = 0, j = 0, k= 0;
         // bar
-        for (var idx=0; idx < this.dataset.length; idx++) {
+        for (idx = 0; idx < this.dataset.length; idx++) {
             
             this.svg_obj.selectAll("g." + this.dataset[idx].name)
                 .selectAll("rect")
@@ -483,7 +469,6 @@ var mut_checker = (function() {
                 .attr("x", 0)
                 .attr("width", 0)
                 .attr("height", 0)
-                //.style("fill", this.dataset[idx].color.fill)
                 .attr("class", function(d, i) {
                     return that.dataset[idx].keys[i] + " " + that.dataset[idx].keys2[i];
                 });
@@ -507,17 +492,17 @@ var mut_checker = (function() {
         }
         
         // transparent-bar
-        var keys = [this.keys, this.keys2];
-        var target = ["selected1", "selected2"];
+        var keys_bar = [this.keys, this.keys2];
+        //var target = ["selected1", "selected2"];
         
-        for (var idx=0; idx < 2; idx++) {
+        for (idx = 0; idx < 2; idx++) {
             this.svg_obj.selectAll("g.transparent_bar" + (idx+1))
                 .selectAll("rect")
                 .remove();
 
             this.svg_obj.selectAll("g.transparent_bar" + (idx+1))
                 .selectAll("rect")
-                .data(keys[idx])
+                .data(keys_bar[idx])
                 .enter()
                 .append("rect")
                 .attr("y", 0)
@@ -532,14 +517,13 @@ var mut_checker = (function() {
         }
         
         // transparent-rect
-        var keys = [];
-        for (var idx=0; idx < this.dataset.length; idx++) {
-            for (var i=0; i < this.dataset[idx].data.length; i++) {
-                var item = [this.dataset[idx].keys[i], this.dataset[idx].keys2[i]];
-                keys.push(item);
+        var keys_rect = [];
+        for (idx = 0; idx < this.dataset.length; idx++) {
+            for (j = 0; j < this.dataset[idx].data.length; j++) {
+                keys_rect.push([this.dataset[idx].keys[j], this.dataset[idx].keys2[j]]);
             }
         }
-        keys.sort(function(a,b){
+        keys_rect.sort(function(a,b){
             if( a[0] < b[0] ) return -1;
             if( a[0] > b[0] ) return 1;
             if( a[1] < b[1] ) return -1;
@@ -547,11 +531,11 @@ var mut_checker = (function() {
             return 0;
         });
         var keys_filt = [];
-        for (var i = 0; i < keys.length; i++) {
+        for (j = 0; j < keys_rect.length; j++) {
             // delete duplication
-            if (i == 0) keys_filt.push(keys[i]);
+            if (j == 0) keys_filt.push(keys_rect[j]);
             var last = keys_filt[keys_filt.length-1];
-            if ((last[0] != keys[i][0]) || (last[1] != keys[i][1])) keys_filt.push(keys[i]);
+            if ((last[0] != keys_rect[j][0]) || (last[1] != keys_rect[j][1])) keys_filt.push(keys_rect[j]);
         };
 
         
@@ -639,12 +623,12 @@ var mut_checker = (function() {
         //this.update_plot_size();
         
         // axis
-        grid_data = [];
-        grid_idx = [];
-        for (var i = 0; i < this.options.grids.length; i++) {
-            for (var j = 0; j < this.options.grids[i].labels.length; j++) {
-                grid_data.push(this.options.grids[i].labels[j]);
-                grid_idx.push([i, j]);
+        var grid_data = [];
+        var grid_idx = [];
+        for (k = 0; k < this.options.grids.length; k++) {
+            for (j = 0; j < this.options.grids[k].labels.length; j++) {
+                grid_data.push(this.options.grids[k].labels[j]);
+                grid_idx.push([k, j]);
             }
         }
         
@@ -714,9 +698,9 @@ var mut_checker = (function() {
     p.init = function() {
         
         // check key value
-        for (var idx=0; idx < this.keys.length; idx++) {
-            if (this.keys[idx][0].match(/[0-9]+/)) {
-                console.log("[WARNING] Key's first character is numeric. " + this.keys[idx]);
+        for (var idx1=0; idx1 < this.keys.length; idx1++) {
+            if (this.keys[idx1][0].match(/[0-9]+/)) {
+                console.log("[WARNING] Key's first character is numeric. " + this.keys[idx1]);
             }
         }
         
@@ -749,9 +733,9 @@ var mut_checker = (function() {
         }
         
         // bar
-        for (var idx=0; idx < this.dataset.length; idx++) {
+        for (var idx2=0; idx2 < this.dataset.length; idx2++) {
             this.svg_obj.append("g")
-                .attr("class", this.dataset[idx].name)
+                .attr("class", this.dataset[idx2].name)
                 .selectAll("rect")
                 .data([])
                 .enter();
@@ -868,7 +852,7 @@ var mut_checker = (function() {
                         }
                     }
                     
-                    classes = this.className.baseVal.split(" ");
+                    var classes = this.className.baseVal.split(" ");
                     var selected = false;
                     for (var k = 1; k < classes.length; k++) {
                         if (classes[k].indexOf("selected") == 0) {

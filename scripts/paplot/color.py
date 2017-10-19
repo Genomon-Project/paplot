@@ -51,14 +51,14 @@ def name_to_value(name):
     
     return name
     
-def Saturation_down_list(color_list):
+def saturation_down_list(color_list):
     sat_list = []
     for c in color_list:
-        sat_list.append(Saturation_down(c))
+        sat_list.append(saturation_down(c))
     
     return sat_list
     
-def Saturation_down(color):
+def saturation_down(color):
     param_s = 0.3
     param_v = 1.5
     
@@ -133,7 +133,7 @@ def create_gradient(colors, length):
             c0 = int(colors[0][2*i+1:2*i+3], 16);
             c1 = int(colors[1][2*i+1:2*i+3], 16);
             
-            c = c0 + ((value - v0) * (c1 - c0)) / ((v1 - v0))
+            c = c0 + ((value - v0) * (c1 - c0)) / (v1 - v0)
             if (c > 255): c = 255
             if (c < 0): c = 0
     
@@ -168,5 +168,3 @@ def create_rainbow_array(length, mid_colors):
     
     return array
     
-if __name__ == "__main__":
-    pass

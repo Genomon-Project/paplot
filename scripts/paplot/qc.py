@@ -11,6 +11,10 @@ $Id: qc.py 205 2017-08-08 06:25:59Z aokada $
 js_header = """(function() {
 qc_data = {};
 """
+js_footer = """
+})();
+Object.freeze(qc_data);
+"""
 
 js_dataset = """
 qc_data.Ids = [{IDs}];
@@ -21,104 +25,6 @@ plot_template = "{{chart_id:'{chart_id}', title:'{title}', title_y:'{title_y}', 
 
 js_data1 = "qc_data.value = ["
 js_data2 = "];"
-
-js_function = """
-function tooltip_partial(format, data) {
-    
-    var obj = {};
-    var tooltip = [];
-    
-    for (var p = 0; p < data.length; p++) {
-        obj[qc_data.header[p]] = data[p];
-    }
-    for (var t in format.format) {
-        var text = text_format(format.format[t], obj);
-        tooltip.push(text);
-    }
-
-    return tooltip;
-};
-
-function text_format(format, obj) {
-
-    var text = "";
-    for (var f in format) {
-        if (format[f].type == 'fix') {
-            text += format[f].label;
-            continue;
-        }
-        var replaced = format[f].label;
-        for (var k in format[f].keys) {
-            var reg = new RegExp("{" + format[f].keys[k] + "}", 'g');
-            replaced = replaced.replace(reg, obj[format[f].keys[k]]);
-        }
-        // case numeric
-        if (format[f].type == 'numeric') {
-            try{  replaced = eval(replaced);
-            } catch(e) {}
-            if (format[f].ext != null) {
-                if (format[f].ext == ",") {
-                    replaced = String(replaced).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
-                }
-                if (format[f].ext[0] == ".") {
-                    replaced = parseFloat(replaced).toFixed(parseInt(format[f].ext.substr(1)));
-                }
-            }
-        }
-        text += replaced;
-    }
-    return text;
-};
-
-qc_data.get_plot_config = function (chart_id) {
-
-    for (var i = 0; i < qc_data.plots.length; i++) {
-        if (qc_data.plots[i].chart_id == chart_id) {
-            return qc_data.plots[i];
-        }
-    }
-    return null;
-};
-
-qc_data.get_dataset = function (chart_id) {
-    
-    var info = qc_data.get_plot_config(chart_id);
-    
-    var key = [];
-    for (var d = 0; d < qc_data.value.length; d++) {
-        key.push(qc_data.value[d][qc_data.header.indexOf("id")]);
-    }
-    
-    var tooltip = 0;
-    if (info.tooltip.format.length > 0) {
-        tooltip = {};
-        for (var d = 0; d < qc_data.value.length; d++) {
-            var id = qc_data.value[d][qc_data.header.indexOf("id")];
-            tooltip[id] = [];
-            
-            var tmp_data = tooltip_partial(info.tooltip, qc_data.value[d])
-            for (var t in tmp_data) {
-                tooltip[id].push(tmp_data[t]);
-            }
-        }
-    }
-    
-    var data = [];
-    for (var s = 0; s < info.stack.format.length; s++) {
-        data[s] = [];
-    }
-    for (var d = 0; d < qc_data.value.length; d++) {
-        var tmp_data = tooltip_partial(info.stack, qc_data.value[d]);
-        for (var s in tmp_data) {
-            data[s].push(Number(tmp_data[s]))
-        }
-    }
-    
-    return {data: data, key: key, tooltip: tooltip};
-};
-})();
-Object.freeze(qc_data);
-"""
 
 ########### html template
 html_chart_template = "<div id='legend_{chart_id}_svg'></div><div id='{chart_id}'></div>\n"
@@ -141,6 +47,7 @@ def output_html(output_di, positions, config):
 
 def convert_tojs(input_file, output_file, positions, config):
 
+    import os
     import paplot.subcode.data_frame as data_frame
     import paplot.subcode.merge as merge
     import paplot.subcode.tools as tools
@@ -216,19 +123,19 @@ def convert_tojs(input_file, output_file, positions, config):
         plots_option.append(chart_id)
     
     # ID list
-    Ids = []
+    id_list = []
     for row in df.data:
         iid = row[df.name_to_index(cols_di["id"])]
-        if iid != "": Ids.append(iid)
-    Ids = list(set(Ids))
-    Ids.sort()
+        if iid != "": id_list.append(iid)
+    id_list = list(set(id_list))
+    id_list.sort()
     
     # header 
     headers = tools.dict_keys(cols_di)
     
     f = open(output_file, "w")
     f.write(js_header)
-    f.write(js_dataset.format(IDs = convert.list_to_text(Ids), \
+    f.write(js_dataset.format(IDs = convert.list_to_text(id_list), \
                             header = convert.list_to_text(headers), \
                             plots = plots_text))    
     f.write(js_data1)
@@ -253,7 +160,13 @@ def convert_tojs(input_file, output_file, positions, config):
         f.write("[" + values + "],")
 
     f.write(js_data2)
+    
+    f_template = open(os.path.dirname(os.path.abspath(__file__)) + "/templates/qc.js")
+    js_function = f_template.read()
+    f_template.close()
     f.write(js_function)
+    f.write(js_footer)
+
     f.close()
     
     return {"plots": plots_option}
@@ -268,7 +181,6 @@ def create_html(dataset, output_di, config):
     js_txt = ""
 
     for i in range(len(dataset["plots"])):
-#        chart_txt += html_chart_template.format(chart_id = dataset["plots"][i])
         js_txt += html_js_template.format(i = str(i), chart_id = dataset["plots"][i])
         if dataset["plots"][i] == "chart_brush":
             chart_txt += '<p class="muted pull-left" style="margin-right: 15px;">Select a range to zoom in</p>\n'
@@ -291,5 +203,4 @@ def create_html(dataset, output_di, config):
             style = "../style/%s" % os.path.basename(tools.config_getpath(config, "style", "path", "default.js")),
         ))
     f_html.close()
-    
 

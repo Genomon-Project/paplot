@@ -83,7 +83,7 @@ def dict_keys(di):
 
     return li
     
-def get_IDlist(file_list, suffix):
+def get_idlist(file_list, suffix):
     
     import os
     ids = []
@@ -122,10 +122,6 @@ def get_section(mode):
         section_in = "result_format_mutation"
         section_out = "merge_format_mutation"
     
-    elif mode.lower() == "summary":
-        section_in = "result_format_qc"
-        section_out = "merge_format_qc"
-
     elif mode.lower() == "qc":
         section_in = "result_format_qc"
         section_out = "merge_format_qc"
