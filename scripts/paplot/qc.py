@@ -161,7 +161,7 @@ def convert_tojs(input_file, output_file, positions, config):
 
     f.write(js_data2)
     
-    f_template = open(os.path.dirname(os.path.abspath(__file__)) + "/templates/qc.js")
+    f_template = open(os.path.dirname(os.path.abspath(__file__)) + "/templates/data_qc.js")
     js_function = f_template.read()
     f_template.close()
     f.write(js_function)

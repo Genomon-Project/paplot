@@ -1,0 +1,6 @@
+include LICENSE
+include README.md
+recursive-include config_template *
+recursive-include example *.cfg *.csv *.json
+recursive-include genome *
+recursive-include scripts *

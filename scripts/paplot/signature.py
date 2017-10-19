@@ -198,7 +198,7 @@ def convert_tojs(params, config):
             )
         )
 
-    f_template = open(os.path.dirname(os.path.abspath(__file__)) + "/templates/signature.js")
+    f_template = open(os.path.dirname(os.path.abspath(__file__)) + "/templates/data_signature.js")
     js_function = f_template.read()
     f_template.close()
     f.write(js_function)

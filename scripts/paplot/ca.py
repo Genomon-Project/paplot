@@ -51,11 +51,12 @@ detail_template = """<div class="float_frame" id="float{id}"><table><tr><td clas
 """
 ########### functions
 
-import paplot.subcode.tools as tools
-
 def load_genome_size(config):
+    import os
+    import paplot.subcode.tools as tools
     
-    path = tools.config_getpath(config, "genome", "path", "../../config/hg19.csv")
+    default_path = os.path.dirname(os.path.abspath(__file__)) + "/templates/genome_size_hg19.csv"
+    path = tools.config_getpath(config, "genome", "path", default_path)
     
     settings = tools.config_getstr(config, "ca", "use_chrs").replace(" ", "").split(",")
     use_chrs = [];
@@ -156,6 +157,14 @@ def insite_genome(genome_size, chrom, pos):
                 return [i, genome_size[i][1]]
     
     return [-1, -1]
+
+def output_html(output_di, positions, config):
+    data = convert_tojs(output_di["dir"] + "/" + output_di["data"], output_di["dir"] + "/" + output_di["js"], positions, config)
+    if data != None:
+        create_html(data, output_di, config)
+        return True
+    
+    return False
 
 def convert_tojs(input_file, output_file, positions, config):
 
@@ -366,7 +375,7 @@ def convert_tojs(input_file, output_file, positions, config):
         item = select_item_text
     ))
     
-    f_template = open(os.path.dirname(os.path.abspath(__file__)) + "/templates/ca.js")
+    f_template = open(os.path.dirname(os.path.abspath(__file__)) + "/templates/data_ca.js")
     js_function = f_template.read()
     f_template.close()
     f.write(js_function)
@@ -379,7 +388,8 @@ def convert_tojs(input_file, output_file, positions, config):
 def create_html(dataset, output_di, config):
     import os
     import paplot.prep as prep
-
+    import paplot.subcode.tools as tools
+    
     div_txt = ""
     call_txt = ""
     detail_txt = ""
@@ -411,11 +421,3 @@ def create_html(dataset, output_di, config):
             style = "../style/%s" % os.path.basename(tools.config_getpath(config, "style", "path", "default.js")),
         ))
     f_html.close()
-
-def output_html(output_di, positions, config):
-    data = convert_tojs(output_di["dir"] + "/" + output_di["data"], output_di["dir"] + "/" + output_di["js"], positions, config)
-    if data != None:
-        create_html(data, output_di, config)
-        return True
-    
-    return False

@@ -290,7 +290,7 @@ def convert_tojs(input_file, output_file, positions, config):
     f.write(js_subdata_2)
     
     ##### functions #####
-    f_template = open(os.path.dirname(os.path.abspath(__file__)) + "/templates/mutation.js")
+    f_template = open(os.path.dirname(os.path.abspath(__file__)) + "/templates/data_mutation.js")
     js_function = f_template.read()
     f_template.close()
     f.write(js_function)
@@ -307,7 +307,7 @@ def load_subdata(ids, sec, config):
     import paplot.convert as convert
     import paplot.color as color
 
-    input_file = tools.config_getpath(config, sec, "path", default = "../../example/sample_summary.csv")
+    input_file = tools.config_getpath(config, sec, "path", default = "")
     if os.path.exists(input_file) == False:
         print ("[ERROR] file is not exist. %s" % input_file)
         return None

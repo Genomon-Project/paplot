@@ -24,19 +24,16 @@ def config_getint(config, section, item, default = -1):
     return value
 
 def config_getpath(config, section, item, default = ""):
-    import os
-    
-    path = ""
+
     if config.has_option(section, item) == True:
         path = win_to_unix(config.get(section, item).strip())
-        if len(path) > 0 and os.path.exists(path) == False:
-            print ("can not find file. [%s] %s=%s, so use default." % (section, item, path))
-            path = ""
+        if len(path) > 0:
+            return path
             
-    if len(path) == 0 and len(default) > 0:
-        path = os.path.dirname(os.path.abspath(__file__)) + "/" + default
+    if len(default) > 0:
+        return default
         
-    return path
+    return ""
 
 def config_getjson(config, section, item, default = ""):
     import json
@@ -138,9 +135,9 @@ def load_config(config_file):
         import ConfigParser as cp
 
     if len(config_file) == 0:
-        config_file = os.path.dirname(os.path.abspath(__file__)) + "/../../config/paplot.cfg"
+        config_file = os.path.dirname(os.path.abspath(__file__)) + "/../templates/paplot.cfg"
         config_file = os.path.abspath(config_file)
-    
+        print config_file
     if os.path.exists(config_file) == False:
         return [None, config_file]
         
