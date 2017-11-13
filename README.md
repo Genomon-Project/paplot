@@ -21,7 +21,7 @@ http://genomon-project.github.io/paplot/
 
 -------------------------------------------------------------------------
 
-## 2. Documents
+## 2. Documentation
 
 English:
 
