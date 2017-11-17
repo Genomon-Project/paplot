@@ -5,7 +5,7 @@
 ![Python](https://img.shields.io/badge/python-3.x-blue.svg)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://opensource.org/licenses/MIT)
 [![Documentation](https://img.shields.io/badge/docs-latest-blue.svg?style=flat)](http://paplot-doc.readthedocs.io)
-
+[![status](http://joss.theoj.org/papers/96e840e7edae58a6b6d5eb042870e361/status.svg)](http://joss.theoj.org/papers/96e840e7edae58a6b6d5eb042870e361)
 
 # paplot
 
