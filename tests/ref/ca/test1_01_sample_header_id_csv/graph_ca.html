@@ -1,0 +1,67 @@
+<html lang="en">
+<head>
+  <title>CA graphs - test1_01_sample_header_id_csv</title>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+  
+  <link rel="stylesheet" type="text/css" href="../layout/paplot.css"/>
+</head>
+<body>
+
+<div class="version">
+Generated on 2017-11-21 12:32:33 for test1_01_sample_header_id_csv by paplot-0.5.5.
+</div>
+
+<div class="container">
+  <h2 id="title">CA graphs - test1_01_sample_header_id_csv</h2>
+
+  <p>Style of selected graphs<br>
+  <input type="radio" name="q2" value="hilight" onclick="thumb_reset()" checked> Highlight selected graphs
+  <input type="radio" name="q2" value="hide" onclick="thumb_reset()"> Hide non-selected graphs
+  </p>
+  <p><input type="button" value="Reset" onclick="thumb_reset()"></p>
+
+<!-- save image --><button type="button" onclick="push_export()" id="dw_btn" style="margin-bottom: 20px;"><img src="../layout/download.png" style="margin-right: 5px;">Export</button><div id="btn"></div>
+<!-- legend --> <div id='legend_html'></div><div id='legend_svg'></div>
+
+<div id="selector"></div>
+
+<!-- ### tumbnails ### -->
+<div>
+<ul>
+<li class="thumb" id="thumb0_li"><strong>SAMPLE00<br></strong><div id="thumb0" onclick="show_float(event,'0','SAMPLE00')"></div></li>
+<li class="thumb" id="thumb1_li"><strong>SAMPLE01<br></strong><div id="thumb1" onclick="show_float(event,'1','SAMPLE01')"></div></li>
+<li class="thumb" id="thumb2_li"><strong>SAMPLE02<br></strong><div id="thumb2" onclick="show_float(event,'2','SAMPLE02')"></div></li>
+
+</ul>
+</div>
+
+</div>
+
+<!-- ### details ### -->
+<div class="float_frame" id="float0"><table><tr><td class="float_header" id="float0_t"><strong>SAMPLE00</strong></td><td><input type="button" value="X" onclick="hide_float('#float0')" margin="0"></td></tr><tr><td colspan="2" class="float_svg" id="map0"></td></tr></table><div class="float_handle" id="float0_h" onmousedown="mouse_down(event, '#float0')" onmousemove="mouse_move(event, '#float0')" onmouseup="mouse_up(event, '#float0')" onmouseout="mouse_out('#float0')"></div></div>
+<div class="float_frame" id="float1"><table><tr><td class="float_header" id="float1_t"><strong>SAMPLE01</strong></td><td><input type="button" value="X" onclick="hide_float('#float1')" margin="0"></td></tr><tr><td colspan="2" class="float_svg" id="map1"></td></tr></table><div class="float_handle" id="float1_h" onmousedown="mouse_down(event, '#float1')" onmousemove="mouse_move(event, '#float1')" onmouseup="mouse_up(event, '#float1')" onmouseout="mouse_out('#float1')"></div></div>
+<div class="float_frame" id="float2"><table><tr><td class="float_header" id="float2_t"><strong>SAMPLE02</strong></td><td><input type="button" value="X" onclick="hide_float('#float2')" margin="0"></td></tr><tr><td colspan="2" class="float_svg" id="map2"></td></tr></table><div class="float_handle" id="float2_h" onmousedown="mouse_down(event, '#float2')" onmousemove="mouse_move(event, '#float2')" onmouseup="mouse_up(event, '#float2')" onmouseout="mouse_out('#float2')"></div></div>
+
+
+<!-- ### tooltip ### -->
+<div id="tooltip" class="hidden"></div>
+<!-- canvas for save image -->
+<canvas id="dw_canvas" class="hidden"></canvas>
+
+<script type="text/javascript" src="../lib/d3_v3.5.13/d3.min.js"></script>
+<script type="text/javascript" src="../lib/d3-legend_v1.10.0/d3-legend.min.js"></script>
+<script type="text/javascript" src="../style/default.js"></script>
+<script type="text/javascript" src="../js/utils.js"></script>
+<script type="text/javascript" src="../js/bundle.js"></script>
+<script type="text/javascript" src="../js/bar.js"></script>
+<script type="text/javascript" src="./data_ca.js"></script>
+<script type="text/javascript" src="../js/graph_ca.js"></script>
+<script>
+draw_select();
+draw_bandle_thumb("0", "SAMPLE00");
+draw_bandle_thumb("1", "SAMPLE01");
+draw_bandle_thumb("2", "SAMPLE02");
+
+</script>
+</body>
+</html>

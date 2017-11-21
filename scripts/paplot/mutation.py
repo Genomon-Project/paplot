@@ -312,7 +312,7 @@ def load_subdata(ids, sec, config):
         print ("[ERROR] file is not exist. %s" % input_file)
         return None
 
-    sept = tools.config_getstr(config, sec, "sept")
+    sept = tools.config_getstr(config, sec, "sept").replace("\\t", "\t").replace("\\n", "\n").replace("\\r", "\r")
     mode = tools.config_getstr(config, sec, "mode")
     comment = tools.config_getstr(config, sec, "comment")
     title = tools.config_getstr(config, sec, "title")
@@ -356,8 +356,8 @@ def load_subdata(ids, sec, config):
         pos_value = -1
         pos_id = -1
     else:
-        pos_value = tools.config_getint(config, sec, "col_value")
-        pos_id = tools.config_getint(config, sec, "col_ID")
+        pos_value = tools.config_getint(config, sec, "col_value")-1
+        pos_id = tools.config_getint(config, sec, "col_ID")-1
         header = ["",""]
     
     # copy id_list for find check

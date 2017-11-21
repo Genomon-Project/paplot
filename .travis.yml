@@ -8,6 +8,8 @@ python:
 
 script:
   - python setup.py build install
+  - python setup.py test
+  - bash tests/build_example.sh
 
 notifications:
   emails:

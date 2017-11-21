@@ -1,0 +1,5 @@
+# 
+# $Id: SAMPLE02.csv 117 2016-06-29 01:43:38Z aokada $
+# 
+read_length_r1	read_length_r2	total_reads	mapped_reads	mean_insert_size	duplicate_reads	average_depth	2x_rt	10x_rt	20x_rt	30x_rt
+120	175	90635480	88010999	496.34	8347508	63.3750	0.9814	0.8236	0.6045	0.5889
