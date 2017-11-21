@@ -343,13 +343,12 @@ def convert_tojs(input_file, output_file, positions, config):
     select_item_text = ""
     select_value_text = ""
     select_key_text = ""
-    
     for g in range(len(groups)):
         items = []
         values = []
         keys = []
         
-        for i in link[g]:
+        for i in sorted(link[g].keys()):
             
             values.append(len(link[g][i]))
             
