@@ -137,7 +137,7 @@ def load_config(config_file):
     if len(config_file) == 0:
         config_file = os.path.dirname(os.path.abspath(__file__)) + "/../templates/paplot.cfg"
         config_file = os.path.abspath(config_file)
-        print config_file
+
     if os.path.exists(config_file) == False:
         return [None, config_file]
         
