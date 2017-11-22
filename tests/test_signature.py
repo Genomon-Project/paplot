@@ -40,17 +40,25 @@ class TestSet(unittest.TestCase):
         pass
         
     def test1_01_minimal(self):
-        name = "test1_01_minimal"
+        name = sys._getframe().f_code.co_name
         subprocess.check_call('python paplot signature %s/minimal/data.json %s %s -c %s/minimal/paplot.cfg' % (self.dataset, self.ALT, name, self.dataset), shell=True)
 
         ref = test_utils.load_text(self.REF + name + "/data_signature2.js")
         alt = test_utils.load_text(self.ALT + name + "/data_signature2.js")
         self.assertEqual(ref, alt)
 
+        ref = test_utils.load_html(self.REF + name + "/graph_signature2.html")
+        alt = test_utils.load_html(self.ALT + name + "/graph_signature2.html")
+        self.assertEqual(ref, alt)
+
     def test1_02_stack(self):
-        name = "test1_02_stack"
+        name = sys._getframe().f_code.co_name
         subprocess.check_call('python paplot signature %s/stack/data2.json %s %s -c %s/stack/paplot.cfg' % (self.dataset, self.ALT, name, self.dataset), shell=True)
 
         ref = test_utils.load_text(self.REF + name + "/data_signature2.js")
         alt = test_utils.load_text(self.ALT + name + "/data_signature2.js")
+        self.assertEqual(ref, alt)
+
+        ref = test_utils.load_html(self.REF + name + "/graph_signature2.html")
+        alt = test_utils.load_html(self.ALT + name + "/graph_signature2.html")
         self.assertEqual(ref, alt)

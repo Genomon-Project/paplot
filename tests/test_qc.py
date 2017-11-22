@@ -40,11 +40,15 @@ class TestSet(unittest.TestCase):
         pass
         
     def test1_01_sample_header_id_csv(self):
-        name = "test1_01_sample_header_id_csv"
+        name = sys._getframe().f_code.co_name
         subprocess.check_call('python paplot qc "%s/header_id/SAMPLE*.csv" %s %s -c %s/header_id/csv.cfg' % (self.dataset, self.ALT, name, self.dataset), shell=True)
         
         ref = test_utils.load_text(self.REF + "test1_01_sample_header_id_csv/data_qc.js")
         alt = test_utils.load_text(self.ALT + name + "/data_qc.js")
+        self.assertEqual(ref, alt)
+
+        ref = test_utils.load_html(self.REF + "test1_01_sample_header_id_csv/graph_qc.html")
+        alt = test_utils.load_html(self.ALT + name + "/graph_qc.html")
         self.assertEqual(ref, alt)
         
     def test1_02_sample_header_id_tsv(self):
@@ -54,6 +58,10 @@ class TestSet(unittest.TestCase):
         ref = test_utils.load_text(self.REF + "test1_01_sample_header_id_csv/data_qc.js")
         alt = test_utils.load_text(self.ALT + name + "/data_qc.js")
         self.assertEqual(ref, alt)
+
+        ref = test_utils.load_html(self.REF + "test1_01_sample_header_id_csv/graph_qc.html")
+        alt = test_utils.load_html(self.ALT + name + "/graph_qc.html")
+        self.assertEqual(ref, alt)
         
     def test1_03_merge_header_id_csv(self):
         name = sys._getframe().f_code.co_name
@@ -62,6 +70,10 @@ class TestSet(unittest.TestCase):
         ref = test_utils.load_text(self.REF + "test1_01_sample_header_id_csv/data_qc.js")
         alt = test_utils.load_text(self.ALT + name + "/data_qc.js")
         self.assertEqual(ref, alt)
+
+        ref = test_utils.load_html(self.REF + "test1_01_sample_header_id_csv/graph_qc.html")
+        alt = test_utils.load_html(self.ALT + name + "/graph_qc.html")
+        self.assertEqual(ref, alt)
         
     def test1_04_merge_header_id_tsv(self):
         name = sys._getframe().f_code.co_name
@@ -69,6 +81,10 @@ class TestSet(unittest.TestCase):
         
         ref = test_utils.load_text(self.REF + "test1_01_sample_header_id_csv/data_qc.js")
         alt = test_utils.load_text(self.ALT + name + "/data_qc.js")
+        self.assertEqual(ref, alt)
+
+        ref = test_utils.load_html(self.REF + "test1_01_sample_header_id_csv/graph_qc.html")
+        alt = test_utils.load_html(self.ALT + name + "/graph_qc.html")
         self.assertEqual(ref, alt)
         
     def test1_05_sample_noheader_id_csv(self):
@@ -79,12 +95,20 @@ class TestSet(unittest.TestCase):
         alt = test_utils.load_text(self.ALT + name + "/data_qc.js")
         self.assertEqual(ref, alt)
 
+        ref = test_utils.load_html(self.REF + "test1_01_sample_header_id_csv/graph_qc.html")
+        alt = test_utils.load_html(self.ALT + name + "/graph_qc.html")
+        self.assertEqual(ref, alt)
+
     def test1_06_sample_noheader_id_tsv(self):
         name = sys._getframe().f_code.co_name
         subprocess.check_call('python paplot qc "%s/noheader_id/SAMPLE*.tsv" %s %s -c %s/noheader_id/tsv.cfg' % (self.dataset, self.ALT, name, self.dataset), shell=True)
         
         ref = test_utils.load_text(self.REF + "test1_01_sample_header_id_csv/data_qc.js")
         alt = test_utils.load_text(self.ALT + name + "/data_qc.js")
+        self.assertEqual(ref, alt)
+
+        ref = test_utils.load_html(self.REF + "test1_01_sample_header_id_csv/graph_qc.html")
+        alt = test_utils.load_html(self.ALT + name + "/graph_qc.html")
         self.assertEqual(ref, alt)
         
     def test1_07_merge_noheader_id_csv(self):
@@ -95,12 +119,20 @@ class TestSet(unittest.TestCase):
         alt = test_utils.load_text(self.ALT + name + "/data_qc.js")
         self.assertEqual(ref, alt)
 
+        ref = test_utils.load_html(self.REF + "test1_01_sample_header_id_csv/graph_qc.html")
+        alt = test_utils.load_html(self.ALT + name + "/graph_qc.html")
+        self.assertEqual(ref, alt)
+
     def test1_08_merge_noheader_id_tsv(self):
         name = sys._getframe().f_code.co_name
         subprocess.check_call('python paplot qc "%s/noheader_id/merge.tsv" %s %s -c %s/noheader_id/tsv.cfg' % (self.dataset, self.ALT, name, self.dataset), shell=True)
         
         ref = test_utils.load_text(self.REF + "test1_01_sample_header_id_csv/data_qc.js")
         alt = test_utils.load_text(self.ALT + name + "/data_qc.js")
+        self.assertEqual(ref, alt)
+
+        ref = test_utils.load_html(self.REF + "test1_01_sample_header_id_csv/graph_qc.html")
+        alt = test_utils.load_html(self.ALT + name + "/graph_qc.html")
         self.assertEqual(ref, alt)
         
     def test1_09_sample_header_noid_csv(self):
@@ -110,6 +142,10 @@ class TestSet(unittest.TestCase):
         ref = test_utils.load_text(self.REF + "test1_01_sample_header_id_csv/data_qc.js")
         alt = test_utils.load_text(self.ALT + name + "/data_qc.js")
         self.assertEqual(ref, alt)
+
+        ref = test_utils.load_html(self.REF + "test1_01_sample_header_id_csv/graph_qc.html")
+        alt = test_utils.load_html(self.ALT + name + "/graph_qc.html")
+        self.assertEqual(ref, alt)
         
     def test1_10_sample_header_noid_tsv(self):
         name = sys._getframe().f_code.co_name
@@ -117,6 +153,10 @@ class TestSet(unittest.TestCase):
         
         ref = test_utils.load_text(self.REF + "test1_01_sample_header_id_csv/data_qc.js")
         alt = test_utils.load_text(self.ALT + name + "/data_qc.js")
+        self.assertEqual(ref, alt)
+
+        ref = test_utils.load_html(self.REF + "test1_01_sample_header_id_csv/graph_qc.html")
+        alt = test_utils.load_html(self.ALT + name + "/graph_qc.html")
         self.assertEqual(ref, alt)
         
     def test1_13_sample_noheader_noid_csv(self):
@@ -127,10 +167,18 @@ class TestSet(unittest.TestCase):
         alt = test_utils.load_text(self.ALT + name + "/data_qc.js")
         self.assertEqual(ref, alt)
 
+        ref = test_utils.load_html(self.REF + "test1_01_sample_header_id_csv/graph_qc.html")
+        alt = test_utils.load_html(self.ALT + name + "/graph_qc.html")
+        self.assertEqual(ref, alt)
+
     def test1_14_sample_noheader_noid_tsv(self):
         name = sys._getframe().f_code.co_name
         subprocess.check_call('python paplot qc "%s/noheader_noid/SAMPLE*.tsv" %s %s -c %s/noheader_noid/tsv.cfg' % (self.dataset, self.ALT, name, self.dataset), shell=True)
         
         ref = test_utils.load_text(self.REF + "test1_01_sample_header_id_csv/data_qc.js")
         alt = test_utils.load_text(self.ALT + name + "/data_qc.js")
+        self.assertEqual(ref, alt)
+
+        ref = test_utils.load_html(self.REF + "test1_01_sample_header_id_csv/graph_qc.html")
+        alt = test_utils.load_html(self.ALT + name + "/graph_qc.html")
         self.assertEqual(ref, alt)

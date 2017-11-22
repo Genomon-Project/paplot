@@ -12,3 +12,18 @@ def load_text(path):
     
     return text
 
+def load_html(path):
+    import re
+    
+    text = load_text(path)
+    
+    for i in range(len(text)):
+        if re.search("^ *<title.*>.+</title> *$", text[i]):
+            text[i] = ""
+        elif re.search("^Generated on [0-9]{4}-[0-9]{1,2}-[0-9]{1,2} [0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2} for .+ paplot-[0-9]+.[0-9]+.[0-9]+.$", text[i]):
+            text[i] = ""
+        elif re.search("^ *<h2.*>.* .*- .*</h2> *$", text[i]):
+            text[i] = ""
+        
+    return text
+
