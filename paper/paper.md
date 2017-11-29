@@ -40,7 +40,7 @@ Interactive graphics contain richer information than static ones, thus facilitat
 Owing to the advancement in information technologies and development of application frameworks for easy generation of interactive graphics, using interactive graphics for academic re-search and auto-generated reports for clinical sequencing will be-come more common. 
 We believe that paplot will be useful for academic research and clinical practice.
 
-![Figures](./img/graphs.png)
+![Figures](graphs.png)
 
 **Fig. 1. Example of interactive reports created by paplot.**
 
