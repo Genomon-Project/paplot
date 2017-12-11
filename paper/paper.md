@@ -34,6 +34,7 @@ The worldwide rapid accumulation of massive cancer genome sequencing data presen
 However, the subsequent visualization and interpretation often demand us additional laborious efforts such as formatting and organizing the result tables via additional scripting, as well as graphic manipulation via drawing tools, occasionally with multiple trial-and-error parameter adjustments. 
 Additionally, as many existing tools only provide static figures [@skidmore2016genvisr; @yin2012ggbio], it is necessary to again repeatedly execute drawing tools with different settings even for generating slightly different visualizations (e.g., sorting and filtering by specific criteria). 
 Furthermore, even when some interesting characteristics are observed, we often need to bother to refer back to the raw analytical result tables for identifying the samples and the exact values of interest, as these may not be shown in the static figures.
+
 Here, we present [paplot](https://github.com/Genomon-Project/paplot), a suite of programs to generate various reports for commonly needed tasks in cancer genome analysis. 
 paplot accepts text-based input data and configuration files and generates HTML files with dynamic, interactive data visualizations powered by [D3.js](https://d3js.org). 
 By modifying settings in the configuration files, users can freely change various visual aspects such as colors of objects and contents of pop-up windows appearing after DOM events such as mouse-click and mouse-over.
@@ -48,6 +49,7 @@ Confirming the quality of sequence data (e.g., coverage, insert size and mapping
 
 Chromosomal aberrations play important roles in cancer development [@mitelman2007impact]. 
 After characterizing chromosomal aberrations (genomic structural variations from whole genome sequencing data or fusion transcripts from transcriptome sequencing data), it is common to generate a visual overview of chromosomal aberrations, typically using the circos plot [@krzywinski2009circos], to examine for certain specific phenomena such as chromothripsis [@stephens2011massive]. 
+
 When the users open the Chromosomal Aberrations Report (Figure 1B), they will first find thumbnails for chromosomal aberrations across all the samples, thus providing a cohort-level landscape. 
 On clicking one of the thumbnails, the bigger picture of chromosomal aberrations for the sample of interest appears, and detailed information of each variant (e.g., exact coordinates of breakpoints and affected genes) pops up upon mouse-over. 
 Furthermore, the distribution for the cumulative count of breakpoints of chromosomal aberrations partitioned by a certain chromosomal bin size (default size is 50 Kbp) is automatically generated, facilitating identification of common cancer-driving variants represented by prominent peaks. 
