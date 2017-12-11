@@ -1,7 +1,7 @@
 ---
 title: 'A framework for generating interactive reports for cancer genome analysis'
 tags:
-  - Bioimfomatics
+  - Bioinformatics
   - Visualization
   - Cancer Genome
 authors:
@@ -26,7 +26,9 @@ bibliography: paper.bib
 
 # Summary
 
-We introduce paplot, the software for generating dynamic reports that are frequently necessary in the post analyticalphases of cancer genome studies. The "interactive" nature of the paplot-generated reportsenables users to extract much richer information than that obtained from static graphs via most conventional visualization tools.
+We introduce paplot, the software for generating dynamic reports that are frequently necessary in the post analytical phases of cancer genome studies. The "interactive" nature of the paplot-generated reports enables users to extract much richer information than that obtained from static graphs via most conventional visualization tools.
+
+# Introduction
 
 The worldwide rapid accumulation of massive cancer genome sequencing data presents an unprecedented opportunity for obtaining enormous biologically and clinically important information. Several analytical tools have been developed for identifying somatic mutations [@koboldt2012varscan; @shiraishi2013empirical], structural variations [@rausch2012delly], and prominent mutation signatures [@shiraishi2015simple] and so on. 
 However, the subsequent visualization and interpretation often demand us additional laborious efforts such as formatting and organizing the result tables via additional scripting, as well as graphic manipulation via drawing tools, occasionally with multiple trial-and-error parameter adjustments. 
@@ -35,12 +37,6 @@ Furthermore, even when some interesting characteristics are observed, we often n
 Here, we present [paplot](https://github.com/Genomon-Project/paplot), a suite of programs to generate various reports for commonly needed tasks in cancer genome analysis. 
 paplot accepts text-based input data and configuration files and generates HTML files with dynamic, interactive data visualizations powered by [D3.js](https://d3js.org). 
 By modifying settings in the configuration files, users can freely change various visual aspects such as colors of objects and contents of pop-up windows appearing after DOM events such as mouse-click and mouse-over.
-
-Interactive graphics contain richer information than static ones, thus facilitating effective and intuitive interpretation of analytical results. 
-Owing to the advancement in information technologies and development of application frameworks for easy generation of interactive graphics, using interactive graphics for academic research and auto-generated reports for clinical sequencing will become more common. 
-We believe that paplot will be useful for academic research and clinical practice.
-
----
 
 ![Example of interactive reports created by paplot. (A) Quality Control Report. (B) Chromosomal Aberration Report. (C) Mutation Matrix Report. (D) Mutational Signature Report.](graphs.png)
 
@@ -68,6 +64,12 @@ Furthermore, clinical information can be included in the plot footer, which can 
 In the past few years, massive genome cancer sequencing analysis revealed many characteristic patterns of somatic mutations. The profile of such mutation signature is typically represented by a bar plot with 96 possible types (6 types of substitution × 4 types of 5' base × 4 types of 3' base) [@alexandrov2013deciphering]. 
 We have recently proposed another way of visualizing mutation signatures to enable the inclusion of more contextual factors [@shiraishi2015simple]. 
 paplot can generate the Mutational Signature Report (Figure 1D) in both format types. Furthermore, since the barplot of membership parameters (estimated fractions of operative mutation signatures for each sample) is also generated, the user can easily spot the sample with prominent mutation signatures via pop-up windows.
+
+# Conclusion
+
+Interactive graphics contain richer information than static ones, thus facilitating effective and intuitive interpretation of analytical results. 
+Owing to the advancement in information technologies and development of application frameworks for easy generation of interactive graphics, using interactive graphics for academic research and auto-generated reports for clinical sequencing will become more common. 
+We believe that paplot will be useful for academic research and clinical practice.
 
 # Funding
 
