@@ -15,10 +15,10 @@ RUN curl -kL https://bootstrap.pypa.io/get-pip.py | python && \
     \
     echo "python setup.py build install"                                                                             >> /run.sh && \
     \
-    echo "mkdir -p /home/travis/build/aokad/paplot/tests/dataset"                                                    >> /run.sh && \
-    echo "mkdir -p /home/travis/build/aokad/paplot/tests/example"                                                    >> /run.sh && \
-    echo "cp -r /work/tests/dataset/mutation/ /home/travis/build/aokad/paplot/tests/dataset/"                        >> /run.sh && \
-    echo "cp -r /work/tests/example/mutation_subplot/ /home/travis/build/aokad/paplot/tests/example/"                >> /run.sh && \
+    echo "mkdir -p /home/travis/build/Genomon-Project/paplot/tests/dataset"                                          >> /run.sh && \
+    echo "mkdir -p /home/travis/build/Genomon-Project/paplot/tests/example"                                          >> /run.sh && \
+    echo "cp -r /work/tests/dataset/mutation/ /home/travis/build/Genomon-Project/paplot/tests/dataset/"              >> /run.sh && \
+    echo "cp -r /work/tests/example/mutation_subplot/ /home/travis/build/Genomon-Project/paplot/tests/example/"      >> /run.sh && \
     \
     echo "coverage run --source=./scripts setup.py test"                                                             >> /run.sh && \
     echo "coverage xml"                                                                                              >> /run.sh && \

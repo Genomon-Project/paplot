@@ -1,75 +1,76 @@
 # Tests
 
-## このディレクトリについて
+## 1. About this directory
 
-このディレクトリには試験用のスクリプトがおいてあり、以下の構成になっています。
+This directory contains test scripts, which are organized as follows.
 
-ディレクトリ
+directory
 
- - python ... 入力ファイルからレポートを作成する機能についてのテストコードです。
- - js (javascript) ... 出力されたレポートについてのテストコードです。
- - dataset ... 入力ファイルと設定ファイル群です。
- - example ... チュートリアルのサンプルデータのビルドに使用します。
- - ref ... 出力レポートの正解データです。
+ - python ... Test scripts for source code written in python.
+ - js ... Test scripts for source code written in javascript.
+ - dataset ... Input files and setting files for tests.
+ - example ... Example data of the tutorial.
+ - ref ... Correct answer data of output report.
 
 ファイル
 
- - .istanbul.yml ... jsのカバレッジ計算ツールの設定ファイルです。
- - build.sh ... サンプルデータからレポートを作成します。
- - Dockerfile .. 試験環境構築に必要であれば使用します。
- - package.json ... jsの試験環境構築に作成します。 `npm install` で自動的に読み込まれます。
- - package-lock.json ... `npm install` で自動的に作成されます。
- - README.md ... このファイルです。
- - sonar-scanner.properties ... sonarの設定ファイルひな型です。実際には使用しません。
+ - .istanbul.yml ... configuration file of istanbul (javascript coverage calculation tool).
+ - build.sh ... Create a report from the example data.
+ - Dockerfile .. Use it if necessary for building the test environment.
+ - package.json ... Create a test environment for js. It is automatically loaded by `npm install`.
+ - package-lock.json ... It is created automatically by `npm install`.
+ - README.md ... This file.
 
-## テスト実行方法
+## 2. Test execution method
 
-### 全体の流れ
+### 2-1. Overall flow
 
-1. pythonスクリプトの試験を行い、併せてカバレッジも計算します。
-2. javascriptスクリプトの試験を行い、併せてカバレッジも計算します。
-3. pythonスクリプトとjavascriptスクリプト、およびそれらのカバレッジをsonarcloudに上げて静的解析を行います。
+1. Test the python script and calculate the coverage.
+2. Test javascript scripts and calculate coverage.
+3. Python script, javascript script, their coverage and static analysis are uploaded to sonarcloud.
 
-### 環境
+### 2-2. 環境
 
-pythonとNode.jsが動くマシンが必要です。
-
-主にこのように用意します。
+Prepare the machine on which python and Node.js run.
 
 ```
 $ docker pull node:latest
 $ docker run -it -v /path/to/paplot:/work "/bin/bash"
 
-(dockerコンテナの中)# curl -kL https://bootstrap.pypa.io/get-pip.py | python
+(In container)# curl -kL https://bootstrap.pypa.io/get-pip.py | python
 ```
 
-### python
+### 2-3. Test python
 
-coverageをインストールします。
+Install coverage tool.
 
 ```
 pip install coverage
 
-mkdir -p /home/travis/build/aokad/paplot/tests/dataset
-cp -r /work/tests/dataset/mutation/ /home/travis/build/aokad/paplot/tests/dataset/
+mkdir -p /home/travis/build/Genomon-Project/paplot/tests/dataset
+cp -r /work/tests/dataset/mutation/ /home/travis/build/Genomon-Project/paplot/tests/dataset/
 ```
 
-setup.py があるディレクトリで実行します。
+Run coverage
 
 ```
 coverage run --source=./scripts setup.py test
+```
+
+Coverage is output to `.coverage`.
+In sonarcloud register `coverage.xml` which converted `.coverage` to xml.
+
+```
 coverage xml
 ```
 
-`.coverage` にカバレッジが出力されています。sonarcloudにはこれをxmlに変換した `coverage.xml` を登録します。
-
-オプションでHTMLレポートに作成します。
+Optionally create it in the HTML report.
 
 ```
 coverage html
 ```
 
-%だけでよければコンソールに表示することもできます。
+It can also be displayed on the console.
 
 ```
 coverage report
@@ -94,35 +95,30 @@ scripts/paplot/subcode/tools.py          114     59    48%
 TOTAL                                   1973   1569    20%
 ```
 
-### javascript
+### 2-4. Test javascript
 
-npm が有効なマシンが必要です。
-
-tests ディレクトリ (このディレクトリ) でnpmの環境をインストールします。
+Install the npm modules with `tests` directory.
 
 ```
 npm install
 ```
 
-インストールされたモジュールはtests/node_modulesに入っています。
-
-テストを実行します。
+Run test.
 
 ```
 npm test
 ```
 
-tests/coverageに結果が出力されています。
-/tests/coverage/lcov.info をsonarcloudに登録します。
+The result is output to `tests/coverage` .
+Register sonarcloud `/tests/coverage/lcov.info` (explain later).
 
-## sonarcloud
+### 2-5, Upload sonarcloud
 
-静的解析を行います。
+We use sonarcloud for static analysis.
 
-ここから最新版を取得して解凍し、paplotディレクトリ直下に置きます。
-see https://about.sonarcloud.io/get-started/
+Acquire the latest version from [here]( https://about.sonarcloud.io/get-started/), and decompress it, and put it under the paplot root directory.
 
-設定ファイルを編集します。(sonar-scanner-3.0.3.778の場合)
+Edit configure file (In the case of sonar-scanner-3.0.3.778)
 
 sonar-scanner-cli-3.0.3.778-linux/sonar-scanner-3.0.3.778-linux/conf/sonar-scanner.properties
 
@@ -133,26 +129,26 @@ sonar.organization=xxxx
 sonar.login=xxxx
 
 sonar.javascript.lcov.reportPaths=tests/coverage/lcov.info,.coverage
-sonar.projectKey=paplot_devel
+sonar.projectKey=paplot
 sonar.sources=. 
 sonar.inclusions=paplot,scripts/*.py,scripts/paplot/*.py,scripts/paplot/subcode/*.py,tests/src/js/*.js,tests/src/html/*.js
 ```
 
-実行します。
+Run sonar-scanner.
 
 ```
 sonar-scanner-cli-3.0.3.778-linux/sonar-scanner-3.0.3.778-linux/bin/sonar-scanner
 ```
 
-## docker版
-
-まずpaplotをダウンロードします。
+## 3. How to docker build
 
 ```
-git clone <paplot.git>
+git clone https://github.com/aokad/paplot.git
 cd paplot/test
 docker build -t aokad/paplot-test:0.5.6 .
-docker run -v /c/Users/Okada/***/paplot/:/work aokad/paplot-test:0.5.6
+docker run -v {your paplot root directory}:/work paplot-test:0.5.6
+
 ```
 
-sonarcloudだけ手動でやります。
+I only do sonarcloud manually.
+(see 2-5, Upload sonarcloud)
