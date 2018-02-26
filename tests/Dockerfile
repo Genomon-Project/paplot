@@ -6,12 +6,10 @@ RUN curl -kL https://bootstrap.pypa.io/get-pip.py | python && \
     pip install coverage && \
     apt-get -y update && \
     apt-get install -y wget unzip && \
+    
     \
     echo "#!/bin/bash"                                                                                                > /run.sh && \
     echo "cd /work/"                                                                                                 >> /run.sh && \
-    echo "wget https://sonarsource.bintray.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-3.0.3.778-linux.zip" >> /run.sh && \
-    echo "unzip sonar-scanner-cli-3.0.3.778-linux.zip"                                                               >> /run.sh && \
-    echo "cp tests/sonar-scanner.properties sonar-scanner-cli-3.0.3.778-linux/sonar-scanner-3.0.3.778-linux/conf/"   >> /run.sh && \
     \
     echo "python setup.py build install"                                                                             >> /run.sh && \
     \

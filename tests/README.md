@@ -29,7 +29,7 @@ directory
 2. Test javascript scripts and calculate coverage.
 3. Python script, javascript script, their coverage and static analysis are uploaded to sonarcloud.
 
-### 2-2. 環境
+### 2-2. Machine
 
 Prepare the machine on which python and Node.js run.
 
@@ -140,14 +140,15 @@ Run sonar-scanner.
 sonar-scanner-cli-3.0.3.778-linux/sonar-scanner-3.0.3.778-linux/bin/sonar-scanner
 ```
 
-## 3. How to docker build
+## [OPTION] 3. How to use Dockerfile
 
 ```
 git clone https://github.com/aokad/paplot.git
 cd paplot/test
-docker build -t aokad/paplot-test:0.5.6 .
-docker run -v {your paplot root directory}:/work paplot-test:0.5.6
+docker build -t paplot-test:0.5.6 .
+docker run -it -v {your paplot root directory}:/work paplot-test:0.5.6 /bin/bash
 
+(In container)# bash run.sh
 ```
 
 I only do sonarcloud manually.
