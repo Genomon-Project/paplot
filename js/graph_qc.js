@@ -1,14 +1,16 @@
+(function() {
+qc_draw = {};
+
 // *********************************************
 // initialize
 // *********************************************
-var _DEBUG = false;
 
 // div-dataset
-var divs = [];
+qc_draw.divs = [];
 var legends = [];
 
-function add_div(chart_id) {
-    divs.push({
+qc_draw.add_div = function (chart_id) {
+    qc_draw.divs.push({
         obj: new mut_bar(chart_id),
         chart_id: chart_id,
     });
@@ -17,21 +19,6 @@ function add_div(chart_id) {
         chart_id: "legend_" + chart_id + "_svg",
     });
 }
-
-// resize timer
-var timer = false;
-window.addEventListener('resize', function() {
-    if (timer !== false) {
-        clearTimeout(timer);
-    }
-    timer = setTimeout(function() {
-        brush_reset();
-        update_div();
-        for (var i = 0; i < divs.length; i++) {
-            divs[i].obj.resize();
-        }
-    }, 200);
-});
 
 function svg_resize(item_num) {
     
@@ -72,18 +59,18 @@ function update_div() {
     
     var w = svg_resize();
     
-    for (var i = 0; i < divs.length; i++) {
+    for (var i = 0; i < qc_draw.divs.length; i++) {
         
-        if (divs[i].chart_id == "chart_brush") {
-            d3.select("#" + divs[i].chart_id).style("width", w.width_fix + "px");
-            d3.select("#" + divs[i].chart_id).style("height", "120px");
+        if (qc_draw.divs[i].chart_id == "chart_brush") {
+            d3.select("#" + qc_draw.divs[i].chart_id).style("width", w.width_fix + "px");
+            d3.select("#" + qc_draw.divs[i].chart_id).style("height", "120px");
         }
         else {
-            d3.select("#" + divs[i].chart_id).style("width", w.width_extend + "px");
-            d3.select("#" + divs[i].chart_id).style("height", "240px");
+            d3.select("#" + qc_draw.divs[i].chart_id).style("width", w.width_extend + "px");
+            d3.select("#" + qc_draw.divs[i].chart_id).style("height", "240px");
         }
     }
-}
+};
 
 function load_tag_data(id) {
     var dataset = qc_data.get_dataset(id);
@@ -96,23 +83,23 @@ function load_tag_data(id) {
         }
     }
     return {"id": id, "data": data, "title": qc_data.get_plot_config(id).title};
-}
+};
 
-function init() {
+qc_draw.init = function () {
 
     update_div();
     
     var tag_data = [];
-    for (var i1 = 0; i1 < divs.length; i1++) {
-        if (divs[i1].chart_id == "chart_brush") {
+    for (var i1 = 0; i1 < qc_draw.divs.length; i1++) {
+        if (qc_draw.divs[i1].chart_id == "chart_brush") {
             continue;
         }
-        tag_data.push(load_tag_data(divs[i1].chart_id));
+        tag_data.push(load_tag_data(qc_draw.divs[i1].chart_id));
     }
     
-    for (var i2 = 0; i2 < divs.length; i2++) {
-        var bar = divs[i2].obj;
-        var info = qc_data.get_plot_config(divs[i2].chart_id);
+    for (var i2 = 0; i2 < qc_draw.divs.length; i2++) {
+        var bar = qc_draw.divs[i2].obj;
+        var info = qc_data.get_plot_config(qc_draw.divs[i2].chart_id);
         var dataset = qc_data.get_dataset(info.chart_id);
         
         for (var s = 0; s < dataset.data.length; s++) {
@@ -157,7 +144,7 @@ function init() {
         bar.options.grid_y.wide = 80;
         bar.options.grid_y.orient = "left";
         
-        if (divs[i2].chart_id == "chart_brush") {
+        if (qc_draw.divs[i2].chart_id == "chart_brush") {
             bar.options.padding_right = 0;
             bar.options.brush.enable = true;
             bar.options.brush.fill = "blue";
@@ -183,21 +170,9 @@ function init() {
             bar.options.titles[0].font_size = style_qc.title_y_font_size; //"12px";
             bar.options.titles[0].sift_x = Number(style_qc.title_y_font_size.replace("px", "")) * 0.8; //8;
         }
-        // for debug
-        if (_DEBUG == true) {
-            bar.options.grid_xs[0] = new bar.grid_template();
-            bar.options.grid_xs[0].keys = dataset.key;
-            bar.options.grid_xs[0].labels = dataset.key;
-            bar.options.grid_xs[0].wide = 40;
-            bar.options.grid_xs[0].font_size = "9px";
-            bar.options.grid_xs[0].sift_y = 10;
-            bar.options.grid_xs[0].orient = "bottom";
-            bar.options.grid_xs[0].text_anchor = "middle";
-            bar.options.grid_xs[0].text_rotate = "90";
-        }
         
         bar.draw();
-        downloader.set_event_listner (divs[i2].chart_id);
+        downloader.set_event_listner (qc_draw.divs[i2].chart_id);
 
         // legend
         var legend = legends[i2].obj;
@@ -228,28 +203,28 @@ function init() {
         .text(function(d){ return d[1] })
     ;
     
-}
+};
 
 // *********************************************
 // selection events
 // *********************************************
-function chart_selected(key, on) {
-    for (var i = 0; i< divs.length; i++) {
-        if (divs[i].chart_id == "chart_brush") {
+qc_draw.chart_selected = function (key, on) {
+    for (var i = 0; i< qc_draw.divs.length; i++) {
+        if (qc_draw.divs[i].chart_id == "chart_brush") {
             continue;
         }
-        divs[i].obj.bar_select(key, on);
+        qc_draw.divs[i].obj.bar_select(key, on);
     }
-}
+};
 
-function selection_reset() {
-    for (var i = 0; i< divs.length; i++) {
-        if (divs[i].chart_id == "chart_brush") {
+qc_draw.selection_reset = function () {
+    for (var i = 0; i< qc_draw.divs.length; i++) {
+        if (qc_draw.divs[i].chart_id == "chart_brush") {
             continue;
         }
-        divs[i].obj.reset_select();
+        qc_draw.divs[i].obj.reset_select();
     }
-}
+};
 
 // *********************************************
 // sort functions
@@ -257,16 +232,16 @@ function selection_reset() {
 function sort(name, asc) {
     // call plot's sort function
     
-    divs[0].obj.sort([name], [asc]);
+    qc_draw.divs[0].obj.sort([name], [asc]);
     
-    for (var i = 1; i< divs.length; i++) {
-        divs[i].obj.sort_simple(divs[0].obj.asc.sort_list);
+    for (var i = 1; i< qc_draw.divs.length; i++) {
+        qc_draw.divs[i].obj.sort_simple(qc_draw.divs[0].obj.asc.sort_list);
     }
     
-}
+};
 
-function click_sort() {
-    brush_reset();
+qc_draw.click_sort = function () {
+    qc_draw.brush_reset();
     
     var obj = d3.select("#sort_list").selectAll("option");
     var name = "";
@@ -282,14 +257,14 @@ function click_sort() {
     }
     
     sort(name, asc);
-}
+};
 
-function click_reset() {
-    brush_reset();
+qc_draw.click_reset = function() {
+    qc_draw.brush_reset();
     sort("sample_ID", true);
     
     d3.select("#sort_list").selectAll("option")[0][0].selected = true;
-}
+};
 
 // *********************************************
 // brush events
@@ -297,7 +272,7 @@ function click_reset() {
 
 var last_brush_selection = [];
 
-function chart_brushed(data, range) {
+qc_draw.chart_brushed = function (data, range) {
     
     if (data.length < 2) return;
     
@@ -317,38 +292,39 @@ function chart_brushed(data, range) {
     
     var w = svg_resize(data.length);
     
-    for (var i = 0; i< divs.length; i++) {
-        if (divs[i].chart_id == "chart_brush") {
+    for (var i = 0; i< qc_draw.divs.length; i++) {
+        if (qc_draw.divs[i].chart_id == "chart_brush") {
             continue;
         }
         
-        d3.select("#" + divs[i].chart_id).style("width", w.width_extend + "px");
-        divs[i].obj.reset_select();
-        divs[i].obj.zoom(data);
+        d3.select("#" + qc_draw.divs[i].chart_id).style("width", w.width_extend + "px");
+        qc_draw.divs[i].obj.reset_select();
+        qc_draw.divs[i].obj.zoom(data);
         
     }
-}
+};
 
-function brush_reset() {
-    
+qc_draw.brush_reset = function () {
+
     var w = svg_resize();
     
-    for (var i = 0; i< divs.length; i++) {
-        if (divs[i].chart_id == "chart_brush") {
-            d3.select("#" + divs[i].chart_id).style("width", w.width_fix + "px");
+    for (var i = 0; i< qc_draw.divs.length; i++) {
+        if (qc_draw.divs[i].chart_id == "chart_brush") {
+            d3.select("#" + qc_draw.divs[i].chart_id).style("width", w.width_fix + "px");
         }
         else {
-            d3.select("#" + divs[i].chart_id).style("width", w.width_extend + "px");
+            d3.select("#" + qc_draw.divs[i].chart_id).style("width", w.width_extend + "px");
         }
-        divs[i].obj.resize();
-        divs[i].obj.brush_reset();
-        divs[i].obj.zoom_reset();
+        qc_draw.divs[i].obj.resize();
+        qc_draw.divs[i].obj.brush_reset();
+        qc_draw.divs[i].obj.zoom_reset();
     }
-}
+};
+
 // *********************************************
 // save image
 // *********************************************
-function push_export() {
+qc_draw.push_export = function () {
     
     var svgText = ""
     
@@ -356,7 +332,7 @@ function push_export() {
     var sift_y = 0;
     
     // each plot
-    for (var i = 0; i < divs.length; i++) {
+    for (var i = 0; i < qc_draw.divs.length; i++) {
 
         // legend
         svgText += downloader.svg_text(legends[i].chart_id, 0, sift_y);
@@ -368,10 +344,10 @@ function push_export() {
         }
         
         // chart
-        svgText += downloader.svg_text(divs[i].chart_id, 0, sift_y);
-        sift_y += Number(d3.select("#" + divs[i].chart_id).select("svg").style("height").replace("px", ""));
+        svgText += downloader.svg_text(qc_draw.divs[i].chart_id, 0, sift_y);
+        sift_y += Number(d3.select("#" + qc_draw.divs[i].chart_id).select("svg").style("height").replace("px", ""));
         
-        width = Number(d3.select("#" + divs[i].chart_id).select("svg").style("width").replace("px", ""));
+        width = Number(d3.select("#" + qc_draw.divs[i].chart_id).select("svg").style("width").replace("px", ""));
         if (max_width < width) {
             max_width = width;
         }
@@ -381,4 +357,14 @@ function push_export() {
 
     var rect = utils.absolute_position("dw_btn");
     downloader.createMenu ([rect.x + rect.width, rect.y], "btn", "paplot_qc", max_width, sift_y, svgText);
+};
+
+qc_draw.resize = function () {
+    qc_draw.brush_reset();
+    update_div();
+    for (var i = 0; i < qc_draw.divs.length; i++) {
+        qc_draw.divs[i].obj.resize();
+    }
 }
+
+})();

@@ -6,7 +6,7 @@
 </head>
 <body>
 <div class="version">
-Generated on 2017-10-19 19:06:05 for qc_minimal by paplot-0.5.5.
+Generated on 2018-02-26 08:35:13 for qc_minimal by paplot-0.5.6.
 </div>
 
 <div class="container">
@@ -15,9 +15,9 @@ Generated on 2017-10-19 19:06:05 for qc_minimal by paplot-0.5.5.
 <div style="margin-top: 20px;" >
   <p class="muted pull-left" style="margin-right: 15px;">Select a sort type</p>
   <select id="sort_list" style="margin-left:10"></select>
-  <input type="button" value="Sort" onclick="click_sort()">
-  <input type="button" value="Reset" onclick="click_reset()">
-  <!-- save image --><button type="button" onclick="push_export()" id="dw_btn" style="margin-bottom: 20px;"><img src="../layout/download.png" style="margin-right: 5px;">Export</button><div id="btn"></div>
+  <input type="button" value="Sort" onclick="qc_draw.click_sort()">
+  <input type="button" value="Reset" onclick="qc_draw.click_reset()">
+  <!-- save image --><button type="button" onclick="qc_draw.push_export()" id="dw_btn" style="margin-bottom: 20px;"><img src="../layout/download.png" style="margin-right: 5px;">Export</button><div id="btn"></div>
 </div>
 
 <div id='legend_chart_1_svg'></div><div id='chart_1'></div>
@@ -32,15 +32,28 @@ Generated on 2017-10-19 19:06:05 for qc_minimal by paplot-0.5.5.
 <script type="text/javascript" src="../lib/d3-legend_v1.10.0/d3-legend.min.js"></script>
 <script type="text/javascript" src="../style/default.js"></script>
 <script type="text/javascript" src="../js/utils.js"></script>
+<script type="text/javascript" src="../js/legend.js"></script>
+<script type="text/javascript" src="../js/downloader.js"></script>
 <script type="text/javascript" src="../js/bar.js"></script>
 <script type="text/javascript" src="./data_minimal.js"></script>
 <script type="text/javascript" src="../js/graph_qc.js"></script>
 <script>
 
-add_div('chart_1');
-divs[0].obj.bar_selected = function(key, on) { chart_selected(key, on); }
+qc_draw.add_div('chart_1');
+qc_draw.divs[0].obj.bar_selected = function(key, on) { qc_draw.chart_selected(key, on); }
 
-init();
+qc_draw.init();
+
+// resize timer
+var timer = false;
+window.addEventListener('resize', function() {
+    if (timer !== false) {
+        clearTimeout(timer);
+    }
+    timer = setTimeout(function() {
+        qc_draw.resize();
+    }, 200);
+});
 </script>
 </body>
 </html>

@@ -1,3 +1,6 @@
+(function() {
+ca_draw = {};
+
 // -----------------------------------------------------------------------------
 // selection bar plot
 // -----------------------------------------------------------------------------
@@ -8,20 +11,8 @@ var group_enable = [];
 var div_select_bar = new mut_bar("selector");
 var div_legend = new legend();
 
-// resize timer
-var timer = false;
-window.addEventListener('resize', function() {
-    if (timer !== false) {
-        clearTimeout(timer);
-    }
-    timer = setTimeout(function() {
-        update_div();
-        div_select_bar.resize();
-        thumb_reset();
-    }, 200);
-});
 
-function update_div() {
+ca_draw.update_div = function () {
     d3.select("#selector").style("width", window.innerWidth - 200 + "px");
     d3.select("#selector").style("height", "180px");
 }
@@ -29,7 +20,7 @@ function update_div() {
 // *********************************************
 // save image
 // *********************************************
-function push_export() {
+ca_draw.push_export = function () {
     var svgText = "";
 
     // thumb's size
@@ -131,13 +122,13 @@ div_legend.stack_change = function(d, i, on)
     };
     div_select_bar.change_stack();
     
-    thumb_reset();
+    ca_draw.thumb_reset();
     bundle_update();
 }
 
-function draw_select()
+ca_draw.draw_select = function ()
 {
-    update_div();
+    ca_draw.update_div();
     bar_dataset = ca_data.get_select();
 
     var chromos = [];
@@ -301,7 +292,7 @@ div_select_bar.brushed = function(data) {
     }
 }
 
-function thumb_reset() {
+ca_draw.thumb_reset = function () {
     
     div_select_bar.brush_reset();
 
@@ -388,7 +379,7 @@ function selection_mode() {
     }
 }
 
-function copy_obj(src, dst) {
+function copy_obj (src, dst) {
     for (var key in src){
         dst[key] = src[key];
     }
@@ -427,7 +418,7 @@ function draw_bandle (obj, ID)
 
 var thumbs = {};
 
-function draw_bandle_thumb (iid, ID)
+ca_draw.draw_bandle_thumb = function (iid, ID)
 {
     var wide = 140;
     var options = {
@@ -453,8 +444,8 @@ function draw_bandle_thumb (iid, ID)
 
 }
 
-function bundle_update() {
-    
+ca_draw.bundle_update = function () {
+
     for (var id1 in thumbs) {
         for (var i = 0; i < link_style_thumb.length; i++) {
             thumbs[id1].link_style[i].enable = group_enable[i];
@@ -469,7 +460,7 @@ function bundle_update() {
     }
 }
 
-function show_float(e, idx, ID) {
+ca_draw.show_float = function (e, idx, ID) {
     
     if (e.target.tagName != "svg") return;
     
@@ -491,7 +482,7 @@ function show_float(e, idx, ID) {
         .style("visibility", "visible")
     ;
 }
-function hide_float(id) {
+ca_draw.hide_float = function (id) {
     d3.select(id).style("visibility", "hidden");
 }
 
@@ -499,14 +490,14 @@ var item = ""
 var mouse_x = 0;
 var mouse_y = 0;
 
-function mouse_down(event, id) {
+ca_draw.mouse_down = function (event, id) {
     item = id;
     mouse_x = event.screenX;
     mouse_y = event.screenY;
     d3.select(id).style("opacity", 0.4);
     d3.select(id + "_h").classed("float_move", true);
 }
-function mouse_move(event, id) {
+ca_draw.mouse_move = function (event, id) {
     if (item != id) { return; }
     var dist_x = mouse_x - event.screenX;
     var dist_y = mouse_y - event.screenY;
@@ -517,7 +508,7 @@ function mouse_move(event, id) {
     mouse_x = event.screenX;
     mouse_y = event.screenY;
 }
-function mouse_up(event, id) {
+ca_draw.mouse_up = function (event, id) {
     if (item != id) { return; }
     item = "";
     mouse_x = 0;
@@ -526,7 +517,7 @@ function mouse_up(event, id) {
     d3.select(id + "_h").classed("float_move", false);
 }
 
-function mouse_out(id) {
+ca_draw.mouse_out = function (id) {
     if (item != id) { return; }
     item = "";
     mouse_x = 0;
@@ -547,4 +538,15 @@ function get_pos(id) {
     var scrollY = dElm.scrollTop || dBody.scrollTop ;
 
     return [rect.left + scrollX, rect.top + scrollY];
+}
+
+ca_draw.resize_if = function () {
+    div_select_bar.resize();
+}
+
+})();
+
+bundle_update = function()
+{
+    ca_draw.bundle_update()
 }

@@ -1,3 +1,6 @@
+(function() {
+mut_draw = {};
+
 // global params
 // main-area
 var div_mut_bar_top = new mut_bar("div_bar_top");
@@ -10,9 +13,6 @@ var div_legend = new legend();
 var divs_sub = [];
 
 var plot_layout = {};
-
-// resize timer
-var timer = false;
 
 // sort params
 var SORT_STATE_DEFAULT_X = {name_list: ["sample_ID"], asc_list: [true]};
@@ -37,7 +37,7 @@ var SPIN_WAIT = 200;
 var dataset_id = null;
 var dataset_gene = null;
 
-function add_subdiv(id, name, type, pos) {
+mut_draw.add_subdiv = function (id, name, type, pos) {
     divs_sub.push({
         obj: new mut_bar(id + "_p"),
         id: id,
@@ -48,20 +48,6 @@ function add_subdiv(id, name, type, pos) {
     divs.push(divs_sub[divs_sub.length-1].obj);
     return divs_sub[divs_sub.length-1].obj;
 }
-
-// resize timer
-window.addEventListener('resize', function() {
-    if (timer !== false) {
-        clearTimeout(timer);
-    }
-    timer = setTimeout(function() {
-        update_div();
-        for (var i = 0; i < divs.length; i++) {
-            divs[i].resize();
-        }
-
-    }, 200);
-});
 
 function update_div() {
 
@@ -146,7 +132,7 @@ function update_div() {
 // *********************************************
 // save image
 // *********************************************
-function push_export() {
+mut_draw.push_export = function () {
     
     var svgText = ""
 
@@ -264,7 +250,7 @@ div_mut_checker.bar_selected = function(key1, key2, on) {
     }
 }
 
-function sub_selected(key, on) {
+mut_draw.sub_selected = function (key, on) {
     select_state.x.set(key, on, MULTI_SELECT);
     div_mut_bar_top.bar_select(key, on);
     div_mut_checker.bar_select(key, null, on);
@@ -308,7 +294,7 @@ function selection_retry() {
 // change view gene function
 // *********************************************
 
-function filter_sample() {
+mut_draw.filter_sample = function () {
     var text = d3.select("#viewsample_mutation_max").property("value");
     if (text == "") {
         div_mut_bar_top.set_bar_max(0);
@@ -318,7 +304,7 @@ function filter_sample() {
     }
 }
 
-function filter_gene() {
+mut_draw.filter_gene = function () {
 
     d3.select("#spin").classed("hidden", false);
     
@@ -332,7 +318,7 @@ function filter_gene() {
 
 function filter_gene_exec() {
 
-    sort_reset("x");
+    mut_draw.sort_reset("x");
     
     var gene_th = parseInt(d3.select("#viewgene_rate").property("value"));
     var gene_max = parseInt(d3.select("#viewgene_number").property("value"));
@@ -532,7 +518,7 @@ function change_stack_exec(name, on) {
 // sort functions
 // *********************************************
 
-function sort_reset(axis) {
+mut_draw.sort_reset = function (axis) {
     
     if (axis == "x") {
         sort_state.x.name_list = [].concat(SORT_STATE_DEFAULT_X.name_list);
@@ -565,11 +551,11 @@ function sort_reset(axis) {
         d3.select("#yNum_0").property("checked", true);
         d3.select("#yGene_0").property("checked", true);
 
-        filter_gene();
+        mut_draw.filter_gene();
     }
 }
 
-function sort(name, option_value, axis) {
+mut_draw.sort = function (name, option_value, axis) {
 
     var state = sort_state[axis];
     
@@ -583,7 +569,7 @@ function sort(name, option_value, axis) {
     if (option_value == 0) {
         // if sort condisions are blank, set default
         if (state.name_list.length == 0) {
-            sort_reset(axis);
+            mut_draw.sort_reset(axis);
         }
     }
     else{
@@ -613,7 +599,7 @@ function sort(name, option_value, axis) {
         }
     }
     else if (axis == "y") {
-        filter_gene();
+        mut_draw.filter_gene();
     }
     
     // update page's text
@@ -628,7 +614,7 @@ function sort(name, option_value, axis) {
     d3.select("#sort_" + axis + "_text").text(text);
 }
 
-function sort_gene() {
+mut_draw.sort_gene = function () {
     var asc = 0;
     if (d3.select("#xGene_0").property("checked")) asc = 0;
     else if(d3.select("#xGene_1").property("checked")) asc = 1;
@@ -655,10 +641,10 @@ function sort_gene() {
     }
     
     // sort
-    sort(tag_name, asc, "x");
+    mut_draw.sort(tag_name, asc, "x");
 }
 
-function sort_waterfall() {
+mut_draw.sort_waterfall = function () {
 
     d3.select("#spin").classed("hidden", false);
     
@@ -670,8 +656,8 @@ function sort_waterfall() {
 }
 
 function sort_waterfall_exec() {
-    sort_reset("x");
-    sort_reset("y");
+    mut_draw.sort_reset("x");
+    mut_draw.sort_reset("y");
     
     var genes = [];
     for (var g1 = 0; g1 < dataset_gene.total_nums.length; g1++) {
@@ -701,12 +687,12 @@ function sort_waterfall_exec() {
         }
         
         // sort
-        sort(tag_name, 2, "x");
+        mut_draw.sort(tag_name, 2, "x");
         sort_state.x.state = "waterfall";
     }
 }
 
-function sort_sub(index, asc) {
+mut_draw.sort_sub = function (index, asc) {
     var name = divs_sub[index].obj.tags[2].name;
     var list = divs_sub[index].obj.tags[2].values;
     
@@ -717,7 +703,7 @@ function sort_sub(index, asc) {
         if (i == index) continue;
         add_tag(divs_sub[i].obj, divs_sub[i].obj.tags, name, list, "sub");
     }
-    sort(name, asc, "x");
+    mut_draw.sort(name, asc, "x");
     
 }
 
@@ -773,7 +759,7 @@ function update_gene_listbox(genes) {
 function debg(start, before, now, prefix) {
     console.log(prefix + ":" + (now.getTime() - before)/1000 + ", total: " + (now.getTime() - start)/1000);
 }
-function init() {
+mut_draw.init = function () {
     
     // radio button's status of func
     for (var i1=0; i1 < mut_data.funcs.length; i1++) {
@@ -1166,3 +1152,12 @@ function sub_plot(sub) {
     div_sub_legend.draw_svg(true);
     downloader.set_event_listner ("div_" + sub.name + "_l_svg");
 }
+
+mut_draw.resize = function () {
+    update_div();
+    for (var i = 0; i < divs.length; i++) {
+        divs[i].resize();
+    }
+}
+
+})();

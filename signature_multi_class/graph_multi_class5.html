@@ -6,13 +6,13 @@
 </head>
 <body>
 <div class="version">
-Generated on 2017-10-19 19:06:17 for signature_multi_class by paplot-0.5.5.
+Generated on 2018-02-26 08:35:22 for signature_multi_class by paplot-0.5.6.
 </div>
 
 <div class="container">
 <h2>Signature(#sig 5) - signature_multi_class</h2>
 
-<!-- save image --><button type="button" onclick="push_export()" id="dw_btn" style="margin-bottom: 20px;"><img src="../layout/download.png" style="margin-right: 5px;">Export</button><div id="btn"></div>
+<!-- save image --><button type="button" onclick="sig_draw.push_export()" id="dw_btn" style="margin-bottom: 20px;"><img src="../layout/download.png" style="margin-right: 5px;">Export</button><div id="btn"></div>
 
 <div style='float: left;' id='div_pm0'></div>
 <div style='float: left;' id='div_pm1'></div>
@@ -25,6 +25,8 @@ Generated on 2017-10-19 19:06:17 for signature_multi_class by paplot-0.5.5.
 
 
 
+</div>
+
 <!-- ### tooltip ### -->
 <div id="tooltip" class="hidden"></div>
 <!-- ### spin mark ### -->
@@ -36,18 +38,33 @@ Generated on 2017-10-19 19:06:17 for signature_multi_class by paplot-0.5.5.
 <script type="text/javascript" src="../lib/d3-legend_v1.10.0/d3-legend.min.js"></script>
 <script type="text/javascript" src="../style/default.js"></script>
 <script type="text/javascript" src="../js/utils.js"></script>
+<script type="text/javascript" src="../js/legend.js"></script>
+<script type="text/javascript" src="../js/downloader.js"></script>
 <script type="text/javascript" src="../js/bar.js"></script>
 <script type="text/javascript" src="./data_multi_class5.js"></script>
 <script type="text/javascript" src="../js/graph_signature.js"></script>
 
 <script type="text/javascript">
-add_div('div_pm0');
-add_div('div_pm1');
-add_div('div_pm2');
-add_div('div_pm3');
-add_div('div_pm4');
+sig_draw.add_div('div_pm0');
+sig_draw.add_div('div_pm1');
+sig_draw.add_div('div_pm2');
+sig_draw.add_div('div_pm3');
+sig_draw.add_div('div_pm4');
 
-init();
+sig_draw.init();
+
+// resize timer
+var timer = false;
+
+window.addEventListener('resize', function() {
+    if (timer !== false) {
+        clearTimeout(timer);
+    }
+    timer = setTimeout(function() {
+        sig_draw.resize();
+    }, 200);
+});
+
 </script>
 </body>
 </html>

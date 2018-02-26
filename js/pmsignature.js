@@ -1,4 +1,4 @@
-var pmsignature = (function()
+pmsignature = (function()
 {
 
     var pmsignature = function(id)
@@ -321,6 +321,7 @@ var pmsignature = (function()
     // -----------------------------------
     // get base value each stack's bar
     // -----------------------------------
+    /*
     p.bar_base = function(dataset, stack_index, key) {
         var base = 0;
         for (var i=0; i < stack_index; i++) {
@@ -331,6 +332,7 @@ var pmsignature = (function()
         }
         return base;
     }
+    */
     // -----------------------------------
     // resize svg
     // -----------------------------------
@@ -471,8 +473,15 @@ var pmsignature = (function()
     // title's position
     // -----------------------------------
     p.title_pos = function(wide, orient, anchor, rotate, sift_x, sift_y, svg, plot, padding, org_padding_top, org_padding_bottom, org_padding_right, org_padding_left) {
+        var x = padding.left + sift_x;
+        var y = org_padding_top + sift_y;
+        y = y +Math.floor(wide/2);
+        return (x + ", " + y);
+        
+        /*
         var x = 0;
         var y = 0;
+        
         if (orient == "left") {
             x = org_padding_left + sift_x;
             y = padding.top + sift_y;
@@ -556,6 +565,7 @@ var pmsignature = (function()
             }
         }
         return (x + ", " + y);
+        */
     }
 
     // -----------------------------------
@@ -685,6 +695,8 @@ var pmsignature = (function()
         var wide_right = [];
         var idx = 0;
         for (idx = 0; idx < this.options.titles.length; idx++) {
+            wide_top.push(this.options.titles[idx].wide);
+            /*
             switch(this.options.titles[idx].orient) {
                 case "left":
                     wide_left.push(this.options.titles[idx].wide);
@@ -704,6 +716,7 @@ var pmsignature = (function()
                     console.log("[debug] this.options.titles[" + idx + "].orient: undefined value. " + this.options.titles[idx].orient);
                     break;
             }
+            */
         }
         if (wide_left.length > 0) {
             this.padding.left = this.padding.left + Math.max.apply(null, wide_left);
