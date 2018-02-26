@@ -152,4 +152,9 @@ docker run -it -v {your paplot root directory}:/work paplot-test:0.5.6 /bin/bash
 ```
 
 I only do sonarcloud manually.
-(see 2-5, Upload sonarcloud)
+
+```
+export SONNAR_KEY=${your sonar key}
+export SONNAR_TOKEN=${your sonar token}
+bash sonar.sh
+```
