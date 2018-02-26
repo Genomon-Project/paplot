@@ -1,4 +1,7 @@
+sudo: false
+
 language: python
+
 python:
   - "2.7"
   - "3.3"
@@ -6,10 +9,40 @@ python:
   - "3.5"
   - "3.6"
 
+addons:
+  apt:
+    packages:
+      - nodejs
+      - npm
+
+before_script:
+ - pip install coverage
+ - export PYVER=`python -V 2>&1 | cut -d' ' -f2 | cut -d . -f 1,2`
+ - if [ "$PYVER" = "2.7" ]; then export NPM_FLG="T"; fi
+ - if [ "$NPM_FLG" = "T" ]; then
+   wget https://sonarsource.bintray.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-3.0.3.778-linux.zip;
+   unzip sonar-scanner-cli-3.0.3.778-linux.zip;
+   export PATH=`pwd`/sonar-scanner-3.0.3.778-linux/bin:$PATH;
+   fi
+
 script:
   - python setup.py build install
-  - python setup.py test
-  - bash tests/build_example.sh
+  - coverage run --source=./scripts setup.py test
+  - if [ "$NPM_FLG" = "T" ]; then
+    coverage report;
+    bash tests/build_example.sh;
+    cd tests;
+    npm i -g npm;
+    npm install;
+    npm test;
+    fi
+
+after_success:
+  - if [ "$NPM_FLG" = "T" ]; then
+    cd ..;
+    sonar-scanner -Dsonar.host.url=https://sonarcloud.io -Dsonar.projectKey=paplot -Dsonar.sources=. -Dsonar.inclusions=paplot,scripts/*.py,scripts/paplot/*.py,scripts/paplot/subcode/*.py,tests/src/js/*.js,tests/src/html/*.js -Dsonar.python.coverage.reportPath=coverage.xml -Dsonar.javascript.lcov.reportPaths=tests/coverage/lcov.info -Dsonar.organization=${SONNAR_KEY} -Dsonar.login=${SONNAR_TOKEN};
+    fi
+
 
 notifications:
   emails:

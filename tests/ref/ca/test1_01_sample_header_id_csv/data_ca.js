@@ -198,16 +198,6 @@ ca_data.get_arc_data_detail = function (ID) {
     return create_blank_nodes(ca_data.node_size_detail, true);
 };
 
-var key_to_index = function (list, key) {
-    
-    for (var i = 0; i < list.length; i++) {
-        if (list[i] == key) {
-            return i
-        }
-    }
-    return -1;
-};
-
 ca_data.get_select = function () {
     var node_size = ca_data.node_size_select;
     var i = 0, j= 0;

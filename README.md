@@ -232,20 +232,23 @@ optional arguments:
 
 <pre>
 {output_dir}
-  |
-  |- {project_name}
-  |    |- (data files and html files)
-  |
-  |- js
-  |    |- (paplot's js files)
-  |
-  |- lib
-  |    |- (3rd-party's libraries)
-  |
-  |- style
-  |    |- default.js
-  |
-  |- index.html        <--------- open your browser
+  „ 
+  „¥„Ÿ„Ÿ {project_name}
+  „      „¤„Ÿ„Ÿ (Data files and html files)
+  „ 
+  „¥„Ÿ„Ÿ js
+  „      „¤„Ÿ„Ÿ (Javascript files)
+  „ 
+  „¥„Ÿ„Ÿ layout
+  „      „¤„Ÿ„Ÿ (Stylesheet and image files)
+  „ 
+  „¥„Ÿ„Ÿ lib
+  „      „¤„Ÿ„Ÿ (Javascript libraries of 3rd-party)
+  „ 
+  „¥„Ÿ„Ÿ style
+  „      „¤ (Appearance configuration file)
+  „ 
+  „¤„Ÿ„Ÿ index.html        <--------- Open your browser
 
 </pre>
 

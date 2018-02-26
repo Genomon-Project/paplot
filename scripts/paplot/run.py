@@ -187,7 +187,7 @@ def pmsignature_main(args):
     if len(input_list) == 0:
         print ("input no file.")
         return
-       
+    
     # dirs
     output_html_dir = prep.create_dirs(tools.win_to_unix(args.output_dir), args.project_name, config)
     
@@ -202,17 +202,18 @@ def pmsignature_main(args):
         
         if params_out == None:
             continue
-
+        
         if params_out == {}:
             prep.create_index(config, tools.win_to_unix(args.output_dir), "", args.project_name, args.title, 
                               overview = args.overview, sub_text = "",
                               composite = True, remarks = args.remarks)
             continue
-            
+        
         sig_num_sift = 0
         if tools.config_getboolean(config, "result_format_pmsignature", "background"):
             sig_num_sift = 1
+        
         prep.create_index(config, tools.win_to_unix(args.output_dir), params_out["html"], args.project_name, args.title, 
                           overview = args.overview, sub_text = "#sig %d" % (params_out["sig_num"] + sig_num_sift), 
                           composite = True, remarks = args.remarks)
-                          
+        

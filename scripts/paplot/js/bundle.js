@@ -54,7 +54,7 @@
     };
 })();
 
-var bundle = (function()
+bundle = (function()
 {
     var bundle = function(id)
     {

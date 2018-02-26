@@ -8,7 +8,7 @@ from scripts.paplot import __version__
 
 import sys
 sys.path.append('./paplot')
-sys.path.append('./tests')
+sys.path.append('./tests/python')
 
 import os
 

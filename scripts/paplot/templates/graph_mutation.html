@@ -15,20 +15,20 @@ Generated on {date} for {project} by {version}.
 
 <div>
   <div style="margin-top:20;">
-    <b>X-axis sort-by</b><input type="button" value="Reset" onclick="sort_reset('x')" style="margin-left:20" />
+    <b>X-axis sort-by</b><input type="button" value="Reset" onclick="mut_draw.sort_reset('x')" style="margin-left:20" />
   </div>
   <div style="margin-left:20;">
     <div id="sort_x_text" class="selected_text">Sample ID (ASC)</div>
     <div style="height: 10px;" class="spacer"></div>
     <section><b>Sample ID</b>
-      <input type="radio" name="ID" value="0" id="xID_0" onclick="sort('sample_ID', 0, 'x')" checked /><label for="xID_0" class="radio">None</label>
-      <input type="radio" name="ID" value="1" id="xID_1" onclick="sort('sample_ID', 1, 'x')" /><label for="xID_1" class="radio">ASC </label>
-      <input type="radio" name="ID" value="2" id="xID_2" onclick="sort('sample_ID', 2, 'x')" /><label for="xID_2" class="radio">DESC</label>
+      <input type="radio" name="ID" value="0" id="xID_0" onclick="mut_draw.sort('sample_ID', 0, 'x')" checked /><label for="xID_0" class="radio">None</label>
+      <input type="radio" name="ID" value="1" id="xID_1" onclick="mut_draw.sort('sample_ID', 1, 'x')" /><label for="xID_1" class="radio">ASC </label>
+      <input type="radio" name="ID" value="2" id="xID_2" onclick="mut_draw.sort('sample_ID', 2, 'x')" /><label for="xID_2" class="radio">DESC</label>
     </section>
     <section><b>Mutation number</b>
-      <input type="radio" name="mutation_num" value="0" id="xNum_0" onclick="sort('number_of_mutations', 0, 'x')" checked /><label for="xNum_0" class="radio">None</label>
-      <input type="radio" name="mutation_num" value="1" id="xNum_1" onclick="sort('number_of_mutations', 1, 'x')" /><label for="xNum_1" class="radio">ASC </label>
-      <input type="radio" name="mutation_num" value="2" id="xNum_2" onclick="sort('number_of_mutations', 2, 'x')" /><label for="xNum_2" class="radio">DESC</label>
+      <input type="radio" name="mutation_num" value="0" id="xNum_0" onclick="mut_draw.sort('number_of_mutations', 0, 'x')" checked /><label for="xNum_0" class="radio">None</label>
+      <input type="radio" name="mutation_num" value="1" id="xNum_1" onclick="mut_draw.sort('number_of_mutations', 1, 'x')" /><label for="xNum_1" class="radio">ASC </label>
+      <input type="radio" name="mutation_num" value="2" id="xNum_2" onclick="mut_draw.sort('number_of_mutations', 2, 'x')" /><label for="xNum_2" class="radio">DESC</label>
     </section>
     <section><b>Genes</b>
       <input type="radio" name="gene" value="0" id="xGene_0" checked /><label for="xGene_0" class="radio">None</label>
@@ -36,28 +36,28 @@ Generated on {date} for {project} by {version}.
       <input type="radio" name="gene" value="2" id="xGene_2" /><label for="xGene_2" class="radio">DESC&nbsp;&nbsp;&nbsp;</label>
       Select gene name.&nbsp;
       <select id="gene_list"></select>
-      <input type="button" value="Add sort key" onclick="sort_gene()" style="margin-left:10" />
+      <input type="button" value="Add sort key" onclick="mut_draw.sort_gene()" style="margin-left:10" />
     </section>
     <section><b>Automatic Gantt-chart</b>
-      Use genes top <input type="number" id="waterfall_number" name="waterfall_number" min="1" step="1" value="30" style="width:80px;" /><input type="button" value="Gantt-chart" onclick="sort_waterfall()" style="margin-left:10" />
+      Use genes top <input type="number" id="waterfall_number" name="waterfall_number" min="1" step="1" value="30" style="width:80px;" /><input type="button" value="Gantt-chart" onclick="mut_draw.sort_waterfall()" style="margin-left:10" />
     </section>
   </div>
 
   <div style="margin-top:20;">
-    <b>Y-axis sort-by</b><input type="button" value="Reset" onclick="sort_reset('y')" style="margin-left:20" />
+    <b>Y-axis sort-by</b><input type="button" value="Reset" onclick="mut_draw.sort_reset('y')" style="margin-left:20" />
   </div>
   <div style="margin-left:20;">
     <div id="sort_y_text" class="selected_text">Number of mutations (DESC)</div>
     <div style="height: 10px;" class="spacer"></div>
     <section><b>Mutation number</b>
-      <input type="radio" name="mutation_sum" value="0" id="yNum_0" onclick="sort('number_of_mutations', 0, 'y')" checked /><label for="yNum_0" class="radio">None</label>
-      <input type="radio" name="mutation_sum" value="1" id="yNum_1" onclick="sort('number_of_mutations', 1, 'y')" /><label for="yNum_1" class="radio">ASC </label>
-      <input type="radio" name="mutation_sum" value="2" id="yNum_2" onclick="sort('number_of_mutations', 2, 'y')" /><label for="yNum_2" class="radio">DESC</label>
+      <input type="radio" name="mutation_sum" value="0" id="yNum_0" onclick="mut_draw.sort('number_of_mutations', 0, 'y')" checked /><label for="yNum_0" class="radio">None</label>
+      <input type="radio" name="mutation_sum" value="1" id="yNum_1" onclick="mut_draw.sort('number_of_mutations', 1, 'y')" /><label for="yNum_1" class="radio">ASC </label>
+      <input type="radio" name="mutation_sum" value="2" id="yNum_2" onclick="mut_draw.sort('number_of_mutations', 2, 'y')" /><label for="yNum_2" class="radio">DESC</label>
     </section>
     <section><b>Gene name</b>
-      <input type="radio" name="gene_name" value="0" id="yGene_0" onclick="sort('name', 0, 'y')" checked /><label for="yGene_0" class="radio">None</label>
-      <input type="radio" name="gene_name" value="1" id="yGene_1" onclick="sort('name', 1, 'y')" /><label for="yGene_1" class="radio">ASC </label>
-      <input type="radio" name="gene_name" value="2" id="yGene_2" onclick="sort('name', 2, 'y')" /><label for="yGene_2" class="radio">DESC</label>
+      <input type="radio" name="gene_name" value="0" id="yGene_0" onclick="mut_draw.sort('name', 0, 'y')" checked /><label for="yGene_0" class="radio">None</label>
+      <input type="radio" name="gene_name" value="1" id="yGene_1" onclick="mut_draw.sort('name', 1, 'y')" /><label for="yGene_1" class="radio">ASC </label>
+      <input type="radio" name="gene_name" value="2" id="yGene_2" onclick="mut_draw.sort('name', 2, 'y')" /><label for="yGene_2" class="radio">DESC</label>
     </section>
   </div>
 
@@ -67,7 +67,7 @@ Generated on {date} for {project} by {version}.
     <section><b>Display maximum</b>
       <input type="number" id="viewsample_mutation_max" name="viewgene_rate" min="0" step="1" value="" style="width:100px;" /> (Number of mutation)
     </section>
-    <input type="button" value="Update filter" onclick="filter_sample()" style="margin-top:10" />
+    <input type="button" value="Update filter" onclick="mut_draw.filter_sample()" style="margin-top:10" />
   </div>
   
   <div style="margin-top:20;"><b>Genes filter</b></div>
@@ -83,7 +83,7 @@ Generated on {date} for {project} by {version}.
     <section><b>Display maximum</b>
       <input type="number" id="viewgene_number" name="viewgene_number" min="1" step="1" value="100" style="width:100px;" /> Genes
     </section>
-    <input type="button" value="Update filter" onclick="filter_gene()" style="margin-top:10" />
+    <input type="button" value="Update filter" onclick="mut_draw.filter_gene()" style="margin-top:10" />
   </div>
 </div>
 
@@ -93,7 +93,7 @@ Generated on {date} for {project} by {version}.
 <tr>
 <td><div  id="div_mut1"></div></td>
 <td><!-- bar top --><div id="div_bar_top"></div></td>
-<td style="vertical-align:top;"><div id="div_mut2"><!-- save image --><button type="button" onclick="push_export()" id="dw_btn" style="margin-left: 20px; margin-top: 30px;"><img src="../layout/download.png" style="margin-right: 5px;">Export</button><div id="btn"></div></div></td>
+<td style="vertical-align:top;"><div id="div_mut2"><!-- save image --><button type="button" onclick="mut_draw.push_export()" id="dw_btn" style="margin-left: 20px; margin-top: 30px;"><img src="../layout/download.png" style="margin-right: 5px;">Export</button><div id="btn"></div></div></td>
 </tr>
 
 {sub1}
@@ -125,6 +125,8 @@ Generated on {date} for {project} by {version}.
 <script type="text/javascript" src="../lib/d3-legend_v1.10.0/d3-legend.min.js"></script>
 <script type="text/javascript" src="{style}"></script>
 <script type="text/javascript" src="../js/utils.js"></script>
+<script type="text/javascript" src="../js/legend.js"></script>
+<script type="text/javascript" src="../js/downloader.js"></script>
 <script type="text/javascript" src="../js/bar.js"></script>
 <script type="text/javascript" src="../js/checker.js"></script>
 <script type="text/javascript" src="./{data_js}"></script>
@@ -135,9 +137,20 @@ Generated on {date} for {project} by {version}.
     
 {set_sub_add}
     
-    init();
+    mut_draw.init();
     
 {set_sub_select}
+
+// resize timer
+var timer = false;
+window.addEventListener('resize', function() {{
+    if (timer !== false) {{
+        clearTimeout(timer);
+    }}
+    timer = setTimeout(function() {{
+        mut_draw.resize();
+    }}, 200);
+}});
 </script>
 </body>
 </html>

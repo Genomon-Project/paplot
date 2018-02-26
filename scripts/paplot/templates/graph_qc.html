@@ -15,9 +15,9 @@ Generated on {date} for {project} by {version}.
 <div style="margin-top: 20px;" >
   <p class="muted pull-left" style="margin-right: 15px;">Select a sort type</p>
   <select id="sort_list" style="margin-left:10"></select>
-  <input type="button" value="Sort" onclick="click_sort()">
-  <input type="button" value="Reset" onclick="click_reset()">
-  <!-- save image --><button type="button" onclick="push_export()" id="dw_btn" style="margin-bottom: 20px;"><img src="../layout/download.png" style="margin-right: 5px;">Export</button><div id="btn"></div>
+  <input type="button" value="Sort" onclick="qc_draw.click_sort()">
+  <input type="button" value="Reset" onclick="qc_draw.click_reset()">
+  <!-- save image --><button type="button" onclick="qc_draw.push_export()" id="dw_btn" style="margin-bottom: 20px;"><img src="../layout/download.png" style="margin-right: 5px;">Export</button><div id="btn"></div>
 </div>
 
 {charts}
@@ -31,12 +31,25 @@ Generated on {date} for {project} by {version}.
 <script type="text/javascript" src="../lib/d3-legend_v1.10.0/d3-legend.min.js"></script>
 <script type="text/javascript" src="{style}"></script>
 <script type="text/javascript" src="../js/utils.js"></script>
+<script type="text/javascript" src="../js/legend.js"></script>
+<script type="text/javascript" src="../js/downloader.js"></script>
 <script type="text/javascript" src="../js/bar.js"></script>
 <script type="text/javascript" src="./{data_js}"></script>
 <script type="text/javascript" src="../js/graph_qc.js"></script>
 <script>
 {js_add_div}
-init();
+qc_draw.init();
+
+// resize timer
+var timer = false;
+window.addEventListener('resize', function() {{
+    if (timer !== false) {{
+        clearTimeout(timer);
+    }}
+    timer = setTimeout(function() {{
+        qc_draw.resize();
+    }}, 200);
+}});
 </script>
 </body>
 </html>

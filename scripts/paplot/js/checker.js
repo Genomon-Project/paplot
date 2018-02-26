@@ -1,4 +1,4 @@
-var mut_checker = (function() {
+mut_checker = (function() {
     var mut_checker = function(id) {
         this.id = id;
 
@@ -55,6 +55,8 @@ var mut_checker = (function() {
             w: 0,
         };
     };
+    
+    var isNode = (typeof process !== "undefined" && typeof require !== "undefined");
     var p = mut_checker.prototype;
 
     // -----------------------------------
@@ -208,9 +210,15 @@ var mut_checker = (function() {
     // -----------------------------------
     // sort
     // -----------------------------------
+    p._classname = function (classname) {
+        if (isNode == true) {
+            return classname;
+        }
+        return classname.baseVal;
+    }
     p.attr_grid = function(attr, number, class_name, grids, axis, plot, padding, items_len) {
         
-        var classes = class_name.baseVal.split(" ");
+        var classes = p._classname(class_name).split(" ");
         var key = classes[1];
         
         var x = false;
@@ -284,7 +292,7 @@ var mut_checker = (function() {
         // axis
         this.svg_obj.selectAll("g.label").selectAll("text")
             .attr('transform', function(d, i)  {
-                var classes = this.className.baseVal.split(" ");
+                var classes = p._classname(this.className).split(" ");
                 var idx = Number(classes[0]);
                 var f = Number(that.options.grids[idx].font_size.replace(/px/g, "").replace(/em/g, ""));
                 var tx = that.options.grids[idx].sift_x;
@@ -852,7 +860,7 @@ var mut_checker = (function() {
                         }
                     }
                     
-                    var classes = this.className.baseVal.split(" ");
+                    var classes = p._classname(this.className).split(" ");
                     var selected = false;
                     for (var k = 1; k < classes.length; k++) {
                         if (classes[k].indexOf("selected") == 0) {

@@ -44,9 +44,9 @@ subplot_template = """
 <tr>
 <td><div id="div_sub{i}_t" class="subplot_title"><b>{title}</b>
       <section>
-        <input type="radio" name="optSub{i}" value="0" id="xSub{i}_0" onclick="sort_sub({i}, 0)" checked /><label for="xSub{i}_0" class="radio">None</label>
-        <input type="radio" name="optSub{i}" value="1" id="xSub{i}_1" onclick="sort_sub({i}, 1)" />        <label for="xSub{i}_1" class="radio">ASC </label>
-        <input type="radio" name="optSub{i}" value="2" id="xSub{i}_2" onclick="sort_sub({i}, 2)" />        <label for="xSub{i}_2" class="radio">DESC</label>
+        <input type="radio" name="optSub{i}" value="0" id="xSub{i}_0" onclick="mut_draw.sort_sub({i}, 0)" checked /><label for="xSub{i}_0" class="radio">None</label>
+        <input type="radio" name="optSub{i}" value="1" id="xSub{i}_1" onclick="mut_draw.sort_sub({i}, 1)" />        <label for="xSub{i}_1" class="radio">ASC </label>
+        <input type="radio" name="optSub{i}" value="2" id="xSub{i}_2" onclick="mut_draw.sort_sub({i}, 2)" />        <label for="xSub{i}_2" class="radio">DESC</label>
       </section>
 </div></td>
 <td><div id="div_sub{i}_p"></div></td>
@@ -54,10 +54,10 @@ subplot_template = """
 </tr>
 """
 js_set_sub_add = """
-    subs.push(add_subdiv("div_sub{i}", "sub{i}", {type}));"""
+    subs.push(mut_draw.add_subdiv("div_sub{i}", "sub{i}", {type}));"""
 js_set_sub_select = """
     subs[{i}].bar_selected = function(key, on) {{
-        sub_selected(key, on);
+        mut_draw.sub_selected(key, on);
     }}"""
     
 ########### functions

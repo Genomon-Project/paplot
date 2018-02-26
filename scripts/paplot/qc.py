@@ -29,11 +29,11 @@ js_data2 = "];"
 ########### html template
 html_chart_template = "<div id='legend_{chart_id}_svg'></div><div id='{chart_id}'></div>\n"
 html_js_template = """
-add_div('{chart_id}');
-divs[{i}].obj.bar_selected = function(key, on) {{ chart_selected(key, on); }}
+qc_draw.add_div('{chart_id}');
+qc_draw.divs[{i}].obj.bar_selected = function(key, on) {{ qc_draw.chart_selected(key, on); }}
 """
 html_js_brushed_template = """
-divs[{i}].obj.brushed = function(data, range) {{ chart_brushed(data, range); }}
+qc_draw.divs[{i}].obj.brushed = function(data, range) {{ qc_draw.chart_brushed(data, range); }}
 """
 
 ########### functions

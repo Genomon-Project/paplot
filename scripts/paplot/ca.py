@@ -45,9 +45,9 @@ ca_data.select_item = [{item}];
 
 ########### html template
 
-li_template = '<li class="thumb" id="thumb{id}_li"><strong>{title}<br></strong><div id="thumb{id}" onclick="show_float(event,\'{id}\',\'{title}\')"></div></li>\n'
-call_template = 'draw_bandle_thumb("{id}", "{title}");\n'
-detail_template = """<div class="float_frame" id="float{id}"><table><tr><td class="float_header" id="float{id}_t"><strong>{title}</strong></td><td><input type="button" value="X" onclick="hide_float('#float{id}')" margin="0"></td></tr><tr><td colspan="2" class="float_svg" id="map{id}"></td></tr></table><div class="float_handle" id="float{id}_h" onmousedown="mouse_down(event, '#float{id}')" onmousemove="mouse_move(event, '#float{id}')" onmouseup="mouse_up(event, '#float{id}')" onmouseout="mouse_out('#float{id}')"></div></div>
+li_template = '<li class="thumb" id="thumb{id}_li"><strong>{title}<br></strong><div id="thumb{id}" onclick="ca_draw.show_float(event,\'{id}\',\'{title}\')"></div></li>\n'
+call_template = 'ca_draw.draw_bandle_thumb("{id}", "{title}");\n'
+detail_template = """<div class="float_frame" id="float{id}"><table><tr><td class="float_header" id="float{id}_t"><strong>{title}</strong></td><td><input type="button" value="X" onclick="ca_draw.hide_float('#float{id}')" margin="0"></td></tr><tr><td colspan="2" class="float_svg" id="map{id}"></td></tr></table><div class="float_handle" id="float{id}_h" onmousedown="ca_draw.mouse_down(event, '#float{id}')" onmousemove="ca_draw.mouse_move(event, '#float{id}')" onmouseup="ca_draw.mouse_up(event, '#float{id}')" onmouseout="ca_draw.mouse_out('#float{id}')"></div></div>
 """
 ########### functions
 

@@ -1,4 +1,4 @@
-var mut_bar = (function()
+mut_bar = (function()
 {
 
     var mut_bar = function(id)
@@ -64,6 +64,7 @@ var mut_bar = (function()
         };
     };
     
+    var isNode = (typeof process !== "undefined" && typeof require !== "undefined");
     var p = mut_bar.prototype;
     
     // -----------------------------------
@@ -184,6 +185,13 @@ var mut_bar = (function()
     // -----------------------------------
     // set D3 positions
     // -----------------------------------
+    p._classname = function (classname) {
+        if (isNode == true) {
+            return classname;
+        }
+        return classname.baseVal;
+    }
+    
     p._set_xw = function() {
 
         var that = this;
@@ -221,13 +229,13 @@ var mut_bar = (function()
                 .transition()
                 .duration(this.options.animation.mtime)
                 .attr(w, function(d,i) {
-                    return p._width_position(that.asc, plot1, x_items, this.className.baseVal, that.options.zoom, bar_padding);
+                    return p._width_position(that.asc, plot1, x_items, p._classname(this.className), that.options.zoom, bar_padding);
                 })
                 .attr(x, function(d, i) {
-                    return p._xy_position(that.asc, plot1, padding1, x_items, this.className.baseVal, that.options.zoom, 0);
+                    return p._xy_position(that.asc, plot1, padding1, x_items, p._classname(this.className), that.options.zoom, 0);
                 })
         }
-
+        
         // transparent-bar
         this.svg_obj.selectAll("g.transparent_bar").selectAll("rect")
             .attr(w, function(d,i) {
@@ -261,12 +269,12 @@ var mut_bar = (function()
                 }
             }
             var sift = Math.floor(plot1 / x_items / 2);
-            
+
             this.svg_obj.selectAll("g.label_x").selectAll("text")
                 .attr('transform', function(d, i)  {
                     if (d == "") return;
                     
-                    var classes = this.className.baseVal.split(" ");
+                    var classes = p._classname(this.className).split(" ");
                     var idx = Number(classes[0]);
                     var f = Number(that.options.grid_xs[idx].font_size.replace(/px/g, "").replace(/em/g, ""));
                     if (that.options.grid_xs[idx].wide == 0) return;
@@ -328,11 +336,11 @@ var mut_bar = (function()
                     return 0;
                 })
                 .attr(x + "1", function(d,i){
-                    var key = this.className.baseVal.split(" ")[1];
+                    var key = p._classname(this.className).split(" ")[1];
                     return p._xy_position_grid(that.asc, plot1, padding1, x_items, key, that.options.zoom, 0);
                 })
                 .attr(x + "2", function(d,i){
-                    var key = this.className.baseVal.split(" ")[1];
+                    var key = p._classname(this.className).split(" ")[1];
                     return p._xy_position_grid(that.asc, plot1, padding1, x_items, key, that.options.zoom, 0);
                 });
         }
@@ -1220,7 +1228,7 @@ var mut_bar = (function()
                     }
                 }
                 
-                var classes = this.className.baseVal.split(" ");
+                var classes = p._classname(this.className).split(" ");
                 var selected = false;
                 for (var k = 1; k < classes.length; k++) {
                     if (classes[k].indexOf("selected") == 0) {

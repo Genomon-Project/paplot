@@ -12,13 +12,15 @@ Generated on {date} for {project} by {version}.
 <div class="container">
 <h2>{title} - {project}</h2>
 
-<!-- save image --><button type="button" onclick="push_export()" id="dw_btn" style="margin-bottom: 20px;"><img src="../layout/download.png" style="margin-right: 5px;">Export</button><div id="btn"></div>
+<!-- save image --><button type="button" onclick="msig_draw.push_export()" id="dw_btn" style="margin-bottom: 20px;"><img src="../layout/download.png" style="margin-right: 5px;">Export</button><div id="btn"></div>
 
 {divs}
 
 <!-- spacer --><div style="float: left; height: 10px; width: 100%"></div>
 
 {integral}
+
+</div>
 
 <!-- ### tooltip ### -->
 <div id="tooltip" class="hidden"></div>
@@ -31,6 +33,8 @@ Generated on {date} for {project} by {version}.
 <script type="text/javascript" src="../lib/d3-legend_v1.10.0/d3-legend.min.js"></script>
 <script type="text/javascript" src="{style}"></script>
 <script type="text/javascript" src="../js/utils.js"></script>
+<script type="text/javascript" src="../js/legend.js"></script>
+<script type="text/javascript" src="../js/downloader.js"></script>
 <script type="text/javascript" src="../js/bar.js"></script>
 <script type="text/javascript" src="../js/pmsignature.js"></script>
 <script type="text/javascript" src="./{data_js}"></script>
@@ -38,7 +42,19 @@ Generated on {date} for {project} by {version}.
 
 <script type="text/javascript">
 {add_divs}
-init();
+msig_draw.init();
+
+// resize timer
+var timer = false;
+
+window.addEventListener('resize', function() {{
+    if (timer !== false) {{
+        clearTimeout(timer);
+    }}
+    timer = setTimeout(function() {{
+        msig_draw.resize();
+    }}, 200);
+}});
 </script>
 </body>
 </html>

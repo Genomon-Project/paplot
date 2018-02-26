@@ -1,3 +1,6 @@
+(function() {
+msig_draw = {};
+
 // global params
 var _DEBUG = false;
 var divs = [];
@@ -11,25 +14,9 @@ if (msig_data.mutations.length > 0) {
     div_rate = new mut_bar("div_rate");
 }
 
-function add_div(name) {
+msig_draw.add_div = function (name) {
     divs.push(name);
 }
-
-// resize timer
-var timer = false;
-
-window.addEventListener('resize', function() {
-    if (timer !== false) {
-        clearTimeout(timer);
-    }
-    timer = setTimeout(function() {
-        update_div();
-        if (div_integral != 0) {
-            div_integral.resize();
-            div_rate.resize();
-        }
-    }, 200);
-});
 
 function update_div() {
     
@@ -72,7 +59,7 @@ function debg(start, before, now, prefix) {
     console.log(prefix + ":" + (now.getTime() - before)/1000 + ", total: " + (now.getTime() - start)/1000);
 }
 
-function init() {
+msig_draw.init = function () {
 
     // draw signature
     for (var i = 0; i < divs.length; i++) {
@@ -461,7 +448,7 @@ function draw_pmsignature(name, signature_id) {
 // *********************************************
 // save image
 // *********************************************
-function push_export() {
+msig_draw.push_export = function () {
     
     // window-width
     var max_width = Number(d3.select("div.container").style("width").replace("px", "")) 
@@ -534,3 +521,11 @@ div_rate.bar_selected = function(key, on) {
     div_rate.bar_select(key, on);
 }
 
+msig_draw.resize = function () {
+    update_div();
+    if (div_integral != 0) {
+        div_integral.resize();
+        div_rate.resize();
+    }
+}
+})();

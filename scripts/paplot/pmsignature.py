@@ -210,7 +210,7 @@ def create_html(dataset, params, config):
     import paplot.prep as prep
     
     html_div_template = "<div style='float: left;' id='div_pm{id}'></div>\n"
-    html_add_template = "add_div('div_pm{id}');\n"
+    html_add_template = "msig_draw.add_div('div_pm{id}');\n"
 
     div_text = ""
     add_text = ""

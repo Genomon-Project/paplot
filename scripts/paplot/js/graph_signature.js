@@ -1,3 +1,6 @@
+(function() {
+sig_draw = {};
+
 // global params
 var _DEBUG = false;
 
@@ -19,25 +22,9 @@ if (sig_data.mutations.length > 0) {
     div_rate = new mut_bar("div_rate");
 }
 
-function add_div(name) {
+sig_draw.add_div = function (name) {
     divs.push(name);
 }
-
-// resize timer
-var timer = false;
-
-window.addEventListener('resize', function() {
-    if (timer !== false) {
-        clearTimeout(timer);
-    }
-    timer = setTimeout(function() {
-        update_div();
-        if (div_integral != 0) {
-            div_integral.resize();
-            div_rate.resize();
-        }
-    }, 200);
-});
 
 function update_div() {
     
@@ -80,7 +67,7 @@ function debg(start, before, now, prefix) {
     console.log(prefix + ":" + (now.getTime() - before)/1000 + ", total: " + (now.getTime() - start)/1000);
 }
 
-function init() {
+sig_draw.init = function () {
 
     // draw signature
     for (var i = 0; i < divs.length; i++) {
@@ -590,7 +577,7 @@ function draw_signature(name, signature_id, change_id) {
 // *********************************************
 // save image
 // *********************************************
-function push_export() {
+sig_draw.push_export = function () {
     
     // window-width
     var max_width = Number(d3.select("div.container").style("width").replace("px", "")) 
@@ -663,3 +650,13 @@ div_integral.bar_selected = function(key, on) {
 div_rate.bar_selected = function(key, on) {
     div_rate.bar_select(key, on);
 }
+
+sig_draw.resize = function () {
+    update_div();
+    if (div_integral != 0) {
+        div_integral.resize();
+        div_rate.resize();
+    }
+}
+
+})();

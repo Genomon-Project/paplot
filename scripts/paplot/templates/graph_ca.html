@@ -15,12 +15,12 @@ Generated on {date} for {project} by {version}.
   <h2 id="title">{title} - {project}</h2>
 
   <p>Style of selected graphs<br>
-  <input type="radio" name="q2" value="hilight" onclick="thumb_reset()" checked> Highlight selected graphs
-  <input type="radio" name="q2" value="hide" onclick="thumb_reset()"> Hide non-selected graphs
+  <input type="radio" name="q2" value="hilight" onclick="ca_draw.thumb_reset()" checked> Highlight selected graphs
+  <input type="radio" name="q2" value="hide" onclick="ca_draw.thumb_reset()"> Hide non-selected graphs
   </p>
-  <p><input type="button" value="Reset" onclick="thumb_reset()"></p>
+  <p><input type="button" value="Reset" onclick="ca_draw.thumb_reset()"></p>
 
-<!-- save image --><button type="button" onclick="push_export()" id="dw_btn" style="margin-bottom: 20px;"><img src="../layout/download.png" style="margin-right: 5px;">Export</button><div id="btn"></div>
+<!-- save image --><button type="button" onclick="ca_draw.push_export()" id="dw_btn" style="margin-bottom: 20px;"><img src="../layout/download.png" style="margin-right: 5px;">Export</button><div id="btn"></div>
 <!-- legend --> <div id='legend_html'></div><div id='legend_svg'></div>
 
 <div id="selector"></div>
@@ -46,13 +46,28 @@ Generated on {date} for {project} by {version}.
 <script type="text/javascript" src="../lib/d3-legend_v1.10.0/d3-legend.min.js"></script>
 <script type="text/javascript" src="{style}"></script>
 <script type="text/javascript" src="../js/utils.js"></script>
+<script type="text/javascript" src="../js/legend.js"></script>
+<script type="text/javascript" src="../js/downloader.js"></script>
 <script type="text/javascript" src="../js/bundle.js"></script>
 <script type="text/javascript" src="../js/bar.js"></script>
 <script type="text/javascript" src="./{data_js}"></script>
 <script type="text/javascript" src="../js/graph_ca.js"></script>
 <script>
-draw_select();
+ca_draw.draw_select();
 {call_list}
+
+// resize timer
+var timer = false;
+window.addEventListener('resize', function() {{
+    if (timer !== false) {{
+        clearTimeout(timer);
+    }}
+    timer = setTimeout(function() {{
+        ca_draw.update_div();
+        ca_draw.resize_if(); //div_select_bar.resize();
+        ca_draw.thumb_reset();
+    }}, 200);
+}});
 </script>
 </body>
 </html>
