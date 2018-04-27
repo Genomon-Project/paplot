@@ -34,7 +34,7 @@ RUN curl -kL https://bootstrap.pypa.io/get-pip.py | python && \
     echo "export PATH=/work/sonar-scanner-3.0.3.778-linux/bin:$PATH"                                                 >> /sonar.sh && \
     echo "sonar-scanner -Dsonar.host.url=https://sonarcloud.io -Dsonar.projectKey=paplot -Dsonar.sources=. -Dsonar.inclusions=paplot,scripts/*.py,scripts/paplot/*.py,scripts/paplot/subcode/*.py,tests/src/js/*.js,tests/src/html/*.js -Dsonar.python.coverage.reportPath=coverage.xml -Dsonar.javascript.lcov.reportPaths=tests/coverage/lcov.info -Dsonar.organization=${SONNAR_KEY} -Dsonar.login=${SONNAR_TOKEN};" >> /sonar.sh && \
     \
-    chmod 744 /run.sh \
+    chmod 744 /run.sh && \
     chmod 744 /sonar.sh
     
 CMD ["/run.sh"]
