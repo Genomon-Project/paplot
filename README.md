@@ -232,23 +232,23 @@ optional arguments:
 
 <pre>
 {output_dir}
-  „ 
-  „¥„Ÿ„Ÿ {project_name}
-  „      „¤„Ÿ„Ÿ (Data files and html files)
-  „ 
-  „¥„Ÿ„Ÿ js
-  „      „¤„Ÿ„Ÿ (Javascript files)
-  „ 
-  „¥„Ÿ„Ÿ layout
-  „      „¤„Ÿ„Ÿ (Stylesheet and image files)
-  „ 
-  „¥„Ÿ„Ÿ lib
-  „      „¤„Ÿ„Ÿ (Javascript libraries of 3rd-party)
-  „ 
-  „¥„Ÿ„Ÿ style
-  „      „¤ (Appearance configuration file)
-  „ 
-  „¤„Ÿ„Ÿ index.html        <--------- Open your browser
+  â”‚
+  â”œâ”€â”€ {project_name}
+  â”‚     â””â”€â”€ (Data files and html files)
+  â”‚
+  â”œâ”€â”€ js
+  â”‚     â””â”€â”€ (Javascript files)
+  â”‚
+  â”œâ”€â”€ layout
+  â”‚     â””â”€â”€ (Stylesheet and image files)
+  â”‚
+  â”œâ”€â”€ lib
+  â”‚     â””â”€â”€ (Javascript libraries of 3rd-party)
+  â”‚
+  â”œâ”€â”€ style
+  â”‚     â”” (Appearance configuration file)
+  â”‚
+  â””â”€â”€ index.html        <--------- Open your browser
 
 </pre>
 

@@ -476,7 +476,7 @@ function change_stack_exec(name, on) {
                 }
             }
             
-            // o == 2 (rect) ‚Ì‚Æ‚«Atag2‚à’Ê‚·
+            // o == 2 (rect) ã®ã¨ãã€tag2ã‚‚é€šã™
             if (o != 2) continue;
             
             for (var i4 = 0; i4 < divs[o].tags2.length; i4++) {
