@@ -35,7 +35,7 @@ Prepare the machine on which python and Node.js run.
 
 ```
 $ docker pull node:latest
-$ docker run -it -v /path/to/paplot:/work "/bin/bash"
+$ docker run -it -v /path/to/paplot:/work node:latest "/bin/bash"
 
 (In container)# curl -kL https://bootstrap.pypa.io/get-pip.py | python
 ```
@@ -54,6 +54,7 @@ cp -r /work/tests/dataset/mutation/ /home/travis/build/Genomon-Project/paplot/te
 Run coverage
 
 ```
+cd /work
 coverage run --source=./scripts setup.py test
 ```
 
@@ -100,6 +101,7 @@ TOTAL                                   1973   1569    20%
 Install the npm modules with `tests` directory.
 
 ```
+cd /work/tests
 npm install
 ```
 
@@ -143,8 +145,8 @@ sonar-scanner-cli-3.0.3.778-linux/sonar-scanner-3.0.3.778-linux/bin/sonar-scanne
 ## [OPTION] 3. How to use Dockerfile
 
 ```
-git clone https://github.com/aokad/paplot.git
-cd paplot/test
+git clone https://github.com/Genomon-Project/paplot.git
+cd paplot/tests
 docker build -t paplot-test:0.5.6 .
 docker run -it -v {your paplot root directory}:/work paplot-test:0.5.6 /bin/bash
 

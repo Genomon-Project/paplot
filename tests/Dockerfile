@@ -6,7 +6,6 @@ RUN curl -kL https://bootstrap.pypa.io/get-pip.py | python && \
     pip install coverage && \
     apt-get -y update && \
     apt-get install -y wget unzip && \
-    
     \
     echo "#!/bin/bash"                                                                                                > /run.sh && \
     echo "cd /work/"                                                                                                 >> /run.sh && \
