@@ -1,4 +1,4 @@
-[![Github Workflow](https://github.com/aokad/paplot/actions/workflows/unit_test.yml/badge.svg)](https://github.com/aokad/paplot/actions)
+[![Github Workflow](https://github.com/Genomon-Project/paplot/actions/workflows/unit_test.yml/badge.svg)](https://github.com/Genomon-Project/paplot/actions)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=paplot&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=paplot)
 [![PyPI version](https://badge.fury.io/py/paplot.svg)](http://badge.fury.io/py/paplot)
 ![Python](https://img.shields.io/badge/python-2.7-blue.svg)
