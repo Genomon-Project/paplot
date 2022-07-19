@@ -22,7 +22,7 @@ paplot ca ${data_dir}/ca_noheader/data.csv ./demo ca_noheader --ellipsis noheade
 paplot mutation ${data_dir}/mutation_minimal/data.csv  ./demo mutation_minimal  --ellipsis minimal  -c ${data_dir}/mutation_minimal/paplot.cfg
 paplot mutation ${data_dir}/mutation_option/data.csv   ./demo mutation_option   --ellipsis option   -c ${data_dir}/mutation_option/paplot.cfg
 paplot mutation ${data_dir}/mutation_noheader/data.csv ./demo mutation_noheader --ellipsis noheader -c ${data_dir}/mutation_noheader/paplot.cfg
-paplot mutation ${data_dir}/mutation_subplot/data.csv  ./demo mutation_subplot  --ellipsis subplot  -c /home/travis/build/Genomon-Project/paplot/tests/example/mutation_subplot/paplot.cfg
+paplot mutation ${data_dir}/mutation_subplot/data.csv  ./demo mutation_subplot  --ellipsis subplot  -c /home/runner/work/paplot/paplot/tests/example/mutation_subplot/paplot.cfg
 
 # signature
 paplot signature ${data_dir}/signature_minimal/data.json        ./demo signature_minimal     --ellipsis signature_minimal -c ${data_dir}/signature_minimal/paplot.cfg
