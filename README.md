@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/Genomon-Project/paplot.svg?branch=master)](https://travis-ci.org/Genomon-Project/paplot)
+[![Build Status](https://app.travis-ci.com/Genomon-Project/paplot.svg?branch=master)](https://app.travis-ci.com/github/Genomon-Project/paplot)
 [![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=paplot&metric=coverage#.svg)](https://sonarcloud.io/dashboard/index/paplot.svg)
 [![PyPI version](https://badge.fury.io/py/paplot.svg)](http://badge.fury.io/py/paplot)
 ![Python](https://img.shields.io/badge/python-2.7-blue.svg)
