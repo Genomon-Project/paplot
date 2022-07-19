@@ -4,7 +4,7 @@
 
 This directory contains test scripts, which are organized as follows.
 
-directory
+Directories
 
  - python ... Test scripts for source code written in python.
  - js ... Test scripts for source code written in javascript.
@@ -12,7 +12,7 @@ directory
  - example ... Example data of the tutorial.
  - ref ... Correct answer data of output report.
 
-ファイル
+Files
 
  - .istanbul.yml ... configuration file of istanbul (javascript coverage calculation tool).
  - build.sh ... Create a report from the example data.
